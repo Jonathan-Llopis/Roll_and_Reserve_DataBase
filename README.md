@@ -39,7 +39,7 @@ Este repositorio contiene **Roll & Reserve**, una aplicación multiplataforma de
 ## 🛠️ Apartado Técnico  
 
 - **Frontend:** Desarrollado con **Flutter** para garantizar compatibilidad multiplataforma (Android e iOS).  
-- **Backend:** Implementado con **NestJS** y una base de datos **PostgreSQL** mediante **TypeORM**.  
+- **Backend:** Implementado con **NestJS** y una base de datos **MariaDB** mediante **TypeORM**.  
 - **Notificaciones:** Integración con **Firebase Cloud Messaging** para alertas en tiempo real.  
 - **Control de Versiones:** Git y GitHub para la gestión del código.  
 
