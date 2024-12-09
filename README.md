@@ -1,34 +1,76 @@
 # 🎲 Roll & Reserve  
 **Plataforma de Reservas para Juegos de Mesa**  
 
-Este repositorio contiene el proyecto **Roll & Reserve**, una plataforma dedicada a la gestión y reserva de mesas para juegos de mesa. El proyecto surge como propuesta académica y tiene como objetivo facilitar la interacción entre jugadores y establecimientos especializados.
+Este repositorio contiene el proyecto **Roll & Reserve**, desarrollado como parte del proyecto final del ciclo superior de **Desarrollo de Aplicaciones Multiplataforma (DAM)**. El objetivo principal es crear una aplicación funcional que facilite la reserva y gestión de mesas para juegos de mesa en establecimientos especializados.
 
 ---
 
-## 📋 Detalles del Proyecto  
-- **Autor:** Jonathan Llopis Linares  
-- **Tipo de Proyecto:** Propuesta académica  
-- **Objetivo:** Mejorar la experiencia de reserva de mesas para juegos de mesa mediante una plataforma intuitiva y eficiente.  
+## 📄 Descripción del Proyecto  
+**Roll & Reserve** es una solución orientada a optimizar la organización de mesas en negocios enfocados en juegos de mesa. Ofrece una interfaz sencilla e intuitiva tanto para los usuarios finales (clientes) como para los administradores del sistema (gestores de los establecimientos).  
 
 ---
 
-## 🚀 Funcionalidades Clave  
-1. **Gestión de reservas:** Permite a los usuarios reservar mesas de forma rápida y organizada.  
-2. **Interfaz amigable:** Diseño simple y accesible, facilitando la navegación tanto para jugadores como para administradores.  
-3. **Optimización de recursos:** Mejora la organización de espacios en establecimientos de juegos de mesa.  
+## 🚀 Objetivos  
+- Desarrollar una aplicación multiplataforma que permita **gestionar y reservar mesas**.  
+- Optimizar la comunicación entre **jugadores y establecimientos**.  
+- Implementar un sistema eficiente que mejore la organización y experiencia de usuario.  
+- Cumplir con los estándares de calidad y buenas prácticas en el desarrollo de software.
 
 ---
 
 ## 🛠️ Tecnologías Utilizadas  
-(Agregar aquí las tecnologías específicas utilizadas, como frameworks, lenguajes o herramientas).
+- **Lenguaje de Programación:** *(Ej. Java, Kotlin)*  
+- **Frameworks y Librerías:** *(Ej. Spring Boot, Flutter)*  
+- **Base de Datos:** *(Ej. MySQL, SQLite)*  
+- **IDE:** *(Ej. Android Studio, IntelliJ IDEA)*  
+- **Control de Versiones:** Git & GitHub  
 
 ---
 
-## 🧩 Próximos Pasos  
-- Implementación de nuevas funcionalidades.  
-- Optimización del sistema de gestión.  
-- Mejoras en la experiencia del usuario.  
+## 📋 Funcionalidades Principales  
+1. **Gestión de Reservas:**  
+   - Permite realizar y cancelar reservas de mesas en tiempo real.  
+   - Gestión de horarios y disponibilidad.  
+2. **Gestión de Usuarios:**  
+   - Registro y autenticación de usuarios.  
+   - Roles diferenciados: clientes y administradores.  
+3. **Panel de Administración:**  
+   - Gestión de mesas, horarios y disponibilidad.  
+   - Consulta y organización de reservas activas.  
+4. **Notificaciones y Confirmaciones:**  
+   - Confirmación automática de reservas mediante notificaciones.  
 
 ---
 
-¡Si tienes alguna sugerencia o deseas contribuir, no dudes en crear un *issue* o hacer un *pull request*! 🚀
+## 🧩 Próximas Mejoras  
+- Implementación de un sistema de pagos integrado.  
+- Desarrollo de una versión **web responsive** complementaria.  
+- Optimización de la interfaz de usuario (UI/UX).  
+- Análisis de datos y generación de estadísticas sobre la ocupación de mesas.  
+
+---
+
+## 📚 Documentación  
+La documentación completa del proyecto incluye:  
+- **Análisis y Diseño:** Diagramas de clases, de casos de uso y modelo entidad-relación.  
+- **Manual de Usuario:** Instrucciones detalladas para el uso de la aplicación.  
+- **Manual Técnico:** Información técnica para futuros desarrolladores.  
+
+---
+
+## 👨‍🎓 Autor  
+- **Nombre:** Jonathan Llopis Linares  
+- **Ciclo Formativo:** Desarrollo de Aplicaciones Multiplataforma (DAM)  
+- **Centro Educativo:** *(Añadir el nombre del centro si se desea)*  
+
+---
+
+## 🤝 Contacto  
+Si deseas colaborar o tienes alguna sugerencia, no dudes en contactar conmigo a través de:  
+- **Correo Electrónico:** *(Tu correo)*  
+- **LinkedIn:** *(Enlace a tu perfil, si tienes)*  
+
+---
+
+¡Gracias por visitar este repositorio! 😊  
+
