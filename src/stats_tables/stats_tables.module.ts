@@ -4,6 +4,6 @@ import { StatsTablesService } from './stats_tables.service';
 
 @Module({
   controllers: [StatsTablesController],
-  providers: [StatsTablesService]
+  providers: [StatsTablesService],
 })
 export class StatsTablesModule {}

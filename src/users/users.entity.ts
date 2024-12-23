@@ -1,7 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { ReviewsEntity } from 'src/reviews/reviews.entity';
+import { ShopsEntity } from 'src/shops/shops.entity';
+import { TablesEntity } from 'src/tables/tables.entitiy';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 
 @Entity()
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn()
   id_user: number;
 
@@ -30,5 +40,18 @@ export class User {
   avatar: string;
 
   @Column({ nullable: true })
-  valoración_media: number;
+  average_raiting: number;
+
+  @OneToMany(() => ReviewsEntity, (reviews) => reviews.writer)
+  receivedReviews: ReviewsEntity[];
+
+  @OneToMany(() => ReviewsEntity, (reviews) => reviews.reviewed)
+  writtenReviews: ReviewsEntity[];
+
+  @OneToMany(() => ShopsEntity, (shop) => shop.owner)
+  shop_owned: ShopsEntity[];
+
+  @ManyToMany(() => TablesEntity, (table) => table.users_in_table)
+  @JoinTable()
+  users_tables: TablesEntity[];
 }

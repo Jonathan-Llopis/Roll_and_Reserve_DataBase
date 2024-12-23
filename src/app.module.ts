@@ -23,6 +23,15 @@ import { StatsTablesModule } from './stats_tables/stats_tables.module';
 import { GamesModule } from './games/games.module';
 import { ReserveModule } from './reserve/reserve.module';
 import { AditionalInfoModule } from './aditional_info/aditional_info.module';
+import { TypesModule } from './types/types.module';
+import { DifficultyModule } from './difficulty/difficulty.module';
+import { GameCategoryModule } from './game_category/game_category.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { StateTableModule } from './state_table/state_table.module';
+import { ShopGamesModule } from './shop_games/shop_games.module';
+import { ReservesService } from './reserves/reserves.service';
+import { ReservesModule } from './reserves/reserves.module';
+import { UsersTablesModule } from './users_tables/users_tables.module';
 
 @Module({
   imports: [
@@ -65,9 +74,17 @@ import { AditionalInfoModule } from './aditional_info/aditional_info.module';
     GamesModule,
     ReserveModule,
     AditionalInfoModule,
+    TypesModule,
+    DifficultyModule,
+    GameCategoryModule,
+    ReviewsModule,
+    StateTableModule,
+    ShopGamesModule,
+    ReservesModule,
+    UsersTablesModule,
   ],
   controllers: [],
-  providers: [AuthorizationMiddleware, AuthService],
+  providers: [AuthorizationMiddleware, AuthService, ReservesService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
