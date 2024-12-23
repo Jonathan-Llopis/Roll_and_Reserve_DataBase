@@ -1,6 +1,6 @@
 import { ReviewsEntity } from 'src/reviews/reviews.entity';
 import { ShopsEntity } from 'src/shops/shops.entity';
-import { TablesEntity } from 'src/tables/tables.entitiy';
+import { TablesEntity } from 'src/tables/tables.entity';
 import {
   Entity,
   Column,
@@ -42,10 +42,10 @@ export class UserEntity {
   @Column({ nullable: true })
   average_raiting: number;
 
-  @OneToMany(() => ReviewsEntity, (reviews) => reviews.writer)
+  @OneToMany(() => ReviewsEntity, (reviews) => reviews.reviewed)
   receivedReviews: ReviewsEntity[];
 
-  @OneToMany(() => ReviewsEntity, (reviews) => reviews.reviewed)
+  @OneToMany(() => ReviewsEntity, (reviews) => reviews.writer)
   writtenReviews: ReviewsEntity[];
 
   @OneToMany(() => ShopsEntity, (shop) => shop.owner)

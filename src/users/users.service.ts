@@ -3,16 +3,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { UtilsService } from '../utils/utils.service';
+
+import { UserEntity } from './users.entity';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
-import { User } from './users.entity';
 @Injectable()
 export class UsersService {
   constructor(
     private readonly utilsService: UtilsService,
-    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
-  async getAllUser(xml?: string): Promise<User[] | string> {
+  async getAllUser(xml?: string): Promise<UserEntity[] | string> {
     const users = await this.usersRepository.find();
     if (xml === 'true') {
       const jsonformatted = JSON.stringify({
@@ -24,7 +26,7 @@ export class UsersService {
     }
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     const usuario = await this.usersRepository.create(createUserDto);
     const passwordHash = await bcrypt.hash(await usuario.password, 10);
     usuario.password = passwordHash;
@@ -32,10 +34,10 @@ export class UsersService {
   }
 
   async getStatisticsUser(id_user: number): Promise<any> {
-    const user = await this.usersRepository.findOneBy({ id_user });
-    if (user != null) {
+    const UserEntity = await this.usersRepository.findOneBy({ id_user });
+    if (UserEntity != null) {
       const statistics = await this.usersRepository
-        .createQueryBuilder('user')
+        .createQueryBuilder('UserEntity')
         .select('COUNT(issue.id_issue)', 'totalIssues')
         .addSelect(
           "COUNT(CASE WHEN status.description = 'Creada' THEN 1 END)",
@@ -57,17 +59,17 @@ export class UsersService {
           "SEC_TO_TIME(AVG(CASE WHEN status.description = 'Completada' THEN TIMESTAMPDIFF(SECOND, issue.created_at, issue.last_updated) END))",
           'difHorasCompletarIssues',
         )
-        .innerJoin('issue', 'issue', 'user.id_user = issue.id_user')
+        .innerJoin('issue', 'issue', 'UserEntity.id_user = issue.id_user')
         .innerJoin('status', 'status', 'status.id_status = issue.id_status')
-        .where('user.id_user = :id', { id: id_user })
+        .where('UserEntity.id_user = :id', { id: id_user })
         .getRawOne();
       const statisticsAbiertas = await this.usersRepository
-        .createQueryBuilder('user')
+        .createQueryBuilder('UserEntity')
         .select('issue.id_issue', 'idIssuesAbierta')
-        .innerJoin('issue', 'issue', 'user.id_user = issue.id_user')
+        .innerJoin('issue', 'issue', 'UserEntity.id_user = issue.id_user')
         .innerJoin('status', 'status', 'status.id_status = issue.id_status')
         .where(
-          "user.id_user = :id AND (status.description = 'Creada' OR status.description = 'En revisión')",
+          "UserEntity.id_user = :id AND (status.description = 'Creada' OR status.description = 'En revisión')",
           { id: id_user },
         )
         .getRawMany();
@@ -88,48 +90,56 @@ export class UsersService {
     }
   }
 
-  async getUser(id_user: number, xml?: string): Promise<User | string | null> {
-    const user = await this.usersRepository.findOneBy({ id_user });
+  async getUser(
+    id_user: number,
+    xml?: string,
+  ): Promise<UserEntity | string | null> {
+    const UserEntity = await this.usersRepository.findOneBy({ id_user });
 
-    if (user != null) {
+    if (UserEntity != null) {
       if (xml == 'true') {
-        const jsonformatted = JSON.stringify(user);
+        const jsonformatted = JSON.stringify(UserEntity);
         return this.utilsService.convertJSONtoXML(jsonformatted);
       } else {
-        return user;
+        return UserEntity;
       }
     } else {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
   }
 
-  async updateUser(updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.usersRepository.findOne({
+  async updateUser(updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    const UserEntity = await this.usersRepository.findOne({
       where: { id_user: updateUserDto.id_user },
     });
 
-    if (!user) {
+    if (!UserEntity) {
       throw new Error('Usuario no encontrado');
     }
 
-    this.usersRepository.merge(user, updateUserDto);
-    return this.usersRepository.save(user);
+    this.usersRepository.merge(UserEntity, updateUserDto);
+    return this.usersRepository.save(UserEntity);
   }
 
   async deleteUser(id_user: number): Promise<void> {
     await this.usersRepository.delete(id_user);
   }
-  async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.usersRepository.findOne({ where: { email } });
-    if (user && (await bcrypt.compare(password, user.password))) {
-      return user;
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<UserEntity | null> {
+    const UserEntity = await this.usersRepository.findOne({ where: { email } });
+    if (UserEntity && (await bcrypt.compare(password, UserEntity.password))) {
+      return UserEntity;
     }
     return null;
   }
-  async getStaticTechnician(id_user: string): Promise<User | string | null> {
+  async getStaticTechnician(
+    id_user: string,
+  ): Promise<UserEntity | string | null> {
     const userId = parseInt(id_user.toString(), 10);
     if (isNaN(userId)) {
-      throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Invalid UserEntity ID', HttpStatus.BAD_REQUEST);
     }
 
     const technician = await this.usersRepository.findOne({
@@ -145,13 +155,13 @@ export class UsersService {
 
     try {
       const stats = await this.usersRepository
-        .createQueryBuilder('user')
-        .innerJoin('issue', 'issue', 'user.id_user = issue.id_tecnic')
-        .where('user.id_user = :userId', { userId })
-        .andWhere('user.role = :role', { role: 2 })
-        .select('user.id_user AS id_user')
-        .addSelect('user.name AS name')
-        .addSelect('user.surname AS surname')
+        .createQueryBuilder('UserEntity')
+        .innerJoin('issue', 'issue', 'UserEntity.id_user = issue.id_tecnic')
+        .where('UserEntity.id_user = :userId', { userId })
+        .andWhere('UserEntity.role = :role', { role: 2 })
+        .select('UserEntity.id_user AS id_user')
+        .addSelect('UserEntity.name AS name')
+        .addSelect('UserEntity.surname AS surname')
         .addSelect('COUNT(issue.id_issue) AS total_issues')
         .addSelect('SUM(issue.id_status = 4) AS Completadas')
         .addSelect('SUM(issue.id_status = 3) AS Canceladas')
@@ -169,7 +179,7 @@ export class UsersService {
           ) AS Media_tiempo_resolucion
         `,
         )
-        .groupBy('user.id_user')
+        .groupBy('UserEntity.id_user')
         .getRawOne();
 
       if (!stats) {

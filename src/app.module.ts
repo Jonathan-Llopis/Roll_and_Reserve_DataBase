@@ -8,30 +8,31 @@ import { UsersModule } from './users/users.module';
 import { UtilsModule } from './utils/utils.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { User } from './users/users.entity';
+import { UserEntity } from './users/users.entity';
 import { AuthorizationMiddleware } from './authorization.middleware';
 import { AuthService } from './Autentication/auth.service';
 import { MailModule } from './mail/mail.module';
 import { LabelsModule } from './utils/labels.module';
-import { UploadModule } from './upload/upload.module';
-import { UploadEntity } from './upload/upload.entity';
-import { FilesModule } from './files/files.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ShopsModule } from './shops/shops.module';
 import { TablesModule } from './tables/tables.module';
 import { StatsTablesModule } from './stats_tables/stats_tables.module';
 import { GamesModule } from './games/games.module';
-import { ReserveModule } from './reserve/reserve.module';
-import { AditionalInfoModule } from './aditional_info/aditional_info.module';
-import { TypesModule } from './types/types.module';
 import { DifficultyModule } from './difficulty/difficulty.module';
 import { GameCategoryModule } from './game_category/game_category.module';
 import { ReviewsModule } from './reviews/reviews.module';
-import { StateTableModule } from './state_table/state_table.module';
 import { ShopGamesModule } from './shop_games/shop_games.module';
 import { ReservesService } from './reserves/reserves.service';
 import { ReservesModule } from './reserves/reserves.module';
 import { UsersTablesModule } from './users_tables/users_tables.module';
+import { ReviewsEntity } from './reviews/reviews.entity';
+import { ShopsEntity } from './shops/shops.entity';
+import { TablesEntity } from './tables/tables.entity';
+import { ReservesEntity } from './reserves/reserves.entity';
+import { GamesEntity } from './games/game.entitiy';
+import { DifficultyEntity } from './difficulty/difficulty.entity';
+import { GameCategoryEntity } from './game_category/game_category.entity';
+import { StateTablesEntity } from './stats_tables/stats_tables.entity';
 
 @Module({
   imports: [
@@ -50,8 +51,7 @@ import { UsersTablesModule } from './users_tables/users_tables.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    UploadModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([UserEntity]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -61,24 +61,29 @@ import { UsersTablesModule } from './users_tables/users_tables.module';
         username: configService.get('MYSQL_USER'),
         password: configService.get('MYSQL_PASSWORD'),
         database: configService.get('MYSQL_DATABASE'),
-        entities: [User, UploadEntity],
+        entities: [
+          UserEntity,
+          ReviewsEntity,
+          ShopsEntity,
+          TablesEntity,
+          ReservesEntity,
+          GamesEntity,
+          GameCategoryEntity,
+          DifficultyEntity,
+          StateTablesEntity,
+        ],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
     LabelsModule,
-    FilesModule,
     ShopsModule,
     TablesModule,
     StatsTablesModule,
     GamesModule,
-    ReserveModule,
-    AditionalInfoModule,
-    TypesModule,
     DifficultyModule,
     GameCategoryModule,
     ReviewsModule,
-    StateTableModule,
     ShopGamesModule,
     ReservesModule,
     UsersTablesModule,

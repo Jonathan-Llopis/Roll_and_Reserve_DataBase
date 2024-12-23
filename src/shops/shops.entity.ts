@@ -1,6 +1,6 @@
 import { GamesEntity } from 'src/games/game.entitiy';
 import { ReviewsEntity } from 'src/reviews/reviews.entity';
-import { TablesEntity } from 'src/tables/tables.entitiy';
+import { TablesEntity } from 'src/tables/tables.entity';
 import { UserEntity } from 'src/users/users.entity';
 import {
   Entity,

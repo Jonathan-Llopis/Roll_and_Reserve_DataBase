@@ -1,11 +1,9 @@
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { runSeeders, SeederOptions } from 'typeorm-extension';
-import { User } from './users/users.entity';
+import { UserEntity } from './users/users.entity';
 import { UserSeeder } from './db/seeding/seeds/users.seeder';
 import { config } from 'dotenv';
-import { UploadSeeder } from './db/seeding/seeds/uploadSeed';
-import { UploadEntity } from './upload/upload.entity';
 config();
 
 const options: DataSourceOptions & SeederOptions = {
@@ -16,8 +14,8 @@ const options: DataSourceOptions & SeederOptions = {
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
 
-  entities: [User, UploadEntity],
-  seeds: [UserSeeder, UploadSeeder],
+  entities: [UserEntity],
+  seeds: [UserSeeder],
 };
 
 const dataSource = new DataSource(options);

@@ -2,7 +2,7 @@ import { DifficultyEntity } from 'src/difficulty/difficulty.entity';
 import { GameCategoryEntity } from 'src/game_category/game_category.entity';
 import { GamesEntity } from 'src/games/game.entitiy';
 import { ShopsEntity } from 'src/shops/shops.entity';
-import { TablesEntity } from 'src/tables/tables.entitiy';
+import { TablesEntity } from 'src/tables/tables.entity';
 import {
   Entity,
   Column,

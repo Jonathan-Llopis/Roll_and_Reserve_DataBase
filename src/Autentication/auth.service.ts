@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/users.entity';
+import { UserEntity } from 'src/users/users.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async generateToken(id_user: number): Promise<string> {
@@ -25,12 +25,12 @@ export class AuthService {
   }
 
   async validateToken(token: string): Promise<boolean> {
-    const user = await this.userRepository.findOne({ where: { token } });
-    if (!user) return false;
+    const UserEntity = await this.userRepository.findOne({ where: { token } });
+    if (!UserEntity) return false;
 
     const now = new Date();
-    if (user.tokenExpiration < now) {
-      await this.userRepository.update(user.id_user, {
+    if (UserEntity.tokenExpiration < now) {
+      await this.userRepository.update(UserEntity.id_user, {
         token: null,
         tokenExpiration: null,
       });
