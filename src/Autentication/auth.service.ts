@@ -11,7 +11,7 @@ export class AuthService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async generateToken(id_user: number): Promise<string> {
+  async generateToken(id_user: string): Promise<string> {
     const token = uuidv4();
     const expirationDate = new Date();
     expirationDate.setHours(expirationDate.getMonth() + 1);

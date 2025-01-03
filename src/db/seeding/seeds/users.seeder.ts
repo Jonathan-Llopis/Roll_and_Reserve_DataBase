@@ -12,7 +12,6 @@ export class UserSeeder implements Seeder {
       userData.map(async (item) => {
         const userEntry = new UserEntity();
         userEntry.name = item.name;
-        userEntry.surname = item.surname;
         const passwordHash = await bcrypt.hash(item.password, 10);
         userEntry.password = passwordHash;
         userEntry.email = item.email;

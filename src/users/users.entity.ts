@@ -13,13 +13,10 @@ import {
 @Entity()
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id_user: number;
+  id_user: string;
 
   @Column()
   name: string;
-
-  @Column()
-  surname: string;
 
   @Column()
   password: string;

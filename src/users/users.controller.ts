@@ -40,19 +40,10 @@ export class UsersController {
     }
   }
 
-  @Get('statistics/:id')
-  getStatisticsUser(@Param('id') id: string) {
-    const userId = parseInt(id);
-    if (isNaN(userId)) {
-      throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
-    }
-    return this.usersService.getStatisticsUser(userId);
-  }
-
   @Get(':id')
   getUser(@Param('id') id: string, @Query('xml') xml?: string) {
-    const userId = parseInt(id);
-    if (isNaN(userId)) {
+    const userId = id;
+    if (!userId) {
       throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
     }
     return this.usersService.getUser(userId, xml);
@@ -65,8 +56,8 @@ export class UsersController {
 
   @Put(':id')
   updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const userId = parseInt(id);
-    if (isNaN(userId)) {
+    const userId = id;
+    if (!userId) {
       throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
     }
     return this.usersService.updateUser({
@@ -106,10 +97,5 @@ export class UsersController {
     const token = await this.authService.generateToken(user.id_user);
 
     return { token };
-  }
-  @Get('technician-stats/:id')
-  async getTechnicianStats(@Param('id') id: string) {
-    const stat = await this.usersService.getStaticTechnician(id);
-    return stat;
   }
 }

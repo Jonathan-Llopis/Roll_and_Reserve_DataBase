@@ -33,65 +33,8 @@ export class UsersService {
     return this.usersRepository.save(usuario);
   }
 
-  async getStatisticsUser(id_user: number): Promise<any> {
-    const UserEntity = await this.usersRepository.findOneBy({ id_user });
-    if (UserEntity != null) {
-      const statistics = await this.usersRepository
-        .createQueryBuilder('UserEntity')
-        .select('COUNT(issue.id_issue)', 'totalIssues')
-        .addSelect(
-          "COUNT(CASE WHEN status.description = 'Creada' THEN 1 END)",
-          'numIssuesCreadas',
-        )
-        .addSelect(
-          "COUNT(CASE WHEN status.description = 'En revisión' THEN 1 END)",
-          'numIssuesRevision',
-        )
-        .addSelect(
-          "COUNT(CASE WHEN status.description = 'Rechazada' THEN 1 END)",
-          'numIssuesRechazadas',
-        )
-        .addSelect(
-          "COUNT(CASE WHEN status.description = 'Completada' THEN 1 END)",
-          'numIssuesCompl',
-        )
-        .addSelect(
-          "SEC_TO_TIME(AVG(CASE WHEN status.description = 'Completada' THEN TIMESTAMPDIFF(SECOND, issue.created_at, issue.last_updated) END))",
-          'difHorasCompletarIssues',
-        )
-        .innerJoin('issue', 'issue', 'UserEntity.id_user = issue.id_user')
-        .innerJoin('status', 'status', 'status.id_status = issue.id_status')
-        .where('UserEntity.id_user = :id', { id: id_user })
-        .getRawOne();
-      const statisticsAbiertas = await this.usersRepository
-        .createQueryBuilder('UserEntity')
-        .select('issue.id_issue', 'idIssuesAbierta')
-        .innerJoin('issue', 'issue', 'UserEntity.id_user = issue.id_user')
-        .innerJoin('status', 'status', 'status.id_status = issue.id_status')
-        .where(
-          "UserEntity.id_user = :id AND (status.description = 'Creada' OR status.description = 'En revisión')",
-          { id: id_user },
-        )
-        .getRawMany();
-      const result = {
-        totalIssues: parseInt(statistics.totalIssues),
-        numIssuesCreadas: parseInt(statistics.numIssuesCreadas),
-        numIssuesRevision: parseInt(statistics.numIssuesRevision),
-        numIssuesRechazadas: parseInt(statistics.numIssuesRechazadas),
-        numIssuesCompl: parseInt(statistics.numIssuesCompl),
-        idIssuesAbiertas: statisticsAbiertas.map(
-          (issue) => issue.idIssuesAbierta,
-        ),
-        difHorasCompletarIssues: statistics.difHorasCompletarIssues,
-      };
-      return result;
-    } else {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
-    }
-  }
-
   async getUser(
-    id_user: number,
+    id_user: string,
     xml?: string,
   ): Promise<UserEntity | string | null> {
     const UserEntity = await this.usersRepository.findOneBy({ id_user });
@@ -134,73 +77,16 @@ export class UsersService {
     }
     return null;
   }
-  async getStaticTechnician(
-    id_user: string,
-  ): Promise<UserEntity | string | null> {
-    const userId = parseInt(id_user.toString(), 10);
-    if (isNaN(userId)) {
-      throw new HttpException('Invalid UserEntity ID', HttpStatus.BAD_REQUEST);
-    }
 
-    const technician = await this.usersRepository.findOne({
-      where: { id_user: userId, role: 2 },
+  async vincularArchivo(id_user: string, id_archivo: string) {
+    const user = await this.usersRepository.findOne({
+      where: { id_user: id_user },
     });
 
-    if (!technician) {
-      throw new HttpException(
-        'El usuario no es un técnico',
-        HttpStatus.NOT_FOUND,
-      );
+    if (!user) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
     }
-
-    try {
-      const stats = await this.usersRepository
-        .createQueryBuilder('UserEntity')
-        .innerJoin('issue', 'issue', 'UserEntity.id_user = issue.id_tecnic')
-        .where('UserEntity.id_user = :userId', { userId })
-        .andWhere('UserEntity.role = :role', { role: 2 })
-        .select('UserEntity.id_user AS id_user')
-        .addSelect('UserEntity.name AS name')
-        .addSelect('UserEntity.surname AS surname')
-        .addSelect('COUNT(issue.id_issue) AS total_issues')
-        .addSelect('SUM(issue.id_status = 4) AS Completadas')
-        .addSelect('SUM(issue.id_status = 3) AS Canceladas')
-        .addSelect('SUM(issue.id_status = 2) AS Abiertas')
-        .addSelect('SUM(issue.id_status = 1) AS Creaddas')
-        .addSelect(
-          `
-          SEC_TO_TIME(
-              IFNULL(
-                  AVG(
-                      IF(issue.id_status = 4, TIMESTAMPDIFF(SECOND, issue.created_at, issue.last_updated), NULL)
-                  ),
-                  0
-              )
-          ) AS Media_tiempo_resolucion
-        `,
-        )
-        .groupBy('UserEntity.id_user')
-        .getRawOne();
-
-      if (!stats) {
-        throw new HttpException(
-          'No se encontraron estadísticas para este técnico',
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
-      return stats;
-    } catch (err) {
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: err.message || 'Error interno en el servidor',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        {
-          cause: err,
-        },
-      );
-    }
+    user.avatar = id_archivo.toString();
+    return this.usersRepository.save(user);
   }
 }

@@ -11,15 +11,11 @@ import {
 export class CreateUserDto {
   @IsOptional()
   @IsInt()
-  id_user?: number;
+  id_user?: string;
 
   @IsString()
   @Length(1, 500)
   name: string;
-
-  @IsString()
-  @Length(1, 500)
-  surname: string;
 
   @IsString()
   password: string;
@@ -36,17 +32,12 @@ export class CreateUserDto {
 export class UpdateUserDto {
   @IsOptional()
   @IsInt()
-  id_user?: number;
+  id_user?: string;
 
   @IsString()
   @IsOptional()
   @Length(1, 50)
   name?: string;
-
-  @IsString()
-  @IsOptional()
-  @Length(1, 50)
-  surname?: string;
 
   @IsString()
   @IsOptional()
