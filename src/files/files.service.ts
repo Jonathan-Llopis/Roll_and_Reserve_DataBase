@@ -1,44 +1,84 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { MongoGridFS } from 'mongo-gridfs';
-import { GridFSBucket, GridFSBucketReadStream, MongoClient } from 'mongodb';
+import { GridFSBucket, GridFSBucketReadStream, ObjectId } from 'mongodb';
 import { FileInfoVm } from './view-models/file-info-vm.model';
 
 @Injectable()
 export class FilesService {
-  private fileModel: MongoGridFS;
   private bucket: GridFSBucket;
 
   constructor(@InjectConnection() private readonly connection: Connection) {
-    this.fileModel = new MongoGridFS(this.connection.db, 'fs');
-    const client = new MongoClient(process.env.MONGODB_URI);
-    client.connect().then(() => {
-      const db = client.db('test');
-      this.bucket = new GridFSBucket(db, { bucketName: 'fs' });
-    });
+    this.bucket = new GridFSBucket(this.connection.db, { bucketName: 'fs' });
   }
 
   async readStream(id: string): Promise<GridFSBucketReadStream> {
-    return await this.fileModel.readFileStream(id);
+    try {
+      const objectId = new ObjectId(id);
+      return this.bucket.openDownloadStream(objectId);
+    } catch (error) {
+      console.error('Error al obtener el stream:', error);
+      throw new HttpException('Error al obtener el stream', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
-  async findInfo(id: string): Promise<FileInfoVm> {
-    const result = await this.fileModel
-      .findById(id)
-      .catch(() => {
-        throw new HttpException('File not found', HttpStatus.NOT_FOUND);
-      })
-      .then((result) => result);
-    return {
-      filename: result.filename,
-      length: result.length,
-      chunkSize: result.chunkSize,
-      contentType: result.contentType,
-    };
-  }
+ async findInfo(id: string): Promise<FileInfoVm> {
+   try {
+     const objectId = new ObjectId(id);
+     const files = await this.connection.db
+       .collection('fs.files')
+       .findOne({ _id: objectId });
+ 
+     if (!files) {
+       throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+     }
+ 
+     return {
+       filename: files.filename,
+       length: files.length,
+       chunkSize: files.chunkSize,
+       contentType: files.contentType,
+     };
+   } catch (error) {
+     console.error('Error al buscar archivo:');
+     console.error('Error message:', error.message);
+     console.error('Error stack:', error.stack);
+     console.error('Error code:', error.code);
+     console.error('Error name:', error.name);
+     throw new HttpException('Error al buscar archivo', HttpStatus.INTERNAL_SERVER_ERROR);
+   }
+ }
 
   async deleteFile(id: string): Promise<boolean> {
-    return await this.fileModel.delete(id);
+    try {
+      const objectId = new ObjectId(id);
+      await this.bucket.delete(objectId);
+      return true;
+    } catch (error) {
+      console.error('Error al eliminar archivo:', error);
+      throw new HttpException('Error al eliminar archivo', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async findAll(): Promise<{ id: string; file: FileInfoVm }[]> {
+    try {
+      const files = await this.connection.db
+        .collection('fs.files')
+        .find({})
+        .toArray();
+
+      return files.map((file) => ({
+        id: file._id.toString(),
+        file: {
+          filename: file.filename,
+          length: file.length,
+          chunkSize: file.chunkSize,
+          contentType: file.contentType,
+        },
+      }));
+    } catch (error) {
+      console.error('Error al obtener todos los archivos:', error);
+      throw new HttpException('Error al obtener todos los archivos', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

@@ -33,6 +33,7 @@ import { GamesEntity } from './games/game.entitiy';
 import { DifficultyEntity } from './difficulty/difficulty.entity';
 import { GameCategoryEntity } from './game_category/game_category.entity';
 import { StateTablesEntity } from './stats_tables/stats_tables.entity';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -87,6 +88,7 @@ import { StateTablesEntity } from './stats_tables/stats_tables.entity';
     ShopGamesModule,
     ReservesModule,
     UsersTablesModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [AuthorizationMiddleware, AuthService, ReservesService],
@@ -95,7 +97,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthorizationMiddleware)
-      .exclude({ path: 'users/login', method: RequestMethod.POST })
+      .exclude({ path: 'users/login', method: RequestMethod.POST },{path: 'users', method: RequestMethod.POST})
       .forRoutes('*');
   }
 }

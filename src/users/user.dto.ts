@@ -10,15 +10,20 @@ import {
 } from 'class-validator';
 export class CreateUserDto {
   @IsOptional()
-  @IsInt()
+  @IsString()
   id_user?: string;
+
+  @IsOptional()
+  @IsString()
+  id_google?: string;
 
   @IsString()
   @Length(1, 500)
   name: string;
 
   @IsString()
-  password: string;
+  @Length(1, 500)
+  username: string;
 
   @IsEmail()
   email: string;
@@ -31,17 +36,22 @@ export class CreateUserDto {
 
 export class UpdateUserDto {
   @IsOptional()
-  @IsInt()
+  @IsString()
   id_user?: string;
+
+  @IsOptional()
+  @IsString()
+  id_google?: string;
 
   @IsString()
   @IsOptional()
-  @Length(1, 50)
+  @Length(1, 500)
   name?: string;
 
   @IsString()
   @IsOptional()
-  password?: string;
+  @Length(1, 500)
+  username: string;
 
   @IsEmail()
   @IsOptional()
@@ -50,6 +60,6 @@ export class UpdateUserDto {
   @IsInt()
   @IsOptional()
   @Min(0)
-  @Max(1)
+  @Max(2)
   role?: number;
 }

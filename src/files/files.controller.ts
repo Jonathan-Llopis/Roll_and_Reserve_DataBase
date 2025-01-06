@@ -13,6 +13,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';
 import { FileResponseVm } from './view-models/file-response-vm.model';
 import { UsersService } from 'src/users/users.service';
+import { FileInfoVm } from './view-models/file-info-vm.model';
 
 @Controller('/files')
 export class FilesController {
@@ -46,6 +47,11 @@ export class FilesController {
     return response;
   }
 
+ @Get()
+ async getAllFiles(): Promise<{ id: string, file: FileInfoVm }[]> {
+   const files = await this.filesService.findAll();
+   return files;
+ }
   @Get('info/:id')
   async getFileInfo(@Param('id') id: string): Promise<FileResponseVm> {
     const file = await this.filesService.findInfo(id);
@@ -75,6 +81,7 @@ export class FilesController {
     res.header('Content-Type', file.contentType);
     return filestream.pipe(res);
   }
+
 
   @Get('download/:id')
   async downloadFile(@Param('id') id: string, @Res() res) {
@@ -118,13 +125,13 @@ export class FilesController {
           'image/bmp',
           'image/tiff',
         ];
-        const maxSize = 5 * 1024 * 1024; // 5MB
+        /*const maxSize = 10 * 1024 * 1024; // 5MB
         if (!allowedMimeTypes.includes(file.mimetype) || file.size > maxSize) {
           return callback(
-            new Error('Solo se permiten archivos de imagen de hasta 5MB'),
+            new Error('Solo se permiten archivos de imagen de hasta 10MB'),
             false,
           );
-        }
+        }*/
         callback(null, true);
       },
     }),

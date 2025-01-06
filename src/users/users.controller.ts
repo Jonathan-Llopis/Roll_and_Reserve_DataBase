@@ -63,7 +63,7 @@ export class UsersController {
     return this.usersService.updateUser({
       ...updateUserDto,
       id_user: userId,
-    });
+    }, userId);
   }
 
   @Delete(':id')
@@ -77,16 +77,15 @@ export class UsersController {
   @Post('login')
   async login(
     @Body('email') email: string,
-    @Body('password') password: string,
   ) {
-    if (!email || !password) {
+    if (!email) {
       throw new HttpException(
-        'El nombre de usuario y la contraseña son obligatorios',
+        'El nombre de usuario es obligatorio',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const user = await this.usersService.validateUser(email, password);
+    const user = await this.usersService.validateUser(email);
     if (!user) {
       throw new HttpException(
         'Credenciales inválidas',

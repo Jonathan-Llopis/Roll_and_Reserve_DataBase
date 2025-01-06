@@ -13,7 +13,6 @@ export class UserSeeder implements Seeder {
         const userEntry = new UserEntity();
         userEntry.name = item.name;
         const passwordHash = await bcrypt.hash(item.password, 10);
-        userEntry.password = passwordHash;
         userEntry.email = item.email;
         userEntry.role = item.role;
 

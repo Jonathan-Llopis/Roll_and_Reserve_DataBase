@@ -12,7 +12,7 @@ export class UsersService {
     private readonly utilsService: UtilsService,
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
 
   async getAllUser(xml?: string): Promise<UserEntity[] | string> {
     const users = await this.usersRepository.find();
@@ -28,8 +28,6 @@ export class UsersService {
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     const usuario = await this.usersRepository.create(createUserDto);
-    const passwordHash = await bcrypt.hash(await usuario.password, 10);
-    usuario.password = passwordHash;
     return this.usersRepository.save(usuario);
   }
 
@@ -37,42 +35,45 @@ export class UsersService {
     id_user: string,
     xml?: string,
   ): Promise<UserEntity | string | null> {
-    const UserEntity = await this.usersRepository.findOneBy({ id_user });
+    const userEntity = await this.usersRepository.findOne({ where: { id_google: id_user } });
 
-    if (UserEntity != null) {
+    if (userEntity != null) {
       if (xml == 'true') {
-        const jsonformatted = JSON.stringify(UserEntity);
+        const jsonformatted = JSON.stringify(userEntity);
         return this.utilsService.convertJSONtoXML(jsonformatted);
       } else {
-        return UserEntity;
+        return userEntity;
       }
     } else {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
   }
 
-  async updateUser(updateUserDto: UpdateUserDto): Promise<UserEntity> {
-    const UserEntity = await this.usersRepository.findOne({
-      where: { id_user: updateUserDto.id_user },
-    });
+async updateUser(updateUserDto: UpdateUserDto,id_user: string): Promise<UserEntity> {
+  const userEntity = await this.usersRepository.findOne({ where: { id_google: id_user } });
 
-    if (!UserEntity) {
-      throw new Error('Usuario no encontrado');
-    }
-
-    this.usersRepository.merge(UserEntity, updateUserDto);
-    return this.usersRepository.save(UserEntity);
+  if (!userEntity) {
+    throw new Error('Usuario no encontrado');
   }
 
+  if(userEntity.email != updateUserDto.email){
+    userEntity.email = updateUserDto.email;
+  }
+
+  userEntity.name = updateUserDto.name;
+  userEntity.username = updateUserDto.username;
+  userEntity.role = updateUserDto.role;
+
+  return this.usersRepository.save(userEntity);
+}
   async deleteUser(id_user: number): Promise<void> {
     await this.usersRepository.delete(id_user);
   }
   async validateUser(
     email: string,
-    password: string,
   ): Promise<UserEntity | null> {
     const UserEntity = await this.usersRepository.findOne({ where: { email } });
-    if (UserEntity && (await bcrypt.compare(password, UserEntity.password))) {
+    if (UserEntity) {
       return UserEntity;
     }
     return null;
@@ -80,7 +81,7 @@ export class UsersService {
 
   async vincularArchivo(id_user: string, id_archivo: string) {
     const user = await this.usersRepository.findOne({
-      where: { id_user: id_user },
+      where: { id_google: id_user },
     });
 
     if (!user) {

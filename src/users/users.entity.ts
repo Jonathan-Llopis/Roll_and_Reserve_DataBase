@@ -15,11 +15,14 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id_user: string;
 
-  @Column()
-  name: string;
+  @Column({ unique: true })
+  id_google: string;
 
   @Column()
-  password: string;
+  username: string;
+
+  @Column()
+  name: string;
 
   @Column({ unique: true })
   email: string;
