@@ -191,7 +191,7 @@ export class LabelsService {
 
           const logoFile = path.join(
             __dirname,
-            '/../../src/utils/labelsData',
+            '/../../../../../utils/labelsData',
             'logo_iestacio.png',
           );
           const logoImgData = await fs.readFile(logoFile, 'base64');

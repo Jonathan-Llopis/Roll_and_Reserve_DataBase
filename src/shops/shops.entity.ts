@@ -1,7 +1,7 @@
-import { GamesEntity } from 'src/games/game.entitiy';
-import { ReviewsEntity } from 'src/reviews/reviews.entity';
-import { TablesEntity } from 'src/tables/tables.entity';
-import { UserEntity } from 'src/users/users.entity';
+import { GamesEntity } from '../games/game.entitiy';
+import { ReviewsEntity } from '../reviews/reviews.entity';
+import { TablesEntity } from '../tables/tables.entity';
+import { UserEntity } from '../users/users.entity';
 import {
   Entity,
   Column,

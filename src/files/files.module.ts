@@ -3,10 +3,10 @@ import { FilesController } from './files.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { GridFsMulterConfigService } from './multer-config.service';
 import { FilesService } from '././files.service';
-import { UsersService } from 'src/users/users.service';
-import { UtilsModule } from 'src/utils/utils.module';
+import { UsersService } from '../users/users.service';
+import { UtilsModule } from '../utils/utils.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from 'src/users/users.entity';
+import { UserEntity } from '../users/users.entity';
 
 @Module({
   imports: [

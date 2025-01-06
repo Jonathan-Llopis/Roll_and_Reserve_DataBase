@@ -1,9 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcryptjs';
 import { Repository } from 'typeorm';
 import { UtilsService } from '../utils/utils.service';
-
 import { UserEntity } from './users.entity';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 @Injectable()
@@ -12,7 +10,7 @@ export class UsersService {
     private readonly utilsService: UtilsService,
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
 
   async getAllUser(xml?: string): Promise<UserEntity[] | string> {
     const users = await this.usersRepository.find();
@@ -35,7 +33,9 @@ export class UsersService {
     id_user: string,
     xml?: string,
   ): Promise<UserEntity | string | null> {
-    const userEntity = await this.usersRepository.findOne({ where: { id_google: id_user } });
+    const userEntity = await this.usersRepository.findOne({
+      where: { id_google: id_user },
+    });
 
     if (userEntity != null) {
       if (xml == 'true') {
@@ -49,29 +49,32 @@ export class UsersService {
     }
   }
 
-async updateUser(updateUserDto: UpdateUserDto,id_user: string): Promise<UserEntity> {
-  const userEntity = await this.usersRepository.findOne({ where: { id_google: id_user } });
+  async updateUser(
+    updateUserDto: UpdateUserDto,
+    id_user: string,
+  ): Promise<UserEntity> {
+    const userEntity = await this.usersRepository.findOne({
+      where: { id_google: id_user },
+    });
 
-  if (!userEntity) {
-    throw new Error('Usuario no encontrado');
+    if (!userEntity) {
+      throw new Error('Usuario no encontrado');
+    }
+
+    if (userEntity.email != updateUserDto.email) {
+      userEntity.email = updateUserDto.email;
+    }
+
+    userEntity.name = updateUserDto.name;
+    userEntity.username = updateUserDto.username;
+    userEntity.role = updateUserDto.role;
+
+    return this.usersRepository.save(userEntity);
   }
-
-  if(userEntity.email != updateUserDto.email){
-    userEntity.email = updateUserDto.email;
-  }
-
-  userEntity.name = updateUserDto.name;
-  userEntity.username = updateUserDto.username;
-  userEntity.role = updateUserDto.role;
-
-  return this.usersRepository.save(userEntity);
-}
   async deleteUser(id_user: number): Promise<void> {
     await this.usersRepository.delete(id_user);
   }
-  async validateUser(
-    email: string,
-  ): Promise<UserEntity | null> {
+  async validateUser(email: string): Promise<UserEntity | null> {
     const UserEntity = await this.usersRepository.findOne({ where: { email } });
     if (UserEntity) {
       return UserEntity;

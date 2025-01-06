@@ -1,14 +1,14 @@
-import { TablesEntity } from 'src/tables/tables.entity';
+import { TablesEntity } from '../tables/tables.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
-export class StateTablesEntity {
+export class StatsTablesEntity {
   @PrimaryGeneratedColumn()
-  id_state_table: number;
+  id_stats_table: number;
 
   @Column()
   description: string;
 
-  @OneToMany(() => TablesEntity, (table) => table.state_of_table)
-  states_in_tables: TablesEntity[];
+  @OneToMany(() => TablesEntity, (table) => table.stats_of_table)
+  stats_in_tables: TablesEntity[];
 }

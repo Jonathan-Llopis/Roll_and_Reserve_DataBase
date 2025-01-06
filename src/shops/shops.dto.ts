@@ -1,6 +1,10 @@
 import { IsString, IsOptional, IsNumber, Length } from 'class-validator';
 
 export class CreateShopDto {
+  @IsOptional()
+  @IsNumber()
+  id_shop?: number;
+
   @IsString()
   @Length(1, 500)
   address: string;

@@ -1,5 +1,5 @@
-import { GamesEntity } from 'src/games/game.entitiy';
-import { ReservesEntity } from 'src/reserves/reserves.entity';
+import { GamesEntity } from '../games/game.entitiy';
+import { ReservesEntity } from '../reserves/reserves.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()

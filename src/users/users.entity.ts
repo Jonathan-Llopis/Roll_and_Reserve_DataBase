@@ -1,6 +1,6 @@
-import { ReviewsEntity } from 'src/reviews/reviews.entity';
-import { ShopsEntity } from 'src/shops/shops.entity';
-import { TablesEntity } from 'src/tables/tables.entity';
+import { ReviewsEntity } from '../reviews/reviews.entity';
+import { ShopsEntity } from '../shops/shops.entity';
+import { TablesEntity } from '../tables/tables.entity';
 import {
   Entity,
   Column,

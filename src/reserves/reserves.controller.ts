@@ -1,4 +1,71 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { ReservesService } from './reserves.service';
+import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 
 @Controller('reserves')
-export class ReservesController {}
+export class ReservesController {
+  constructor(private readonly reservesService: ReservesService) {}
+
+  @Get()
+  getAllReserves() {
+    try {
+      return this.reservesService.getAllReserves();
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: err,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          cause: err,
+        },
+      );
+    }
+  }
+
+  @Get(':id')
+  getReserve(@Param('id') id: string) {
+    const reserveId = parseInt(id);
+    if (isNaN(reserveId)) {
+      throw new HttpException('Invalid reserve ID', HttpStatus.BAD_REQUEST);
+    }
+    return this.reservesService.getReserve(reserveId);
+  }
+
+  @Post()
+  createReserve(@Body() createReserveDto: CreateReserveDto) {
+    return this.reservesService.createReserve(createReserveDto);
+  }
+
+  @Put(':id')
+  updateReserve(
+    @Param('id') id: string,
+    @Body() updateReserveDto: UpdateReserveDto,
+  ) {
+    const reserveId = parseInt(id);
+    if (isNaN(reserveId)) {
+      throw new HttpException('Invalid reserve ID', HttpStatus.BAD_REQUEST);
+    }
+    return this.reservesService.updateReserve(updateReserveDto, reserveId);
+  }
+
+  @Delete(':id')
+  deleteReserve(@Param('id') id: string) {
+    const reserveId = parseInt(id);
+    if (isNaN(reserveId)) {
+      throw new HttpException('Invalid reserve ID', HttpStatus.BAD_REQUEST);
+    }
+    return this.reservesService.deleteReserve(reserveId);
+  }
+}

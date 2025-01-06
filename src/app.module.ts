@@ -32,9 +32,8 @@ import { ReservesEntity } from './reserves/reserves.entity';
 import { GamesEntity } from './games/game.entitiy';
 import { DifficultyEntity } from './difficulty/difficulty.entity';
 import { GameCategoryEntity } from './game_category/game_category.entity';
-import { StateTablesEntity } from './stats_tables/stats_tables.entity';
+import { StatsTablesEntity } from './stats_tables/stats_tables.entity';
 import { FilesModule } from './files/files.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -52,7 +51,6 @@ import { FilesModule } from './files/files.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forFeature([UserEntity]),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -71,14 +69,24 @@ import { FilesModule } from './files/files.module';
           GamesEntity,
           GameCategoryEntity,
           DifficultyEntity,
-          StateTablesEntity,
+          StatsTablesEntity,
         ],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    LabelsModule,
-    ShopsModule,
+    TypeOrmModule.forFeature([
+      UserEntity,
+      ReviewsEntity,
+      ShopsEntity,
+      TablesEntity,
+      ReservesEntity,
+      GamesEntity,
+      GameCategoryEntity,
+      DifficultyEntity,
+      StatsTablesEntity,
+    ]),
+    ShopsModule, // Mover el ShopsModule después del TypeOrmModule
     TablesModule,
     StatsTablesModule,
     GamesModule,
@@ -97,7 +105,10 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthorizationMiddleware)
-      .exclude({ path: 'users/login', method: RequestMethod.POST },{path: 'users', method: RequestMethod.POST})
+      .exclude(
+        { path: 'users/login', method: RequestMethod.POST },
+        { path: 'users', method: RequestMethod.POST },
+      )
       .forRoutes('*');
   }
 }

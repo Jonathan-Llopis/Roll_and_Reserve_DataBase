@@ -1,7 +1,7 @@
-import { DifficultyEntity } from 'src/difficulty/difficulty.entity';
-import { GameCategoryEntity } from 'src/game_category/game_category.entity';
-import { ReservesEntity } from 'src/reserves/reserves.entity';
-import { ShopsEntity } from 'src/shops/shops.entity';
+import { DifficultyEntity } from '../difficulty/difficulty.entity';
+import { GameCategoryEntity } from '../game_category/game_category.entity';
+import { ReservesEntity } from '../reserves/reserves.entity';
+import { ShopsEntity } from '../shops/shops.entity';
 import {
   Entity,
   Column,

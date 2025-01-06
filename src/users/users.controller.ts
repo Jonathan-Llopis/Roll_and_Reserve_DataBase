@@ -10,8 +10,8 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { AuthService } from 'src/Autentication/auth.service';
-import { MailService } from 'src/mail/mail.service';
+import { AuthService } from '../Autentication/auth.service';
+import { MailService } from '../mail/mail.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { UsersService } from './users.service';
 @Controller('Users')
@@ -60,10 +60,13 @@ export class UsersController {
     if (!userId) {
       throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
     }
-    return this.usersService.updateUser({
-      ...updateUserDto,
-      id_user: userId,
-    }, userId);
+    return this.usersService.updateUser(
+      {
+        ...updateUserDto,
+        id_user: userId,
+      },
+      userId,
+    );
   }
 
   @Delete(':id')
@@ -75,9 +78,7 @@ export class UsersController {
     return this.usersService.deleteUser(userId);
   }
   @Post('login')
-  async login(
-    @Body('email') email: string,
-  ) {
+  async login(@Body('email') email: string) {
     if (!email) {
       throw new HttpException(
         'El nombre de usuario es obligatorio',

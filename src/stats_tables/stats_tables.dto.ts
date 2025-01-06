@@ -1,11 +1,11 @@
 import { IsString, IsNumber, Length } from 'class-validator';
 
-export class CreateStateTableDto {
+export class CreateStatsTableDto {
   @IsString()
   description: string;
 }
 
-export class UpdateStateTableDto {
+export class UpdateStatsTableDto {
   @IsNumber()
   id_state_table: number;
 

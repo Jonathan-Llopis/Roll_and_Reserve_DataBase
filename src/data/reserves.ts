@@ -1,0 +1,28 @@
+export default [
+  {
+    id_reserve: 1,
+    number_players: 4,
+    review: 'Excelente',
+    hour_start: '2023-03-01T10:00:00.000Z',
+    hour_end: '2023-03-01T12:00:00.000Z',
+    description: 'Reserva para 4 jugadores',
+    required_material: 'Material de juego',
+    difficulty_id: 1,
+    game_category_reserve: 1,
+    game_reserve: 1,
+    reserve_table: 1,
+  },
+  {
+    id_reserve: 2,
+    number_players: 2,
+    review: 'Bueno',
+    hour_start: '2023-03-02T14:00:00.000Z',
+    hour_end: '2023-03-02T16:00:00.000Z',
+    description: 'Reserva para 2 jugadores',
+    required_material: 'Material de juego',
+    difficulty_id: 2,
+    game_category_reserve: 2,
+    game_reserve: 2,
+    reserve_table: 2,
+  },
+];

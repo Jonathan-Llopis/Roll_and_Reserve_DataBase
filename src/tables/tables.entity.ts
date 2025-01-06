@@ -1,7 +1,7 @@
-import { ReservesEntity } from 'src/reserves/reserves.entity';
-import { ShopsEntity } from 'src/shops/shops.entity';
-import { StateTablesEntity } from 'src/stats_tables/stats_tables.entity';
-import { UserEntity } from 'src/users/users.entity';
+import { ReservesEntity } from '../reserves/reserves.entity';
+import { ShopsEntity } from '../shops/shops.entity';
+import { StatsTablesEntity } from '../stats_tables/stats_tables.entity';
+import { UserEntity } from '../users/users.entity';
 import {
   Entity,
   Column,
@@ -28,9 +28,9 @@ export class TablesEntity {
   @JoinColumn({ name: 'tables_of_shop' })
   tables_of_shop: ShopsEntity;
 
-  @ManyToOne(() => StateTablesEntity, (state) => state.states_in_tables)
-  @JoinColumn({ name: 'states_of_table' })
-  state_of_table: StateTablesEntity;
+  @ManyToOne(() => StatsTablesEntity, (state) => state.stats_in_tables)
+  @JoinColumn({ name: 'stats_of_table' })
+  stats_of_table: StatsTablesEntity;
 
   @ManyToMany(() => UserEntity, (user) => user.users_tables)
   @JoinTable()

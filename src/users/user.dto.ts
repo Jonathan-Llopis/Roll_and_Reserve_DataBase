@@ -7,7 +7,9 @@ import {
   Min,
   Max,
   Length,
+  IsArray,
 } from 'class-validator';
+import { TablesEntity } from '../tables/tables.entity';
 export class CreateUserDto {
   @IsOptional()
   @IsString()
@@ -32,6 +34,9 @@ export class CreateUserDto {
   @Min(0)
   @Max(2)
   role: number;
+
+  @IsArray()
+  tables: TablesEntity[];
 }
 
 export class UpdateUserDto {

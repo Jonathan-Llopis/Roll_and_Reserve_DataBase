@@ -1,18 +1,28 @@
 // game.dto.ts
-import { IsString, IsOptional, IsNumber, Length } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  Length,
+  ValidateNested,
+} from 'class-validator';
+import { DifficultyEntity } from '../difficulty/difficulty.entity';
+import { GameCategoryEntity } from '../game_category/game_category.entity';
 
 export class CreateGameDto {
+  @IsNumber()
+  id_game: number;
+
   @IsString()
   @Length(1, 500)
   name: string;
 
-  @IsOptional()
-  @IsNumber()
-  difficulty_of_game_id?: number;
+  @ValidateNested()
+  difficulty_of_game?: DifficultyEntity;
 
   @IsOptional()
   @IsNumber()
-  category_of_game_id?: number;
+  category_of_game?: GameCategoryEntity;
 }
 
 export class UpdateGameDto {

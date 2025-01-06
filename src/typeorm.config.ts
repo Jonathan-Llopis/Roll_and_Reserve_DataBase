@@ -8,7 +8,7 @@ import { GameCategoryEntity } from './game_category/game_category.entity';
 import { GamesEntity } from './games/game.entitiy';
 import { ReservesEntity } from './reserves/reserves.entity';
 import { ShopsEntity } from './shops/shops.entity';
-import { StateTablesEntity } from './stats_tables/stats_tables.entity';
+import { StatsTablesEntity } from './stats_tables/stats_tables.entity';
 import { TablesEntity } from './tables/tables.entity';
 
 dotenv.config();
@@ -20,7 +20,8 @@ const config = {
   username: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
-  entities: [UserEntity,
+  entities: [
+    UserEntity,
     ReviewsEntity,
     ShopsEntity,
     TablesEntity,
@@ -28,9 +29,9 @@ const config = {
     GamesEntity,
     GameCategoryEntity,
     DifficultyEntity,
-    StateTablesEntity,
+    StatsTablesEntity,
   ],
-  migrations: ['./src/migrations/*.ts'],
+  migrations: ['./../../../migrations/*.ts'],
   synchronize: false,
 };
 

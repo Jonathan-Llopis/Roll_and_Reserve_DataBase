@@ -18,36 +18,42 @@ export class FilesService {
       return this.bucket.openDownloadStream(objectId);
     } catch (error) {
       console.error('Error al obtener el stream:', error);
-      throw new HttpException('Error al obtener el stream', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Error al obtener el stream',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
- async findInfo(id: string): Promise<FileInfoVm> {
-   try {
-     const objectId = new ObjectId(id);
-     const files = await this.connection.db
-       .collection('fs.files')
-       .findOne({ _id: objectId });
- 
-     if (!files) {
-       throw new HttpException('File not found', HttpStatus.NOT_FOUND);
-     }
- 
-     return {
-       filename: files.filename,
-       length: files.length,
-       chunkSize: files.chunkSize,
-       contentType: files.contentType,
-     };
-   } catch (error) {
-     console.error('Error al buscar archivo:');
-     console.error('Error message:', error.message);
-     console.error('Error stack:', error.stack);
-     console.error('Error code:', error.code);
-     console.error('Error name:', error.name);
-     throw new HttpException('Error al buscar archivo', HttpStatus.INTERNAL_SERVER_ERROR);
-   }
- }
+  async findInfo(id: string): Promise<FileInfoVm> {
+    try {
+      const objectId = new ObjectId(id);
+      const files = await this.connection.db
+        .collection('fs.files')
+        .findOne({ _id: objectId });
+
+      if (!files) {
+        throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+      }
+
+      return {
+        filename: files.filename,
+        length: files.length,
+        chunkSize: files.chunkSize,
+        contentType: files.contentType,
+      };
+    } catch (error) {
+      console.error('Error al buscar archivo:');
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      console.error('Error code:', error.code);
+      console.error('Error name:', error.name);
+      throw new HttpException(
+        'Error al buscar archivo',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   async deleteFile(id: string): Promise<boolean> {
     try {
@@ -56,7 +62,10 @@ export class FilesService {
       return true;
     } catch (error) {
       console.error('Error al eliminar archivo:', error);
-      throw new HttpException('Error al eliminar archivo', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Error al eliminar archivo',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -78,7 +87,10 @@ export class FilesService {
       }));
     } catch (error) {
       console.error('Error al obtener todos los archivos:', error);
-      throw new HttpException('Error al obtener todos los archivos', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Error al obtener todos los archivos',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
