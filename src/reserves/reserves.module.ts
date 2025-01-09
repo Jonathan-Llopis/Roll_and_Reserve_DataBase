@@ -6,6 +6,7 @@ import { ReservesEntity } from './reserves.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ReservesEntity])],
+  controllers: [ReservesController],
   providers: [ReservesService],
 })
 export class ReservesModule {}

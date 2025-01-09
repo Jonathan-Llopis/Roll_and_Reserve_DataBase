@@ -4,18 +4,15 @@ import { TablesEntity } from '../tables/tables.entity';
 import {
   Entity,
   Column,
-  PrimaryGeneratedColumn,
   OneToMany,
   ManyToMany,
   JoinTable,
+  PrimaryColumn,
 } from 'typeorm';
 
 @Entity()
 export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id_user: string;
-
-  @Column({ unique: true })
+  @PrimaryColumn()
   id_google: string;
 
   @Column()
@@ -42,11 +39,11 @@ export class UserEntity {
   @Column({ nullable: true })
   average_raiting: number;
 
-  @OneToMany(() => ReviewsEntity, (reviews) => reviews.reviewed)
-  receivedReviews: ReviewsEntity[];
-
   @OneToMany(() => ReviewsEntity, (reviews) => reviews.writer)
   writtenReviews: ReviewsEntity[];
+
+  @OneToMany(() => ReviewsEntity, (reviews) => reviews.reviewed)
+  receivedReviews: ReviewsEntity[];
 
   @OneToMany(() => ShopsEntity, (shop) => shop.owner)
   shop_owned: ShopsEntity[];

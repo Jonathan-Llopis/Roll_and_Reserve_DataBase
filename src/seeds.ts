@@ -30,7 +30,6 @@ const options: DataSourceOptions & SeederOptions = {
   database: process.env.MYSQL_DATABASE,
 
   entities: [
-    UserEntity,
     GamesEntity,
     GameCategoryEntity,
     ReservesEntity,
@@ -39,6 +38,7 @@ const options: DataSourceOptions & SeederOptions = {
     StatsTablesEntity,
     TablesEntity,
     DifficultyEntity,
+    UserEntity,
   ],
   seeds: [
     DifficultySeeder,

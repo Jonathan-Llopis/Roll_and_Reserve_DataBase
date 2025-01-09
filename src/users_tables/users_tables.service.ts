@@ -16,7 +16,7 @@ export class UsersTablesService {
 
     @InjectRepository(TablesEntity)
     private readonly tablesRepository: Repository<TablesEntity>,
-  ) {}
+  ) { }
 
   async addTableToUser(userId: string, tableId: string): Promise<UserEntity> {
     const user: UserEntity = await this.usersRepository.findOne({
@@ -121,7 +121,6 @@ export class UsersTablesService {
     user.users_tables = tables;
     return await this.usersRepository.save(user);
   }
-
   async deleteTableFromUser(userId: string, tableId: string) {
     const table: TablesEntity = await this.tablesRepository.findOne({
       where: { id_table: parseInt(tableId) },
@@ -143,18 +142,25 @@ export class UsersTablesService {
         BusinessError.NOT_FOUND,
       );
 
-    const userTable: TablesEntity = user.users_tables.find(
-      (table) => table.id_table === parseInt(tableId),
+    const tableUsers: UserEntity = table.users_in_table.find(
+      (user) => user.id_google === userId,
     );
 
-    if (!userTable) {
-      user.users_tables = user.users_tables.filter(
-        (table) => table.id_table !== parseInt(tableId),
-      );
+    if (!tableUsers) {
       throw new BusinessLogicException(
         'The table with the given id is not associated to the user',
         BusinessError.PRECONDITION_FAILED,
       );
+    } else {
+      table.users_in_table = table.users_in_table.filter(
+        (user) => user.id_google !== userId,
+      );
+      await this.tablesRepository.save(table); // Guarda los cambios en la base de datos
+
+      user.users_tables = user.users_tables.filter(
+        (table) => table.id_table !== parseInt(tableId),
+      );
+      await this.usersRepository.save(user); // Guarda los cambios en la base de datos
     }
   }
 }

@@ -13,7 +13,14 @@ export class UsersService {
   ) {}
 
   async getAllUser(xml?: string): Promise<UserEntity[] | string> {
-    const users = await this.usersRepository.find();
+    const users = await this.usersRepository.find({
+      relations: [
+        'users_tables',
+        'receivedReviews',
+        'writtenReviews',
+        'shop_owned',
+      ],
+    });
     if (xml === 'true') {
       const jsonformatted = JSON.stringify({
         users,
@@ -35,6 +42,12 @@ export class UsersService {
   ): Promise<UserEntity | string | null> {
     const userEntity = await this.usersRepository.findOne({
       where: { id_google: id_user },
+      relations: [
+        'users_tables',
+        'receivedReviews',
+        'receivedReviews',
+        'shop_owned',
+      ],
     });
 
     if (userEntity != null) {

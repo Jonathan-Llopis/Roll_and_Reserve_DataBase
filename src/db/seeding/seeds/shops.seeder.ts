@@ -13,6 +13,7 @@ export class ShopsSeeder implements Seeder {
       shopsData.map(async (item) => {
         const shopsEntry = new ShopsEntity();
         shopsEntry.address = item.address;
+        shopsEntry.name = item.name;
         shopsEntry.logo = item.logo;
         shopsEntry.owner = await userRepository.findOne({
           where: { id_google: item.owner_id.toString() },

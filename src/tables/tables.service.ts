@@ -13,7 +13,9 @@ export class TablesService {
 
   async getAllTables(): Promise<TablesEntity[]> {
     try {
-      const tables = await this.tableRepository.find();
+      const tables = await this.tableRepository.find({
+        relations: ['users_in_table', 'reserves_of_table', 'stats_of_table', 'tables_of_shop'],
+      });
       return tables;
     } catch (err) {
       throw new Error(err);
@@ -24,6 +26,7 @@ export class TablesService {
     try {
       const table = await this.tableRepository.findOne({
         where: { id_table: id },
+        relations: ['users_in_table', 'reserves_of_table', 'stats_of_table', 'tables_of_shop'],
       });
       if (!table) {
         throw new Error('Table not found');

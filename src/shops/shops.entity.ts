@@ -18,6 +18,9 @@ export class ShopsEntity {
   @PrimaryGeneratedColumn()
   id_shop: number;
 
+ @Column()
+  name: string;
+
   @Column()
   address: string;
 

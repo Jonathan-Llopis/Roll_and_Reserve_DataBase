@@ -13,7 +13,9 @@ export class ReviewsService {
 
   async getAllReviews(): Promise<ReviewsEntity[]> {
     try {
-      const reviews = await this.reviewsRepository.find();
+      const reviews = await this.reviewsRepository.find({
+        relations: ['writer', 'reviewed', 'shop_reviews'],
+      });
       return reviews;
     } catch (err) {
       throw new Error(err);

@@ -30,7 +30,7 @@ export class AuthService {
 
     const now = new Date();
     if (UserEntity.tokenExpiration < now) {
-      await this.userRepository.update(UserEntity.id_user, {
+      await this.userRepository.update(UserEntity.id_google, {
         token: null,
         tokenExpiration: null,
       });

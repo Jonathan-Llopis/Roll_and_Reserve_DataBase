@@ -76,7 +76,6 @@ import { FilesModule } from './files/files.module';
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([
-      UserEntity,
       ReviewsEntity,
       ShopsEntity,
       TablesEntity,
@@ -85,8 +84,9 @@ import { FilesModule } from './files/files.module';
       GameCategoryEntity,
       DifficultyEntity,
       StatsTablesEntity,
+      UserEntity,
     ]),
-    ShopsModule, // Mover el ShopsModule después del TypeOrmModule
+    ShopsModule,
     TablesModule,
     StatsTablesModule,
     GamesModule,

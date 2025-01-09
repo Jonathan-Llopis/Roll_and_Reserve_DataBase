@@ -8,11 +8,11 @@ export class CreateReviewDto {
   @Length(1, 500)
   review: string;
 
-  @IsNumber()
-  writter_id: number;
+  @IsString()
+  writter_id: string;
 
-  @IsNumber()
-  reviewed_id: number;
+  @IsString()
+  reviwed_id: string;
 
   @IsNumber()
   shop_reviews_id: number;

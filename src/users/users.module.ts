@@ -14,7 +14,7 @@ import { TablesEntity } from '../tables/tables.entity';
     TypeOrmModule.forFeature([UserEntity, TablesEntity]),
     MailModule,
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, UsersService],
   controllers: [UsersController],
   providers: [UsersService, AuthService],
 })

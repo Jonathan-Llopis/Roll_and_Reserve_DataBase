@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ShopsEntity } from './shops.entity';
@@ -13,7 +13,9 @@ export class ShopsService {
 
   async getAllShops(): Promise<ShopsEntity[]> {
     try {
-      const shops = await this.shopRepository.find();
+      const shops = await this.shopRepository.find({
+        relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
+      });
       return shops;
     } catch (err) {
       throw new Error(err);
@@ -24,6 +26,7 @@ export class ShopsService {
     try {
       const shop = await this.shopRepository.findOne({
         where: { id_shop: id },
+        relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
       });
       if (!shop) {
         throw new Error('Shop not found');
@@ -69,5 +72,17 @@ export class ShopsService {
     } catch (err) {
       throw new Error(err);
     }
+  }
+
+  async vincularArchivo(id_shop: string, id_archivo: string) {
+    const shop = await this.shopRepository.findOne({
+      where: { id_shop: parseInt(id_shop) },
+    });
+
+    if (!shop) {
+      throw new HttpException('Tienda no encontrada', HttpStatus.NOT_FOUND);
+    }
+    shop.logo = id_archivo.toString();
+    return this.shopRepository.save(shop);
   }
 }

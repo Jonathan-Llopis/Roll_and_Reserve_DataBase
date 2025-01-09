@@ -13,7 +13,7 @@ export class CreateShopDto {
   @Length(1, 500)
   logo: string;
 
-  @IsNumber()
+  @IsString()
   owner_id: number;
 }
 

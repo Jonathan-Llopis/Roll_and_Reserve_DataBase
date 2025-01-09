@@ -14,12 +14,14 @@ import { FilesService } from './files.service';
 import { FileResponseVm } from './view-models/file-response-vm.model';
 import { UsersService } from '../users/users.service';
 import { FileInfoVm } from './view-models/file-info-vm.model';
+import { ShopsService } from 'src/shops/shops.service';
 
 @Controller('/files')
 export class FilesController {
   constructor(
     private filesService: FilesService,
     private readonly userService: UsersService,
+    private readonly shopService: ShopsService,
   ) {}
 
   @Post('')
@@ -139,6 +141,37 @@ export class FilesController {
         contentType: file.contentType,
       };
       this.userService.vincularArchivo(idUser, file.id);
+      response.push(fileReponse);
+    });
+    return response;
+  }
+
+  @Post('logo/:id')
+  @UseInterceptors(
+    FilesInterceptor('file', 10, {
+      fileFilter: (req, file, callback) => {
+        callback(null, true);
+      },
+    }),
+  )
+  uploadShopLogo(@UploadedFiles() files, @Param('id') idShop: string) {
+    const response = [];
+    files.forEach((file) => {
+      const fileReponse = {
+        originalname: file.originalname,
+        encoding: file.encoding,
+        mimetype: file.mimetype,
+        id: file.id,
+        filename: file.filename,
+        metadata: file.metadata,
+        bucketName: file.bucketName,
+        chunkSize: file.chunkSize,
+        size: file.size,
+        md5: file.md5,
+        uploadDate: file.uploadDate,
+        contentType: file.contentType,
+      };
+      this.shopService.vincularArchivo(idShop, file.id);
       response.push(fileReponse);
     });
     return response;

@@ -11,9 +11,6 @@ import {
 } from 'class-validator';
 import { TablesEntity } from '../tables/tables.entity';
 export class CreateUserDto {
-  @IsOptional()
-  @IsString()
-  id_user?: string;
 
   @IsOptional()
   @IsString()
@@ -40,9 +37,6 @@ export class CreateUserDto {
 }
 
 export class UpdateUserDto {
-  @IsOptional()
-  @IsString()
-  id_user?: string;
 
   @IsOptional()
   @IsString()

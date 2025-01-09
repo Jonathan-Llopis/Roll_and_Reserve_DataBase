@@ -13,7 +13,14 @@ export class ReservesService {
 
   async getAllReserves(): Promise<ReservesEntity[]> {
     try {
-      const reserves = await this.reserveRepository.find();
+      const reserves = await this.reserveRepository.find({
+        relations: [
+          'reserve_of_game',
+          'reserve_game_category',
+          'difficulty',
+          'reserve_table',
+        ],
+      });
       return reserves;
     } catch (err) {
       throw new Error(err);
@@ -24,6 +31,12 @@ export class ReservesService {
     try {
       const reserve = await this.reserveRepository.findOne({
         where: { id_reserve: id },
+        relations: [
+          'reserve_of_game',
+          'reserve_game_category',
+          'difficulty',
+          'reserve_table',
+        ],
       });
       if (!reserve) {
         throw new Error('Reserve not found');

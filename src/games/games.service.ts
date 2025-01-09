@@ -13,7 +13,9 @@ export class GamesService {
 
   async getAllGames(): Promise<GamesEntity[]> {
     try {
-      const games = await this.gameRepository.find();
+      const games = await this.gameRepository.find({
+        relations: ['difficulty_of_game', 'category_of_game'],
+      });
       return games;
     } catch (err) {
       throw new Error(err);
@@ -24,6 +26,7 @@ export class GamesService {
     try {
       const game = await this.gameRepository.findOne({
         where: { id_game: id },
+        relations: ['difficulty_of_game', 'category_of_game'],
       });
       if (!game) {
         throw new Error('Game not found');

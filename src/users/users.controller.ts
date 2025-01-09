@@ -63,7 +63,7 @@ export class UsersController {
     return this.usersService.updateUser(
       {
         ...updateUserDto,
-        id_user: userId,
+        id_google: userId,
       },
       userId,
     );
@@ -94,7 +94,7 @@ export class UsersController {
       );
     }
 
-    const token = await this.authService.generateToken(user.id_user);
+    const token = await this.authService.generateToken(user.id_google);
 
     return { token };
   }
