@@ -1,6 +1,6 @@
+import { ReservesEntity } from 'src/reserves/reserves.entity';
 import { ReviewsEntity } from '../reviews/reviews.entity';
 import { ShopsEntity } from '../shops/shops.entity';
-import { TablesEntity } from '../tables/tables.entity';
 import {
   Entity,
   Column,
@@ -48,7 +48,7 @@ export class UserEntity {
   @OneToMany(() => ShopsEntity, (shop) => shop.owner)
   shop_owned: ShopsEntity[];
 
-  @ManyToMany(() => TablesEntity, (table) => table.users_in_table)
+  @ManyToMany(() => ReservesEntity, (reserve) => reserve.users_in_reserve)
   @JoinTable()
-  users_tables: TablesEntity[];
+  users_reserve: ReservesEntity[];
 }

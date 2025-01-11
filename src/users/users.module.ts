@@ -6,12 +6,12 @@ import { UserEntity } from './users.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthService } from '../Autentication/auth.service';
 import { MailModule } from '../mail/mail.module';
-import { TablesEntity } from '../tables/tables.entity';
+import { ReservesEntity } from 'src/reserves/reserves.entity';
 
 @Module({
   imports: [
     UtilsModule,
-    TypeOrmModule.forFeature([UserEntity, TablesEntity]),
+    TypeOrmModule.forFeature([UserEntity, ReservesEntity]),
     MailModule,
   ],
   exports: [TypeOrmModule, UsersService],

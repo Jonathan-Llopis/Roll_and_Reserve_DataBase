@@ -5,7 +5,6 @@ export default [
     address: 'Calle 1',
     logo: 'Logo 1',
     owner_id: 1,
-
   },
   {
     id_shop: 2,
@@ -13,7 +12,6 @@ export default [
     address: 'Calle 2',
     logo: 'Logo 2',
     owner_id: 2,
-
   },
   {
     id_shop: 3,
@@ -21,6 +19,5 @@ export default [
     address: 'Calle 3',
     logo: 'Logo 3',
     owner_id: 3,
-
   },
 ];

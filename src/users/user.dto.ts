@@ -11,7 +11,6 @@ import {
 } from 'class-validator';
 import { TablesEntity } from '../tables/tables.entity';
 export class CreateUserDto {
-
   @IsOptional()
   @IsString()
   id_google?: string;
@@ -32,12 +31,9 @@ export class CreateUserDto {
   @Max(2)
   role: number;
 
-  @IsArray()
-  tables: TablesEntity[];
 }
 
 export class UpdateUserDto {
-
   @IsOptional()
   @IsString()
   id_google?: string;

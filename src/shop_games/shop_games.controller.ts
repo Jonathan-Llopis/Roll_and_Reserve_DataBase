@@ -37,7 +37,6 @@ export class ShopGamesController {
       const gameEntity = new GamesEntity();
       gameEntity.name = game.name;
       gameEntity.difficulty_of_game = game.difficulty_of_game;
-      gameEntity.category_of_game = game.category_of_game;
       return gameEntity;
     });
     return this.shopGamesService.updateGamesFromShop(shopId, gamesEntity);

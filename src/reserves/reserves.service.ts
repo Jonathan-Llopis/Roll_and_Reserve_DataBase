@@ -19,6 +19,7 @@ export class ReservesService {
           'reserve_game_category',
           'difficulty',
           'reserve_table',
+          'users_in_reserve',
         ],
       });
       return reserves;
@@ -36,6 +37,7 @@ export class ReservesService {
           'reserve_game_category',
           'difficulty',
           'reserve_table',
+          'users_in_reserve',
         ],
       });
       if (!reserve) {

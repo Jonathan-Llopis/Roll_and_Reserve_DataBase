@@ -18,10 +18,6 @@ export class GamesSeeder implements Seeder {
         gamesEntry.difficulty_of_game = await difficultyRepository.findOne({
           where: { difficulty_rate: item.difficulty_id },
         });
-        gamesEntry.category_of_game = await gameCategoryRepository.findOne({
-          where: { id_game_category: item.game_category_id },
-        });
-
         return gamesEntry;
       }),
     );

@@ -11,6 +11,7 @@ export default [
     game_category_reserve: 1,
     game_reserve: 1,
     reserve_table: 1,
+    free_places: '2',
   },
   {
     id_reserve: 2,
@@ -24,5 +25,6 @@ export default [
     game_category_reserve: 2,
     game_reserve: 2,
     reserve_table: 2,
+    free_places: '2',
   },
 ];

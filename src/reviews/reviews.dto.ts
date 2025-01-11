@@ -11,9 +11,10 @@ export class CreateReviewDto {
   @IsString()
   writter_id: string;
 
+     @IsOptional()
   @IsString()
   reviwed_id: string;
-
+      @IsOptional()
   @IsNumber()
   shop_reviews_id: number;
 }

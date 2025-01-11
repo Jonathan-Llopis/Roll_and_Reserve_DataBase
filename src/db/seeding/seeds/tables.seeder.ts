@@ -15,7 +15,6 @@ export class TablesSeeder implements Seeder {
       tablesData.map(async (item) => {
         const tablesEntry = new TablesEntity();
         tablesEntry.number_table = item.number_table;
-        tablesEntry.free_places = item.free_places;
         tablesEntry.tables_of_shop = await shopsRepository.findOne({
           where: { id_shop: item.tables_of_shop },
         });

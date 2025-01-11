@@ -1,3 +1,4 @@
+import { UserEntity } from 'src/users/users.entity';
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { GamesEntity } from '../games/game.entitiy';
@@ -9,6 +10,8 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 @Entity()
@@ -17,10 +20,7 @@ export class ReservesEntity {
   id_reserve: number;
 
   @Column()
-  number_players: number;
-
-  @Column()
-  review: string;
+  free_places: number;
 
   @Column()
   hour_start: Date;
@@ -52,4 +52,8 @@ export class ReservesEntity {
   @ManyToOne(() => TablesEntity, (table) => table.reserves_of_table)
   @JoinColumn({ name: 'reserves_of_table' })
   reserve_table: TablesEntity;
+
+  @ManyToMany(() => UserEntity, (user) => user.users_reserve)
+  @JoinTable()
+  users_in_reserve: UserEntity[];
 }

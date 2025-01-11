@@ -24,7 +24,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { ShopGamesModule } from './shop_games/shop_games.module';
 import { ReservesService } from './reserves/reserves.service';
 import { ReservesModule } from './reserves/reserves.module';
-import { UsersTablesModule } from './users_tables/users_tables.module';
+import { UsersTablesModule } from './users_reserves/users_reserves.module';
 import { ReviewsEntity } from './reviews/reviews.entity';
 import { ShopsEntity } from './shops/shops.entity';
 import { TablesEntity } from './tables/tables.entity';

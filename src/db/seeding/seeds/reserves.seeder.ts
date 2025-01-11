@@ -16,8 +16,6 @@ export class ReservesSeeder implements Seeder {
     const reservesEntries = await Promise.all(
       reservesData.map(async (item) => {
         const reservesEntry = new ReservesEntity();
-        reservesEntry.number_players = item.number_players;
-        reservesEntry.review = item.review;
         reservesEntry.hour_start = new Date(item.hour_start);
         reservesEntry.hour_end = new Date(item.hour_end);
         reservesEntry.description = item.description;

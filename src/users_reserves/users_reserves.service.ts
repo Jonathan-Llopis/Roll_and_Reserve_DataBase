@@ -4,137 +4,63 @@ import {
   BusinessError,
   BusinessLogicException,
 } from '../shared/errors/business-errors';
-import { TablesEntity } from '../tables/tables.entity';
+import { ReservesEntity } from '../reserves/reserves.entity';
 import { UserEntity } from '../users/users.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class UsersTablesService {
+export class UsersReservesService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
 
-    @InjectRepository(TablesEntity)
-    private readonly tablesRepository: Repository<TablesEntity>,
-  ) { }
+    @InjectRepository(ReservesEntity)
+    private readonly reservesRepository: Repository<ReservesEntity>,
+  ) {}
 
-  async addTableToUser(userId: string, tableId: string): Promise<UserEntity> {
-    const user: UserEntity = await this.usersRepository.findOne({
-      where: { id_google: userId },
-      relations: ['users_tables'],
-    });
-    if (!user)
-      throw new BusinessLogicException(
-        'The user with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
-    const table: TablesEntity = await this.tablesRepository.findOne({
-      where: { id_table: parseInt(tableId) },
-      relations: ['users_in_table'],
-    });
-    if (!table)
-      throw new BusinessLogicException(
-        'The table with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
-    user.users_tables.push(table);
-    return this.usersRepository.save(user);
-  }
-
-  async findTableFromUser(
+  async addReserveToUser(
     userId: string,
-    tableId: string,
-  ): Promise<TablesEntity> {
-    const table: TablesEntity = await this.tablesRepository.findOne({
-      where: { id_table: parseInt(tableId) },
-      relations: ['users_in_table'],
-    });
-    if (!table)
-      throw new BusinessLogicException(
-        'The table with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
-
-    const user: UserEntity = await this.usersRepository.findOne({
-      where: { id_google: userId },
-      relations: ['users_tables'],
-    });
-    if (!user)
-      throw new BusinessLogicException(
-        'The user with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
-
-    const userTable: TablesEntity = user.users_tables.find(
-      (table) => table.id_table === parseInt(tableId),
-    );
-
-    if (!userTable)
-      throw new BusinessLogicException(
-        'The table with the given id is not associated to the user',
-        BusinessError.PRECONDITION_FAILED,
-      );
-
-    return userTable;
-  }
-
-  async findTablesFromUser(userId: string): Promise<TablesEntity[]> {
-    const user: UserEntity = await this.usersRepository.findOne({
-      where: { id_google: userId },
-      relations: ['users_tables'],
-    });
-    if (!user)
-      throw new BusinessLogicException(
-        'The user with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
-
-    return user.users_tables;
-  }
-
-  async updateTablesFromUser(
-    userId: string,
-    tables: TablesEntity[],
+    reserveId: string,
   ): Promise<UserEntity> {
     const user: UserEntity = await this.usersRepository.findOne({
       where: { id_google: userId },
-      relations: ['users_tables'],
+      relations: ['users_reserve'],
     });
-
     if (!user)
       throw new BusinessLogicException(
         'The user with the given id was not found',
         BusinessError.NOT_FOUND,
       );
-
-    for (let i = 0; i < tables.length; i++) {
-      const table: TablesEntity = await this.tablesRepository.findOne({
-        where: { id_table: tables[i].id_table },
-        relations: ['users_in_table'],
-      });
-      if (!table)
-        throw new BusinessLogicException(
-          'The table with the given id was not found',
-          BusinessError.NOT_FOUND,
-        );
-    }
-    user.users_tables = tables;
-    return await this.usersRepository.save(user);
-  }
-  async deleteTableFromUser(userId: string, tableId: string) {
-    const table: TablesEntity = await this.tablesRepository.findOne({
-      where: { id_table: parseInt(tableId) },
-      relations: ['users_in_table'],
+    const reserve: ReservesEntity = await this.reservesRepository.findOne({
+      where: { id_reserve: parseInt(reserveId) },
+      relations: ['users_in_reserve'],
     });
-    if (!table)
+    if (!reserve)
       throw new BusinessLogicException(
-        'The table with the given id was not found',
+        'The reserve with the given id was not found',
+        BusinessError.NOT_FOUND,
+      );
+    user.users_reserve.push(reserve);
+    return this.usersRepository.save(user);
+  }
+
+  async findReserveFromUser(
+    userId: string,
+    reserveId: string,
+  ): Promise<ReservesEntity> {
+    const reserve: ReservesEntity = await this.reservesRepository.findOne({
+      where: { id_reserve: parseInt(reserveId) },
+      relations: ['users_in_reserve'],
+    });
+    if (!reserve)
+      throw new BusinessLogicException(
+        'The reserve with the given id was not found',
         BusinessError.NOT_FOUND,
       );
 
     const user: UserEntity = await this.usersRepository.findOne({
       where: { id_google: userId },
-      relations: ['users_tables'],
+      relations: ['users_reserve'],
     });
     if (!user)
       throw new BusinessLogicException(
@@ -142,25 +68,103 @@ export class UsersTablesService {
         BusinessError.NOT_FOUND,
       );
 
-    const tableUsers: UserEntity = table.users_in_table.find(
+    const userReserve: ReservesEntity = user.users_reserve.find(
+      (reserve) => reserve.id_reserve === parseInt(reserveId),
+    );
+
+    if (!userReserve)
+      throw new BusinessLogicException(
+        'The reserve with the given id is not associated to the user',
+        BusinessError.PRECONDITION_FAILED,
+      );
+
+    return userReserve;
+  }
+
+  async findReservesFromUser(userId: string): Promise<ReservesEntity[]> {
+    const user: UserEntity = await this.usersRepository.findOne({
+      where: { id_google: userId },
+      relations: ['users_reserve'],
+    });
+    if (!user)
+      throw new BusinessLogicException(
+        'The user with the given id was not found',
+        BusinessError.NOT_FOUND,
+      );
+
+    return user.users_reserve;
+  }
+
+  async updateReservesFromUser(
+    userId: string,
+    reserves: ReservesEntity[],
+  ): Promise<UserEntity> {
+    const user: UserEntity = await this.usersRepository.findOne({
+      where: { id_google: userId },
+      relations: ['users_reserve'],
+    });
+
+    if (!user)
+      throw new BusinessLogicException(
+        'The user with the given id was not found',
+        BusinessError.NOT_FOUND,
+      );
+
+    for (let i = 0; i < reserves.length; i++) {
+      const reserve: ReservesEntity = await this.reservesRepository.findOne({
+        where: { id_reserve: reserves[i].id_reserve },
+        relations: ['users_in_reserve'],
+      });
+      if (!reserve)
+        throw new BusinessLogicException(
+          'The reserve with the given id was not found',
+          BusinessError.NOT_FOUND,
+        );
+    }
+    user.users_reserve = reserves;
+    return await this.usersRepository.save(user);
+  }
+
+  async deleteReserveFromUser(userId: string, reserveId: string) {
+    const reserve: ReservesEntity = await this.reservesRepository.findOne({
+      where: { id_reserve: parseInt(reserveId) },
+      relations: ['users_in_reserve'],
+    });
+    if (!reserve)
+      throw new BusinessLogicException(
+        'The reserve with the given id was not found',
+        BusinessError.NOT_FOUND,
+      );
+
+    const user: UserEntity = await this.usersRepository.findOne({
+      where: { id_google: userId },
+      relations: ['users_reserve'],
+    });
+    if (!user)
+      throw new BusinessLogicException(
+        'The user with the given id was not found',
+        BusinessError.NOT_FOUND,
+      );
+
+    const reserveUsers: UserEntity = reserve.users_in_reserve.find(
       (user) => user.id_google === userId,
     );
 
-    if (!tableUsers) {
+    if (!reserveUsers) {
       throw new BusinessLogicException(
-        'The table with the given id is not associated to the user',
+        'The reserve with the given id is not associated to the user',
         BusinessError.PRECONDITION_FAILED,
       );
     } else {
-      table.users_in_table = table.users_in_table.filter(
+      reserve.users_in_reserve = reserve.users_in_reserve.filter(
         (user) => user.id_google !== userId,
       );
-      await this.tablesRepository.save(table); // Guarda los cambios en la base de datos
+      await this.reservesRepository.save(reserve);
 
-      user.users_tables = user.users_tables.filter(
-        (table) => table.id_table !== parseInt(tableId),
+      user.users_reserve = user.users_reserve.filter(
+        (reserve) => reserve.id_reserve !== parseInt(reserveId),
       );
-      await this.usersRepository.save(user); // Guarda los cambios en la base de datos
+      await this.usersRepository.save(user); 
     }
   }
 }

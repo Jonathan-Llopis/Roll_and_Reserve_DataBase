@@ -1,5 +1,4 @@
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
-import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { ReservesEntity } from '../reserves/reserves.entity';
 import { ShopsEntity } from '../shops/shops.entity';
 import {
@@ -23,13 +22,6 @@ export class GamesEntity {
   @ManyToOne(() => DifficultyEntity, (difficulty) => difficulty.game_difficulty)
   @JoinColumn({ name: 'difficulty_id' })
   difficulty_of_game: DifficultyEntity;
-
-  @ManyToOne(
-    () => GameCategoryEntity,
-    (game_category) => game_category.game_category,
-  )
-  @JoinColumn({ name: 'game_category_id' })
-  category_of_game: GameCategoryEntity;
 
   @ManyToMany(() => ShopsEntity, (shop) => shop.games)
   @JoinTable()
