@@ -16,7 +16,6 @@ import { LabelsModule } from './utils/labels.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ShopsModule } from './shops/shops.module';
 import { TablesModule } from './tables/tables.module';
-import { StatsTablesModule } from './stats_tables/stats_tables.module';
 import { GamesModule } from './games/games.module';
 import { DifficultyModule } from './difficulty/difficulty.module';
 import { GameCategoryModule } from './game_category/game_category.module';
@@ -32,7 +31,6 @@ import { ReservesEntity } from './reserves/reserves.entity';
 import { GamesEntity } from './games/game.entitiy';
 import { DifficultyEntity } from './difficulty/difficulty.entity';
 import { GameCategoryEntity } from './game_category/game_category.entity';
-import { StatsTablesEntity } from './stats_tables/stats_tables.entity';
 import { FilesModule } from './files/files.module';
 @Module({
   imports: [
@@ -69,7 +67,7 @@ import { FilesModule } from './files/files.module';
           GamesEntity,
           GameCategoryEntity,
           DifficultyEntity,
-          StatsTablesEntity,
+
         ],
         synchronize: true,
       }),
@@ -83,12 +81,10 @@ import { FilesModule } from './files/files.module';
       GamesEntity,
       GameCategoryEntity,
       DifficultyEntity,
-      StatsTablesEntity,
       UserEntity,
     ]),
     ShopsModule,
     TablesModule,
-    StatsTablesModule,
     GamesModule,
     DifficultyModule,
     GameCategoryModule,

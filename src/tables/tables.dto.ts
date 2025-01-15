@@ -6,7 +6,6 @@ import {
   IsString,
 } from 'class-validator';
 import { ShopsEntity } from '../shops/shops.entity';
-import { StatsTablesEntity } from '../stats_tables/stats_tables.entity';
 import { ReservesEntity } from '../reserves/reserves.entity';
 
 export class CreateTableDto {
@@ -29,10 +28,6 @@ export class CreateTableDto {
   @IsOptional()
   @IsObject()
   tables_of_shop: ShopsEntity;
-
-  @IsOptional()
-  @IsObject()
-  stats_of_table: StatsTablesEntity;
 
   @IsOptional()
   @IsArray()

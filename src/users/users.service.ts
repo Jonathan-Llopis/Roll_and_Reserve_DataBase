@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 import { UtilsService } from '../utils/utils.service';
 import { UserEntity } from './users.entity';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
@@ -33,6 +34,8 @@ export class UsersService {
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     const usuario = await this.usersRepository.create(createUserDto);
+    const passwordHash = await bcrypt.hash(await usuario.password, 10);
+    usuario.password = passwordHash;
     return this.usersRepository.save(usuario);
   }
 
@@ -84,13 +87,13 @@ export class UsersService {
 
     return this.usersRepository.save(userEntity);
   }
-  async deleteUser(id_user: number): Promise<void> {
-    await this.usersRepository.delete(id_user);
+  async deleteUser(id_google: string): Promise<void> {
+    await this.usersRepository.delete({ id_google });
   }
-  async validateUser(email: string): Promise<UserEntity | null> {
-    const UserEntity = await this.usersRepository.findOne({ where: { email } });
-    if (UserEntity) {
-      return UserEntity;
+  async validateUser(email: string, password: string): Promise<UserEntity | null> {
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return user;
     }
     return null;
   }

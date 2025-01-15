@@ -19,6 +19,7 @@ export class ReservesSeeder implements Seeder {
         reservesEntry.hour_start = new Date(item.hour_start);
         reservesEntry.hour_end = new Date(item.hour_end);
         reservesEntry.description = item.description;
+        reservesEntry.total_places = item.number_players;
         reservesEntry.required_material = item.required_material;
         reservesEntry.difficulty = await difficultyRepository.findOne({
           where: { difficulty_rate: item.difficulty_id },

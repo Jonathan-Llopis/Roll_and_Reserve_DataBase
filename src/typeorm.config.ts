@@ -8,7 +8,6 @@ import { GameCategoryEntity } from './game_category/game_category.entity';
 import { GamesEntity } from './games/game.entitiy';
 import { ReservesEntity } from './reserves/reserves.entity';
 import { ShopsEntity } from './shops/shops.entity';
-import { StatsTablesEntity } from './stats_tables/stats_tables.entity';
 import { TablesEntity } from './tables/tables.entity';
 
 dotenv.config();
@@ -29,7 +28,6 @@ const config = {
     GamesEntity,
     GameCategoryEntity,
     DifficultyEntity,
-    StatsTablesEntity,
   ],
   migrations: ['./../../../migrations/*.ts'],
   synchronize: false,

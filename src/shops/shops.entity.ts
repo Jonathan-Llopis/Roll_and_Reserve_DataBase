@@ -31,13 +31,13 @@ export class ShopsEntity {
   @JoinColumn({ name: 'owner_id' })
   owner: UserEntity;
 
-  @OneToMany(() => ReviewsEntity, (reviews) => reviews.shop_reviews)
+  @OneToMany(() => ReviewsEntity, (reviews) => reviews.shop_reviews, { onDelete: 'CASCADE' })
   reviews_shop: ReviewsEntity[];
 
   @ManyToMany(() => GamesEntity, (game) => game.shop)
   @JoinTable()
   games: GamesEntity[];
 
-  @OneToMany(() => TablesEntity, (table) => table.tables_of_shop)
+  @OneToMany(() => TablesEntity, (table) => table.tables_of_shop, { onDelete: 'CASCADE' })
   tables_in_shop: TablesEntity[];
 }

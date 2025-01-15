@@ -1,6 +1,5 @@
 import { ReservesEntity } from '../reserves/reserves.entity';
 import { ShopsEntity } from '../shops/shops.entity';
-import { StatsTablesEntity } from '../stats_tables/stats_tables.entity';
 import {
   Entity,
   Column,
@@ -18,14 +17,10 @@ export class TablesEntity {
   @Column()
   number_table: number;
 
-  @ManyToOne(() => ShopsEntity, (shop) => shop.tables_in_shop)
+  @ManyToOne(() => ShopsEntity, (shop) => shop.tables_in_shop, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tables_of_shop' })
   tables_of_shop: ShopsEntity;
 
-  @ManyToOne(() => StatsTablesEntity, (state) => state.stats_in_tables)
-  @JoinColumn({ name: 'stats_of_table' })
-  stats_of_table: StatsTablesEntity;
-
-  @OneToMany(() => ReservesEntity, (reserve) => reserve.reserve_table)
+  @OneToMany(() => ReservesEntity, (reserve) => reserve.reserve_table, { onDelete: 'CASCADE' })
   reserves_of_table: ReservesEntity[];
 }

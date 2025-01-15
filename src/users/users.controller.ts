@@ -71,22 +71,23 @@ export class UsersController {
 
   @Delete(':id')
   deleteUser(@Param('id') id: string) {
-    const userId = parseInt(id);
-    if (isNaN(userId)) {
-      throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
-    }
+    const userId = id
+
     return this.usersService.deleteUser(userId);
   }
   @Post('login')
-  async login(@Body('email') email: string) {
-    if (!email) {
+  async login(
+    @Body('email') email: string,
+    @Body('password') password: string,
+  ) {
+    if (!email || !password) {
       throw new HttpException(
-        'El nombre de usuario es obligatorio',
+        'El nombre de usuario y la contraseña son obligatorios',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const user = await this.usersService.validateUser(email);
+    const user = await this.usersService.validateUser(email, password);
     if (!user) {
       throw new HttpException(
         'Credenciales inválidas',

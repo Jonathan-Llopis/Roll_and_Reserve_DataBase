@@ -21,6 +21,9 @@ export class UserEntity {
   @Column()
   name: string;
 
+  @Column()
+  password: string;
+
   @Column({ unique: true })
   email: string;
 
@@ -39,16 +42,16 @@ export class UserEntity {
   @Column({ nullable: true })
   average_raiting: number;
 
-  @OneToMany(() => ReviewsEntity, (reviews) => reviews.writer)
+  @OneToMany(() => ReviewsEntity, (reviews) => reviews.writer, { onDelete: 'CASCADE' })
   writtenReviews: ReviewsEntity[];
 
-  @OneToMany(() => ReviewsEntity, (reviews) => reviews.reviewed)
+  @OneToMany(() => ReviewsEntity, (reviews) => reviews.reviewed, { onDelete: 'CASCADE' })
   receivedReviews: ReviewsEntity[];
 
-  @OneToMany(() => ShopsEntity, (shop) => shop.owner)
+  @OneToMany(() => ShopsEntity, (shop) => shop.owner, { onDelete: 'CASCADE' })
   shop_owned: ShopsEntity[];
 
-  @ManyToMany(() => ReservesEntity, (reserve) => reserve.users_in_reserve)
+  @ManyToMany(() => ReservesEntity, (reserve) => reserve.users_in_reserve, { onDelete: 'CASCADE' })
   @JoinTable()
   users_reserve: ReservesEntity[];
 }

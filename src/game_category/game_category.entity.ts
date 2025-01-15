@@ -11,5 +11,4 @@ export class GameCategoryEntity {
 
   @OneToMany(() => ReservesEntity, (reserve) => reserve.reserve_game_category)
   game_category_reserve: ReservesEntity[];
-
 }

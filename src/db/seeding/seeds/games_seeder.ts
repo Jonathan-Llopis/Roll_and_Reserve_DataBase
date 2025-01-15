@@ -9,14 +9,14 @@ export class GamesSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
     const gamesRepository = dataSource.getRepository(GamesEntity);
     const difficultyRepository = dataSource.getRepository(DifficultyEntity);
-    const gameCategoryRepository = dataSource.getRepository(GameCategoryEntity);
 
     const gamesEntries = await Promise.all(
       gamesData.map(async (item) => {
         const gamesEntry = new GamesEntity();
         gamesEntry.name = item.name;
+        gamesEntry.description = item.description;
         gamesEntry.difficulty_of_game = await difficultyRepository.findOne({
-          where: { difficulty_rate: item.difficulty_id },
+          where: { id_difficulty: item.difficulty_id },
         });
         return gamesEntry;
       }),

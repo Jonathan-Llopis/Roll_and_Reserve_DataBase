@@ -9,7 +9,7 @@ import {
 
 export class CreateReserveDto {
   @IsNumber()
-  number_players: number;
+  total_places: number;
 
   @IsString()
   @Length(1, 500)
@@ -53,7 +53,7 @@ export class UpdateReserveDto {
 
   @IsNumber()
   @IsOptional()
-  number_players?: number;
+  total_places?: number;
 
   @IsString()
   @IsOptional()

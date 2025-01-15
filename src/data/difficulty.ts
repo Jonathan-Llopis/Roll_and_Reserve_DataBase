@@ -14,4 +14,19 @@ export default [
     description: 'Difícil',
     difficulty_rate: 3,
   },
+  {
+    id_difficulty: 4,
+    description: 'Experto',
+    difficulty_rate: 4,
+  },
+  {
+    id_difficulty: 5,
+    description: 'Maestro',
+    difficulty_rate: 5,
+  },
+  {
+    id_difficulty: 6,
+    description: 'Legendario',
+    difficulty_rate: 6,
+  },
 ];

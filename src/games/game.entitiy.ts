@@ -19,6 +19,9 @@ export class GamesEntity {
   @Column()
   name: string;
 
+  @Column()
+  description: string;
+
   @ManyToOne(() => DifficultyEntity, (difficulty) => difficulty.game_difficulty)
   @JoinColumn({ name: 'difficulty_id' })
   difficulty_of_game: DifficultyEntity;

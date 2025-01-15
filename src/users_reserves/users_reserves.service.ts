@@ -164,7 +164,7 @@ export class UsersReservesService {
       user.users_reserve = user.users_reserve.filter(
         (reserve) => reserve.id_reserve !== parseInt(reserveId),
       );
-      await this.usersRepository.save(user); 
+      await this.usersRepository.save(user);
     }
   }
 }

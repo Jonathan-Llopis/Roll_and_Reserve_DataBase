@@ -10,14 +10,12 @@ import { GameCategoryEntity } from './game_category/game_category.entity';
 import { ReservesEntity } from './reserves/reserves.entity';
 import { ReviewsEntity } from './reviews/reviews.entity';
 import { ShopsEntity } from './shops/shops.entity';
-import { StatsTablesEntity } from './stats_tables/stats_tables.entity';
 import { TablesEntity } from './tables/tables.entity';
 import { GamesSeeder } from './db/seeding/seeds/games_seeder';
 import { GameCategorySeeder } from './db/seeding/seeds/game_category.seeder';
 import { ReservesSeeder } from './db/seeding/seeds/reserves.seeder';
 import { ReviewsSeeder } from './db/seeding/seeds/reviews.seeder';
 import { ShopsSeeder } from './db/seeding/seeds/shops.seeder';
-import { StatsTablesSeeder } from './db/seeding/seeds/stats_tables.seeder';
 import { TablesSeeder } from './db/seeding/seeds/tables.seeder';
 config();
 
@@ -35,20 +33,18 @@ const options: DataSourceOptions & SeederOptions = {
     ReservesEntity,
     ReviewsEntity,
     ShopsEntity,
-    StatsTablesEntity,
     TablesEntity,
     DifficultyEntity,
     UserEntity,
   ],
   seeds: [
     DifficultySeeder,
-    StatsTablesSeeder,
-    ReviewsSeeder,
     GameCategorySeeder,
     GamesSeeder,
+    ShopsSeeder,
     TablesSeeder,
     ReservesSeeder,
-    ShopsSeeder,
+    ReviewsSeeder
   ],
 };
 

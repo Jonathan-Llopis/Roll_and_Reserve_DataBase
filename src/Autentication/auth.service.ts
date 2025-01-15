@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from '../users/users.entity';
+import { UserEntity } from 'src/users/users.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,10 +14,10 @@ export class AuthService {
   async generateToken(id_user: string): Promise<string> {
     const token = uuidv4();
     const expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getMonth() + 1);
+    expirationDate.setMonth(expirationDate.getMonth() + 1);
 
-    await this.userRepository.update(id_user, {
-      token,
+    await this.userRepository.update({ id_google: id_user } ,{
+      token: token,
       tokenExpiration: expirationDate,
     });
 
@@ -25,12 +25,12 @@ export class AuthService {
   }
 
   async validateToken(token: string): Promise<boolean> {
-    const UserEntity = await this.userRepository.findOne({ where: { token } });
-    if (!UserEntity) return false;
+    const user = await this.userRepository.findOne({ where: { token: token } });
+    if (!user) return false;
 
     const now = new Date();
-    if (UserEntity.tokenExpiration < now) {
-      await this.userRepository.update(UserEntity.id_google, {
+    if (user.tokenExpiration < now) {
+      await this.userRepository.update({ id_google: user.id_google }, {
         token: null,
         tokenExpiration: null,
       });
@@ -40,8 +40,8 @@ export class AuthService {
     return true;
   }
 
-  async clearToken(id_user: number): Promise<void> {
-    await this.userRepository.update(id_user, {
+  async clearToken(id_user: string): Promise<void> {
+    await this.userRepository.update({ id_google: id_user }, {
       token: null,
       tokenExpiration: null,
     });

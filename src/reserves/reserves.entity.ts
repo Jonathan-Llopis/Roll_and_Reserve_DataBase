@@ -1,4 +1,4 @@
-import { UserEntity } from 'src/users/users.entity';
+import { UserEntity } from '../users/users.entity';
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { GamesEntity } from '../games/game.entitiy';
@@ -20,7 +20,7 @@ export class ReservesEntity {
   id_reserve: number;
 
   @Column()
-  free_places: number;
+  total_places: number;
 
   @Column()
   hour_start: Date;
@@ -45,15 +45,15 @@ export class ReservesEntity {
   @JoinColumn({ name: 'game_category_reserve' })
   reserve_game_category: ShopsEntity;
 
-  @ManyToOne(() => GamesEntity, (game) => game.game_reserve)
+  @ManyToOne(() => GamesEntity, (game) => game.game_reserve,  { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'game_reserve' })
   reserve_of_game: GamesEntity;
 
-  @ManyToOne(() => TablesEntity, (table) => table.reserves_of_table)
+  @ManyToOne(() => TablesEntity, (table) => table.reserves_of_table,  { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'reserves_of_table' })
   reserve_table: TablesEntity;
 
-  @ManyToMany(() => UserEntity, (user) => user.users_reserve)
+  @ManyToMany(() => UserEntity, (user) => user.users_reserve, { onDelete: 'CASCADE' } )
   @JoinTable()
   users_in_reserve: UserEntity[];
 }
