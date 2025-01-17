@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTableDto, UpdateTableDto } from './tables.dto';
 import { TablesEntity } from './tables.entity';
+import { LabelsService } from 'src/utils/labels.service';
 
 @Injectable()
 export class TablesService {
   constructor(
     @InjectRepository(TablesEntity)
     private readonly tableRepository: Repository<TablesEntity>,
+    private readonly labelsService: LabelsService,
   ) {}
 
   async getAllTables(): Promise<TablesEntity[]> {
@@ -71,6 +73,25 @@ export class TablesService {
       await this.tableRepository.delete(id);
     } catch (err) {
       throw new Error(err);
+    }
+  }
+
+  async generate_qr(table_items: any, res: any) {
+    try {
+      const inventoryItems = await this.tableRepository.find({
+        relations: ['reserves_of_table', 'tables_of_shop'],
+        where: table_items,
+      });
+
+      const filterInventoryItems = inventoryItems.filter((item) =>
+        table_items.includes(item.id_table),
+      );
+      this.labelsService.generateLabels(filterInventoryItems, res);
+    } catch (error) {
+      throw new HttpException(
+        'Inventario no encontrado' + error,
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 }

@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Res,
 } from '@nestjs/common';
 import { TablesService } from './tables.service';
 import { CreateTableDto, UpdateTableDto } from './tables.dto';
@@ -64,5 +65,16 @@ export class TablesController {
       throw new HttpException('Invalid table ID', HttpStatus.BAD_REQUEST);
     }
     return this.tablesService.deleteTable(tableId);
+  }
+
+  @Post('qr')
+  generate_qr(@Body() body: { table_items: number[] }, @Res() res: any) {
+    const { table_items } = body;
+    if (!Array.isArray(table_items) || table_items.some(item => isNaN(item))) {
+      console.error('Invalid table_items:', table_items);
+      return res.status(400).send('Invalid table_items');
+    }
+    const inventoryIdItems = table_items;
+    return this.tablesService.generate_qr(inventoryIdItems, res);
   }
 }

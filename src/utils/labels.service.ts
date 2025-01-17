@@ -3,14 +3,16 @@ import * as streamModule from 'stream';
 import { BLANK_PDF } from '@pdfme/common';
 import { generate } from '@pdfme/generator';
 import { text, image, barcodes } from '@pdfme/schemas';
-import * as path from 'path';
-import * as fs from 'fs/promises';
+import { FilesService } from 'src/files/files.service';
+import { GridFSBucketReadStream } from 'typeorm';
+import * as fileType from 'file-type';
+
 
 class PositionObj {
   constructor(
     public x: number,
     public y: number,
-  ) {}
+  ) { }
 }
 
 class SchemaObj {
@@ -29,7 +31,6 @@ class SchemaObj {
     }
   }
 }
-
 const labelModel = {
   '1272': {
     colHorizontalIncrement: 70,
@@ -60,12 +61,13 @@ const labelModel = {
 const labelModelName = '11783';
 @Injectable()
 export class LabelsService {
-  async generateLabels(inventory_items, @Res() res: any) {
+  constructor(private readonly fileService: FilesService) { }
+  async generateLabels(tables_items, @Res() res: any) {
     const colHorizontalIncrement =
       labelModel[labelModelName].colHorizontalIncrement;
     const colVerticalIncrement =
       labelModel[labelModelName].colVerticalIncrement;
-    const itemLength = inventory_items.length;
+    const itemLength = tables_items.length;
     const itemsPerPage = labelModel[labelModelName].itemsPerPage;
     let itemCount = 0;
     const pagesLength = Math.ceil(itemLength / itemsPerPage);
@@ -82,7 +84,6 @@ export class LabelsService {
           col < labelModel[labelModelName].cols
         ) {
           let newObjKey = '';
-          // QR
           newObjKey = 'qrcode' + row + '-' + col;
           let position = {
             x:
@@ -100,9 +101,8 @@ export class LabelsService {
           );
           inputsObj[newObjKey] =
             process.env.INVENTORY_HOST +
-            '/inventari/' +
-            inventory_items[itemCount].id_inventory;
-          // Text type
+            '/tables/' +
+            tables_items[itemCount].number_table;
           newObjKey = 'etiqueta' + row + '-' + col;
           position = {
             x:
@@ -112,34 +112,25 @@ export class LabelsService {
               labelModel[labelModelName].text_etiqueta.y +
               row * colVerticalIncrement,
           };
-          let fontSizeEtiquet;
-          if (
-            inventory_items[itemCount].num_serie.length > 15 &&
-            labelModel[labelModelName].itemsPerPage > 16
-          ) {
-            fontSizeEtiquet = 5;
-          } else {
-            fontSizeEtiquet = 10;
-          }
+          let fontSizeEtiquet = 20;
 
           schemasObj[newObjKey] = new SchemaObj(
-            'etiqueta',
+            'table',
             'text',
             position,
             60,
             7,
             fontSizeEtiquet,
           );
-          inputsObj[newObjKey] = inventory_items[itemCount].text_etiqueta;
+          inputsObj[newObjKey] = "Mesa: " + tables_items[itemCount].number_table;
 
-          // Text location
           newObjKey = 'aula' + row + '-' + col;
           position = {
             x: labelModel[labelModelName].aula.x + col * colHorizontalIncrement,
             y: labelModel[labelModelName].aula.y + row * colVerticalIncrement,
           };
           schemasObj[newObjKey] = new SchemaObj(
-            'aula',
+            'shop',
             'text',
             position,
             60,
@@ -147,32 +138,7 @@ export class LabelsService {
             12,
           );
           inputsObj[newObjKey] =
-            'Aula: ' + inventory_items[itemCount].fk_classroom.id_classroom;
-          // Text NS
-          newObjKey = 'num_serie' + row + '-' + col;
-          position = {
-            x: labelModel[labelModelName].ns.x + col * colHorizontalIncrement,
-            y: labelModel[labelModelName].ns.y + row * colVerticalIncrement,
-          };
-          let fontSize;
-          if (
-            inventory_items[itemCount].num_serie.length > 15 &&
-            labelModel[labelModelName].itemsPerPage > 16
-          ) {
-            fontSize = 9;
-          } else {
-            fontSize = 12;
-          }
-          schemasObj[newObjKey] = new SchemaObj(
-            'num_serie',
-            'text',
-            position,
-            60,
-            7,
-            fontSize,
-          );
-          inputsObj[newObjKey] = inventory_items[itemCount].num_serie;
-
+            'Tienda : ' + tables_items[itemCount].tables_of_shop.name;
           // Logo image
           newObjKey = 'logo' + row + '-' + col;
           position = {
@@ -188,16 +154,21 @@ export class LabelsService {
             15,
             0,
           );
+          if (tables_items[itemCount].tables_of_shop.logo == '') {
+            tables_items[itemCount].tables_of_shop.logo = '67892cbb711e83b210011487';
 
-          const logoFile = path.join(
-            __dirname,
-            '/../../../../../utils/labelsData',
-            'logo_iestacio.png',
-          );
-          const logoImgData = await fs.readFile(logoFile, 'base64');
-          const logoImgDataBase64 = 'data:image/png;base64,' + logoImgData;
+          }
+          console.log(tables_items[itemCount].tables_of_shop.logo);
+          const logoStream = await this.fileService.readStream(tables_items[itemCount].tables_of_shop.logo);
+          const logoBuffer = await this.streamToBuffer(logoStream);
+          const fileTypeResult = await fileType.fromBuffer(logoBuffer);
+          console.log(fileTypeResult);
+          if (!fileTypeResult || !['image/png', 'image/jpeg', 'image/jpg'].includes(fileTypeResult.mime)) {
+            throw new Error('The input is not a PNG, JPEG, JPG, or WEBP file!');
+          }
+        
+          const logoImgDataBase64 = `data:${fileTypeResult.mime};base64,` + logoBuffer.toString('base64');
           inputsObj[newObjKey] = logoImgDataBase64;
-
           col++;
           itemCount++;
         }
@@ -207,7 +178,7 @@ export class LabelsService {
     }
 
     const templateSchemas = [];
-    const rows = []; // arreglo para almacenar las filas
+    const rows = [];
     for (const key in schemasObj) {
       if (schemasObj.hasOwnProperty(key)) {
         const schema = schemasObj[key];
@@ -250,5 +221,13 @@ export class LabelsService {
       .catch((error) => {
         Logger.error('Error al generar el PDF:', error);
       });
+  }
+  private streamToBuffer(stream: GridFSBucketReadStream): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+      const chunks = [];
+      stream.on('data', (chunk) => chunks.push(chunk));
+      stream.on('end', () => resolve(Buffer.concat(chunks)));
+      stream.on('error', (err) => reject(err));
+    });
   }
 }
