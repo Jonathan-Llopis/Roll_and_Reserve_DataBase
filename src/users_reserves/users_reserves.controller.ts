@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { isEmpty } from 'class-validator';
 import { UsersReservesService } from './users_reserves.service';
-import { ReservesEntity } from 'src/reserves/reserves.entity';
+import { ReservesEntity } from '../reserves/reserves.entity';
 
 @Controller('users')
 export class UsersReservesController {

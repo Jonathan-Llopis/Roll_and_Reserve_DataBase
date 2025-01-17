@@ -14,7 +14,7 @@ import { FilesService } from './files.service';
 import { FileResponseVm } from './view-models/file-response-vm.model';
 import { UsersService } from '../users/users.service';
 import { FileInfoVm } from './view-models/file-info-vm.model';
-import { ShopsService } from 'src/shops/shops.service';
+import { ShopsService } from '../shops/shops.service';
 
 @Controller('/files')
 export class FilesController {

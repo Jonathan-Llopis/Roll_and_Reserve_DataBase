@@ -4,7 +4,7 @@ import { UsersReservesService } from './users_reserves.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../users/users.entity';
 import { TablesModule } from '../tables/tables.module';
-import { ReservesEntity } from 'src/reserves/reserves.entity';
+import { ReservesEntity } from '../reserves/reserves.entity';
 
 @Module({
   imports: [

@@ -3,7 +3,7 @@ import { TablesController } from './tables.controller';
 import { TablesService } from './tables.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TablesEntity } from './tables.entity';
-import { LabelsModule } from 'src/utils/labels.module';
+import { LabelsModule } from '../utils/labels.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TablesEntity]), LabelsModule],

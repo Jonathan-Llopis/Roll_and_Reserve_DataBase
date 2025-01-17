@@ -7,8 +7,8 @@ import { UsersService } from '../users/users.service';
 import { UtilsModule } from '../utils/utils.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../users/users.entity';
-import { ShopsService } from 'src/shops/shops.service';
-import { ShopsEntity } from 'src/shops/shops.entity';
+import { ShopsService } from '../shops/shops.service';
+import { ShopsEntity } from '../shops/shops.entity';
 
 @Module({
   imports: [
