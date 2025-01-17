@@ -1,4 +1,4 @@
-import { ReservesEntity } from 'src/reserves/reserves.entity';
+import { ReservesEntity } from '../reserves/reserves.entity';
 import { ReviewsEntity } from '../reviews/reviews.entity';
 import { ShopsEntity } from '../shops/shops.entity';
 import {
