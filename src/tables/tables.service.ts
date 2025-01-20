@@ -39,6 +39,18 @@ export class TablesService {
     }
   }
 
+  async getAllTablesByShop(idShop: number): Promise<TablesEntity[]> {
+    try {
+      const tables = await this.tableRepository.find({
+        relations: ['reserves_of_table', 'tables_of_shop'],
+        where: {tables_of_shop: {id_shop: idShop}},
+      });
+      return tables;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
   async createTable(createTableDto: CreateTableDto): Promise<TablesEntity> {
     try {
       const table = this.tableRepository.create(createTableDto);

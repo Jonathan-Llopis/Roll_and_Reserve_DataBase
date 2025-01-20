@@ -43,6 +43,26 @@ export class ReservesController {
     return this.reservesService.getReserve(reserveId);
   }
 
+  @Get('date/:date/:idTable')
+  getAllReservesByDate(@Param('date') date: string, @Param('idTable') idTable: string) {
+    try {
+      const [day, month, year] = date.split('-');
+      const formattedDate = `${year}-${month}-${day}`;
+      return this.reservesService.getAllReservesByDate(formattedDate, parseInt(idTable));
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: err.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          cause: err,
+        },
+      );
+    }
+  }
+
   @Post()
   createReserve(@Body() createReserveDto: CreateReserveDto) {
     return this.reservesService.createReserve(createReserveDto);

@@ -37,6 +37,19 @@ export class ShopsService {
     }
   }
 
+  async getAllShopsByOwner(idOwner: string): Promise<ShopsEntity[]> {
+    try {
+      const shops = await this.shopRepository.find({
+        relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
+        where: { owner: { id_google: idOwner } },
+      });
+      return shops;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+
   async createShop(createShopDto: CreateShopDto): Promise<ShopsEntity> {
     try {
       const shop = this.shopRepository.create(createShopDto);

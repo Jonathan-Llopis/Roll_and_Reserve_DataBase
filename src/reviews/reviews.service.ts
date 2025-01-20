@@ -36,6 +36,43 @@ export class ReviewsService {
     }
   }
 
+  async getAllReviewsByShop(idShop: number): Promise<ReviewsEntity[]> {
+    try {
+      const reviews = await this.reviewsRepository.find({
+        relations: ['writer', 'reviewed', 'shop_reviews'],
+        where: { shop_reviews: { id_shop: idShop } },
+      });
+      return reviews;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+
+  async getAllReviewsByWritter(id_google: string): Promise<ReviewsEntity[]> {
+    try {
+      const reviews = await this.reviewsRepository.find({
+        relations: ['writer', 'reviewed', 'shop_reviews'],
+        where: { writer: { id_google: id_google } },
+      });
+      return reviews;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  async getAllReviewsByUser(id_google: string): Promise<ReviewsEntity[]> {
+    try {
+      const reviews = await this.reviewsRepository.find({
+        relations: ['writer', 'reviewed', 'shop_reviews'],
+        where: { reviewed: { id_google: id_google } },
+      });
+      return reviews;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
   async createReview(
     createReviewsDto: CreateReviewDto,
   ): Promise<ReviewsEntity> {

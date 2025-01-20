@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 
@@ -9,7 +9,7 @@ export class ReservesService {
   constructor(
     @InjectRepository(ReservesEntity)
     private readonly reserveRepository: Repository<ReservesEntity>,
-  ) {}
+  ) { }
 
   async getAllReserves(): Promise<ReservesEntity[]> {
     try {
@@ -44,6 +44,31 @@ export class ReservesService {
         throw new Error('Reserve not found');
       }
       return reserve;
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  async getAllReservesByDate(date: string, idTable: number): Promise<ReservesEntity[]> {
+    try {
+      const startDate = new Date(date);
+      const endDate = new Date(date);
+      endDate.setDate(endDate.getDate() + 1);
+
+      const reserves = await this.reserveRepository.find({
+        relations: [
+          'reserve_of_game',
+          'reserve_game_category',
+          'difficulty',
+          'reserve_table',
+          'users_in_reserve',
+        ],
+        where: {
+          hour_start: Between(startDate, endDate),
+          reserve_table: { id_table: idTable },
+        },
+      });
+      return reserves;
     } catch (err) {
       throw new Error(err);
     }

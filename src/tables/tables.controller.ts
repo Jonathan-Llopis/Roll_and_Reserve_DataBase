@@ -44,6 +44,24 @@ export class TablesController {
     return this.tablesService.getTable(tableId);
   }
 
+  @Get('/shop/:idShop')
+  getAllTablesByShop(@Param('idShop') idShop: string) {
+    try {
+      return this.tablesService.getAllTablesByShop(parseInt(idShop));
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: err,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          cause: err,
+        },
+      );
+    }
+  }
+
   @Post()
   createTable(@Body() createTableDto: CreateTableDto) {
     return this.tablesService.createTable(createTableDto);

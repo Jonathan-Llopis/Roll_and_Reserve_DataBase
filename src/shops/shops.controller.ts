@@ -43,6 +43,25 @@ export class ShopsController {
     return this.shopsService.getShop(shopId);
   }
 
+  @Get('/owner/:idOwner')
+  getAllShopsByOwner(@Param('idOwner') idOwner: string) {
+    try {
+      return this.shopsService.getAllShopsByOwner(idOwner);
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: err,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          cause: err,
+        },
+      );
+    }
+  }
+
+
   @Post()
   createShop(@Body() createShopDto: CreateShopDto) {
     return this.shopsService.createShop(createShopDto);

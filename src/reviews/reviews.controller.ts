@@ -43,6 +43,35 @@ export class ReviewsController {
     return this.reviewsService.getReviews(reviewsId);
   }
 
+
+  @Get('/shop/:idShop')
+  getAllReviewsByShop(@Param('idShop') idShop: string) {
+    if (!idShop) {
+      throw new HttpException('Invalid Shop ID', HttpStatus.BAD_REQUEST);
+    }
+    return this.reviewsService.getAllReviewsByShop(parseInt(idShop));
+  }
+
+
+  @Get('/witter/:idUser')
+  getAllReviewsByWritter(@Param('idUser') idUser: string) {
+    if (!idUser) {
+      throw new HttpException('Invalid User ID', HttpStatus.BAD_REQUEST);
+    }
+    return this.reviewsService.getAllReviewsByWritter(idUser);
+  }
+
+
+
+  @Get('/user/:idUser')
+  getAllReviewsByUser(@Param('idUser') idUser: string) {
+    if (!idUser) {
+      throw new HttpException('Invalid User ID', HttpStatus.BAD_REQUEST);
+    }
+    return this.reviewsService.getAllReviewsByUser(idUser);
+  }
+
+
   @Post()
   createReviews(@Body() createReviewsDto: CreateReviewDto) {
     return this.reviewsService.createReview(createReviewsDto);
