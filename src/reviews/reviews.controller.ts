@@ -53,7 +53,7 @@ export class ReviewsController {
   }
 
 
-  @Get('/witter/:idUser')
+  @Get('/writter/:idUser')
   getAllReviewsByWritter(@Param('idUser') idUser: string) {
     if (!idUser) {
       throw new HttpException('Invalid User ID', HttpStatus.BAD_REQUEST);
