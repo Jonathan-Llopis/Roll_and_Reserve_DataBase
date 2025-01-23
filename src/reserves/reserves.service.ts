@@ -20,6 +20,8 @@ export class ReservesService {
           'difficulty',
           'reserve_table',
           'users_in_reserve',
+          'userReserves',
+          'userReserves.user',
         ],
       });
       return reserves;
@@ -38,6 +40,8 @@ export class ReservesService {
           'difficulty',
           'reserve_table',
           'users_in_reserve',
+          'userReserves',
+          'userReserves.user',
         ],
       });
       if (!reserve) {
@@ -62,6 +66,8 @@ export class ReservesService {
           'difficulty',
           'reserve_table',
           'users_in_reserve',
+          'userReserves',
+          'userReserves.user',
         ],
         where: {
           hour_start: Between(startDate, endDate),

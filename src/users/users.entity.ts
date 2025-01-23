@@ -1,14 +1,8 @@
+import { Entity, Column, OneToMany, ManyToMany, JoinTable, PrimaryColumn } from 'typeorm';
+import { UserReserveEntity } from '../users_reserves/user_reserves.entity';
 import { ReservesEntity } from '../reserves/reserves.entity';
 import { ReviewsEntity } from '../reviews/reviews.entity';
 import { ShopsEntity } from '../shops/shops.entity';
-import {
-  Entity,
-  Column,
-  OneToMany,
-  ManyToMany,
-  JoinTable,
-  PrimaryColumn,
-} from 'typeorm';
 
 @Entity()
 export class UserEntity {
@@ -54,4 +48,7 @@ export class UserEntity {
   @ManyToMany(() => ReservesEntity, (reserve) => reserve.users_in_reserve, { onDelete: 'CASCADE' })
   @JoinTable()
   users_reserve: ReservesEntity[];
+
+  @OneToMany(() => UserReserveEntity, (userReserve) => userReserve.user)
+  userReserves: UserReserveEntity[];
 }

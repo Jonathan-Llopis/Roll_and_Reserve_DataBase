@@ -5,14 +5,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../users/users.entity';
 import { TablesModule } from '../tables/tables.module';
 import { ReservesEntity } from '../reserves/reserves.entity';
+import { UserReserveEntity } from './user_reserves.entity';
+
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, ReservesEntity]),
+    TypeOrmModule.forFeature([UserEntity, ReservesEntity, UserReserveEntity]),
     TablesModule,
   ],
   controllers: [UsersReservesController],
   providers: [UsersReservesService],
   exports: [UsersReservesService],
 })
-export class UsersTablesModule {}
+export class UsersReservesModule {}

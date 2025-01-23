@@ -23,9 +23,17 @@ export class UsersReservesController {
     @Param('userId') userId: string,
     @Param('reserveId') reserveId: string,
   ) {
-    return this.usersReservesService.addReserveToUser(userId, reserveId);
+    return this.usersReservesService.addUsertoReserve(userId, reserveId, false);
   }
 
+  @Get('reserves/:reserveId')
+  async findReserveById(@Param('reserveId') reserveId: string) {
+    if (isEmpty(reserveId)) {
+      throw new HttpException('Invalid reserve ID', HttpStatus.BAD_REQUEST);
+    }
+    return this.usersReservesService.findReserveById(reserveId);
+  }
+  
   @Put(':userId/reserves')
   async associateReserveToUser(
     @Body() reservesDto: ReservesEntity[],
@@ -72,5 +80,19 @@ export class UsersReservesController {
       throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
     }
     return this.usersReservesService.findReservesFromUser(userId);
+  }
+
+  @Put(':userId/reserves/:reserveId/confirm')
+  async confirmReserve(
+    @Param('userId') userId: string,
+    @Param('reserveId') reserveId: string,
+  ) {
+    if (isEmpty(userId) || isEmpty(reserveId)) {
+      throw new HttpException(
+        'Invalid user or reserve ID',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.usersReservesService.confirmReserveForUser(userId, reserveId);
   }
 }

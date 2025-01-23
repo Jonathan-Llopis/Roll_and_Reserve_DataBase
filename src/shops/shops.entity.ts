@@ -27,6 +27,12 @@ export class ShopsEntity {
   @Column()
   logo: string;
 
+  @Column()
+  latitud: number;
+
+  @Column()
+  longitud: number;
+
   @ManyToOne(() => UserEntity, (user) => user.shop_owned)
   @JoinColumn({ name: 'owner_id' })
   owner: UserEntity;

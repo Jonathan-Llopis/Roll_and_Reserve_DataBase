@@ -17,6 +17,7 @@ import { ReservesSeeder } from './db/seeding/seeds/reserves.seeder';
 import { ReviewsSeeder } from './db/seeding/seeds/reviews.seeder';
 import { ShopsSeeder } from './db/seeding/seeds/shops.seeder';
 import { TablesSeeder } from './db/seeding/seeds/tables.seeder';
+import { UserReserveEntity } from './users_reserves/user_reserves.entity';
 config();
 
 const options: DataSourceOptions & SeederOptions = {
@@ -36,6 +37,7 @@ const options: DataSourceOptions & SeederOptions = {
     TablesEntity,
     DifficultyEntity,
     UserEntity,
+    UserReserveEntity,
   ],
   seeds: [
     DifficultySeeder,

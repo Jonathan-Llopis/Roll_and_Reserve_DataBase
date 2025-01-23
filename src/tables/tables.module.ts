@@ -4,9 +4,10 @@ import { TablesService } from './tables.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TablesEntity } from './tables.entity';
 import { LabelsModule } from '../utils/labels.module';
+import { UserReserveEntity } from 'src/users_reserves/user_reserves.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TablesEntity]), LabelsModule],
+  imports: [TypeOrmModule.forFeature([TablesEntity]), LabelsModule, UserReserveEntity],
   controllers: [TablesController],
   providers: [TablesService],
   exports: [TablesService],

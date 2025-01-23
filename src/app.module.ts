@@ -23,7 +23,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { ShopGamesModule } from './shop_games/shop_games.module';
 import { ReservesService } from './reserves/reserves.service';
 import { ReservesModule } from './reserves/reserves.module';
-import { UsersTablesModule } from './users_reserves/users_reserves.module';
+import { UsersReservesModule } from './users_reserves/users_reserves.module';
 import { ReviewsEntity } from './reviews/reviews.entity';
 import { ShopsEntity } from './shops/shops.entity';
 import { TablesEntity } from './tables/tables.entity';
@@ -32,6 +32,7 @@ import { GamesEntity } from './games/game.entitiy';
 import { DifficultyEntity } from './difficulty/difficulty.entity';
 import { GameCategoryEntity } from './game_category/game_category.entity';
 import { FilesModule } from './files/files.module';
+import { UserReserveEntity } from './users_reserves/user_reserves.entity';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -67,6 +68,7 @@ import { FilesModule } from './files/files.module';
           GamesEntity,
           GameCategoryEntity,
           DifficultyEntity,
+          UserReserveEntity,
 
         ],
         synchronize: true,
@@ -82,6 +84,7 @@ import { FilesModule } from './files/files.module';
       GameCategoryEntity,
       DifficultyEntity,
       UserEntity,
+      UserReserveEntity,
     ]),
     ShopsModule,
     TablesModule,
@@ -91,7 +94,7 @@ import { FilesModule } from './files/files.module';
     ReviewsModule,
     ShopGamesModule,
     ReservesModule,
-    UsersTablesModule,
+    UsersReservesModule,
     FilesModule,
   ],
   controllers: [],
