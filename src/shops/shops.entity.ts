@@ -27,10 +27,10 @@ export class ShopsEntity {
   @Column()
   logo: string;
 
-  @Column()
+  @Column({ type: 'decimal', nullable: false })
   latitud: number;
 
-  @Column()
+  @Column({ type: 'decimal', nullable: false })
   longitud: number;
 
   @ManyToOne(() => UserEntity, (user) => user.shop_owned)

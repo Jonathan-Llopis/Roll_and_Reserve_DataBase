@@ -46,7 +46,7 @@ export class ReservesController {
   @Get('date/:date/:idTable')
   getAllReservesByDate(@Param('date') date: string, @Param('idTable') idTable: string) {
     try {
-      const [day, month, year] = date.split('-');
+      const [year, month, day] = date.split('-');
       const formattedDate = `${year}-${month}-${day}`;
       return this.reservesService.getAllReservesByDate(formattedDate, parseInt(idTable));
     } catch (err) {
