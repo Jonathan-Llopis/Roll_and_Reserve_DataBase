@@ -98,7 +98,7 @@ export class UsersReservesService {
         'userReserves.reserve.reserve_table',
         'userReserves.reserve.reserve_table.tables_of_shop',
         'userReserves.reserve.reserve_of_game',
-        'userReserves.user',
+        'userReserves.reserve.users_in_reserve',
       ],
     });
     if (!user)
