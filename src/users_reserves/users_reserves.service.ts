@@ -96,6 +96,7 @@ export class UsersReservesService {
         'userReserves',
         'userReserves.reserve',
         'userReserves.reserve.reserve_table',
+        'userReserves.reserve.reserve_table.tables_of_shop',
         'userReserves.reserve.reserve_of_game',
       ],
     });
