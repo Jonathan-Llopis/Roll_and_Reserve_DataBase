@@ -46,7 +46,7 @@ const options: DataSourceOptions & SeederOptions = {
     ShopsSeeder,
     TablesSeeder,
     ReservesSeeder,
-    ReviewsSeeder
+    ReviewsSeeder,
   ],
 };
 

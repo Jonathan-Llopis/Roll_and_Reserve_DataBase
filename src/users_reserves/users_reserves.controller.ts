@@ -33,7 +33,7 @@ export class UsersReservesController {
     }
     return this.usersReservesService.findReserveById(reserveId);
   }
-  
+
   @Put(':userId/reserves')
   async associateReserveToUser(
     @Body() reservesDto: ReservesEntity[],

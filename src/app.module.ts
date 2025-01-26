@@ -69,7 +69,6 @@ import { UserReserveEntity } from './users_reserves/user_reserves.entity';
           GameCategoryEntity,
           DifficultyEntity,
           UserReserveEntity,
-
         ],
         synchronize: true,
       }),

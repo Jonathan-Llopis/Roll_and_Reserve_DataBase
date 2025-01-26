@@ -7,7 +7,11 @@ import { LabelsModule } from '../utils/labels.module';
 import { UserReserveEntity } from 'src/users_reserves/user_reserves.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TablesEntity]), LabelsModule, UserReserveEntity],
+  imports: [
+    TypeOrmModule.forFeature([TablesEntity]),
+    LabelsModule,
+    UserReserveEntity,
+  ],
   controllers: [TablesController],
   providers: [TablesService],
   exports: [TablesService],

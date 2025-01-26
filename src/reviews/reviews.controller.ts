@@ -43,7 +43,6 @@ export class ReviewsController {
     return this.reviewsService.getReviews(reviewsId);
   }
 
-
   @Get('/shop/:idShop')
   getAllReviewsByShop(@Param('idShop') idShop: string) {
     if (!idShop) {
@@ -51,7 +50,6 @@ export class ReviewsController {
     }
     return this.reviewsService.getAllReviewsByShop(parseInt(idShop));
   }
-
 
   @Get('/writter/:idUser')
   getAllReviewsByWritter(@Param('idUser') idUser: string) {
@@ -61,8 +59,6 @@ export class ReviewsController {
     return this.reviewsService.getAllReviewsByWritter(idUser);
   }
 
-
-
   @Get('/user/:idUser')
   getAllReviewsByUser(@Param('idUser') idUser: string) {
     if (!idUser) {
@@ -70,7 +66,6 @@ export class ReviewsController {
     }
     return this.reviewsService.getAllReviewsByUser(idUser);
   }
-
 
   @Post()
   createReviews(@Body() createReviewsDto: CreateReviewDto) {

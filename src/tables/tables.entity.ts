@@ -17,10 +17,14 @@ export class TablesEntity {
   @Column()
   number_table: number;
 
-  @ManyToOne(() => ShopsEntity, (shop) => shop.tables_in_shop, { onDelete: 'CASCADE' })
+  @ManyToOne(() => ShopsEntity, (shop) => shop.tables_in_shop, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'tables_of_shop' })
   tables_of_shop: ShopsEntity;
 
-  @OneToMany(() => ReservesEntity, (reserve) => reserve.reserve_table, { onDelete: 'CASCADE' })
+  @OneToMany(() => ReservesEntity, (reserve) => reserve.reserve_table, {
+    onDelete: 'CASCADE',
+  })
   reserves_of_table: ReservesEntity[];
 }

@@ -8,7 +8,6 @@ import { ReservesEntity } from '../reserves/reserves.entity';
 import { UserEntity } from '../users/users.entity';
 import { Repository } from 'typeorm';
 import { UserReserveEntity } from './user_reserves.entity';
-
 @Injectable()
 export class UsersReservesService {
   constructor(
@@ -35,7 +34,7 @@ export class UsersReservesService {
         BusinessError.NOT_FOUND,
       );
     }
-  
+
     const reserve: ReservesEntity = await this.reservesRepository.findOne({
       where: { id_reserve: parseInt(reserveId) },
       relations: ['userReserves'],
@@ -46,12 +45,12 @@ export class UsersReservesService {
         BusinessError.NOT_FOUND,
       );
     }
-  
+
     const userReserve = new UserReserveEntity();
     userReserve.user = user;
     userReserve.reserve = reserve;
     userReserve.reserva_confirmada = reservaConfirmada;
-  
+
     await this.userReserveRepository.save(userReserve);
     return userReserve;
   }
@@ -73,10 +72,14 @@ export class UsersReservesService {
     userId: string,
     reserveId: string,
   ): Promise<UserReserveEntity> {
-    const userReserve: UserReserveEntity = await this.userReserveRepository.findOne({
-      where: { user: { id_google: userId }, reserve: { id_reserve: parseInt(reserveId) } },
-      relations: ['user', 'reserve'],
-    });
+    const userReserve: UserReserveEntity =
+      await this.userReserveRepository.findOne({
+        where: {
+          user: { id_google: userId },
+          reserve: { id_reserve: parseInt(reserveId) },
+        },
+        relations: ['user', 'reserve'],
+      });
     if (!userReserve)
       throw new BusinessLogicException(
         'The reserve with the given id is not associated to the user',
@@ -89,7 +92,12 @@ export class UsersReservesService {
   async findReservesFromUser(userId: string): Promise<UserReserveEntity[]> {
     const user: UserEntity = await this.usersRepository.findOne({
       where: { id_google: userId },
-      relations: ['userReserves', 'userReserves.reserve'],
+      relations: [
+        'userReserves',
+        'userReserves.reserve',
+        'userReserves.reserve.reserve_table',
+        'userReserves.reserve.reserve_of_game',
+      ],
     });
     if (!user)
       throw new BusinessLogicException(
@@ -97,12 +105,15 @@ export class UsersReservesService {
         BusinessError.NOT_FOUND,
       );
 
-    return user.userReserves;
+    const currentDate = new Date();
+    return user.userReserves.filter(
+      (userReserve) => userReserve.reserve.hour_end > currentDate,
+    );
   }
 
   async updateReservesFromUser(
     userId: string,
-    reserves:ReservesEntity[],
+    reserves: ReservesEntity[],
   ): Promise<UserEntity> {
     const user: UserEntity = await this.usersRepository.findOne({
       where: { id_google: userId },
@@ -140,9 +151,13 @@ export class UsersReservesService {
   }
 
   async deleteReserveFromUser(userId: string, reserveId: string) {
-    const userReserve: UserReserveEntity = await this.userReserveRepository.findOne({
-      where: { user: { id_google: userId }, reserve: { id_reserve: parseInt(reserveId) } },
-    });
+    const userReserve: UserReserveEntity =
+      await this.userReserveRepository.findOne({
+        where: {
+          user: { id_google: userId },
+          reserve: { id_reserve: parseInt(reserveId) },
+        },
+      });
 
     if (!userReserve) {
       throw new BusinessLogicException(
@@ -154,11 +169,18 @@ export class UsersReservesService {
     await this.userReserveRepository.remove(userReserve);
   }
 
-  async confirmReserveForUser(userId: string, reserveId: string): Promise<UserReserveEntity> {
-    const userReserve: UserReserveEntity = await this.userReserveRepository.findOne({
-      where: { user: { id_google: userId }, reserve: { id_reserve: parseInt(reserveId) } },
-      relations: ['user', 'reserve'],
-    });
+  async confirmReserveForUser(
+    userId: string,
+    reserveId: string,
+  ): Promise<UserReserveEntity> {
+    const userReserve: UserReserveEntity =
+      await this.userReserveRepository.findOne({
+        where: {
+          user: { id_google: userId },
+          reserve: { id_reserve: parseInt(reserveId) },
+        },
+        relations: ['user', 'reserve'],
+      });
 
     if (!userReserve) {
       throw new BusinessLogicException(

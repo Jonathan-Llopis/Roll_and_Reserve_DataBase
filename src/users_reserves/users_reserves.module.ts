@@ -7,7 +7,6 @@ import { TablesModule } from '../tables/tables.module';
 import { ReservesEntity } from '../reserves/reserves.entity';
 import { UserReserveEntity } from './user_reserves.entity';
 
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, ReservesEntity, UserReserveEntity]),

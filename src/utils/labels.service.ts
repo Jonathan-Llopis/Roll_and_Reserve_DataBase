@@ -7,12 +7,11 @@ import { FilesService } from '../files/files.service';
 import { GridFSBucketReadStream } from 'typeorm';
 import * as fileType from 'file-type';
 
-
 class PositionObj {
   constructor(
     public x: number,
     public y: number,
-  ) { }
+  ) {}
 }
 
 class SchemaObj {
@@ -61,7 +60,7 @@ const labelModel = {
 const labelModelName = '11783';
 @Injectable()
 export class LabelsService {
-  constructor(private readonly fileService: FilesService) { }
+  constructor(private readonly fileService: FilesService) {}
   async generateLabels(tables_items, @Res() res: any) {
     const colHorizontalIncrement =
       labelModel[labelModelName].colHorizontalIncrement;
@@ -112,7 +111,7 @@ export class LabelsService {
               labelModel[labelModelName].text_etiqueta.y +
               row * colVerticalIncrement,
           };
-          let fontSizeEtiquet = 20;
+          const fontSizeEtiquet = 20;
 
           schemasObj[newObjKey] = new SchemaObj(
             'table',
@@ -122,7 +121,8 @@ export class LabelsService {
             7,
             fontSizeEtiquet,
           );
-          inputsObj[newObjKey] = "Mesa: " + tables_items[itemCount].number_table;
+          inputsObj[newObjKey] =
+            'Mesa: ' + tables_items[itemCount].number_table;
 
           newObjKey = 'aula' + row + '-' + col;
           position = {
@@ -155,19 +155,28 @@ export class LabelsService {
             0,
           );
           if (tables_items[itemCount].tables_of_shop.logo == '') {
-            tables_items[itemCount].tables_of_shop.logo = '67892cbb711e83b210011487';
-
+            tables_items[itemCount].tables_of_shop.logo =
+              '67892cbb711e83b210011487';
           }
           console.log(tables_items[itemCount].tables_of_shop.logo);
-          const logoStream = await this.fileService.readStream(tables_items[itemCount].tables_of_shop.logo);
+          const logoStream = await this.fileService.readStream(
+            tables_items[itemCount].tables_of_shop.logo,
+          );
           const logoBuffer = await this.streamToBuffer(logoStream);
           const fileTypeResult = await fileType.fromBuffer(logoBuffer);
           console.log(fileTypeResult);
-          if (!fileTypeResult || !['image/png', 'image/jpeg', 'image/jpg'].includes(fileTypeResult.mime)) {
+          if (
+            !fileTypeResult ||
+            !['image/png', 'image/jpeg', 'image/jpg'].includes(
+              fileTypeResult.mime,
+            )
+          ) {
             throw new Error('The input is not a PNG, JPEG, JPG, or WEBP file!');
           }
-        
-          const logoImgDataBase64 = `data:${fileTypeResult.mime};base64,` + logoBuffer.toString('base64');
+
+          const logoImgDataBase64 =
+            `data:${fileTypeResult.mime};base64,` +
+            logoBuffer.toString('base64');
           inputsObj[newObjKey] = logoImgDataBase64;
           col++;
           itemCount++;

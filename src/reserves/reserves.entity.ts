@@ -1,4 +1,13 @@
-import { Entity, Column, ManyToOne, ManyToMany, OneToMany, PrimaryGeneratedColumn, JoinColumn, JoinTable } from 'typeorm';
+import {
+  Entity,
+  Column,
+  ManyToOne,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+  JoinTable,
+} from 'typeorm';
 import { UserReserveEntity } from 'src/users_reserves/user_reserves.entity';
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { GameCategoryEntity } from '../game_category/game_category.entity';
@@ -37,15 +46,21 @@ export class ReservesEntity {
   @JoinColumn({ name: 'game_category_reserve' })
   reserve_game_category: GameCategoryEntity;
 
-  @ManyToOne(() => GamesEntity, (game) => game.game_reserve, { onDelete: 'CASCADE' })
+  @ManyToOne(() => GamesEntity, (game) => game.game_reserve, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'game_reserve' })
   reserve_of_game: GamesEntity;
 
-  @ManyToOne(() => TablesEntity, (table) => table.reserves_of_table, { onDelete: 'CASCADE' })
+  @ManyToOne(() => TablesEntity, (table) => table.reserves_of_table, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'reserves_of_table' })
   reserve_table: TablesEntity;
 
-  @ManyToMany(() => UserEntity, (user) => user.users_reserve, { onDelete: 'CASCADE' })
+  @ManyToMany(() => UserEntity, (user) => user.users_reserve, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   users_in_reserve: UserEntity[];
 

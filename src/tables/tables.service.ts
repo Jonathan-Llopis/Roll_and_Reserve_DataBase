@@ -43,7 +43,7 @@ export class TablesService {
     try {
       const tables = await this.tableRepository.find({
         relations: ['reserves_of_table', 'tables_of_shop'],
-        where: {tables_of_shop: {id_shop: idShop}},
+        where: { tables_of_shop: { id_shop: idShop } },
       });
       return tables;
     } catch (err) {

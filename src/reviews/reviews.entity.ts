@@ -19,15 +19,17 @@ export class ReviewsEntity {
   @Column()
   review: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.writtenReviews, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, (user) => user.writtenReviews, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'writter_id' })
   writer: UserEntity;
 
-  @ManyToOne(() => UserEntity, (user) => user.receivedReviews,)
+  @ManyToOne(() => UserEntity, (user) => user.receivedReviews)
   @JoinColumn({ name: 'reviwed_id' })
   reviewed: UserEntity;
 
-  @ManyToOne(() => ShopsEntity, (shop) => shop.reviews_shop,)
+  @ManyToOne(() => ShopsEntity, (shop) => shop.reviews_shop)
   @JoinColumn({ name: 'shop_reviews' })
   shop_reviews: ShopsEntity;
 }

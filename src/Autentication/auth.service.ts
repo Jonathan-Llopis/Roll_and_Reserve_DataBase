@@ -16,10 +16,13 @@ export class AuthService {
     const expirationDate = new Date();
     expirationDate.setMonth(expirationDate.getMonth() + 1);
 
-    await this.userRepository.update({ id_google: id_user } ,{
-      token: token,
-      tokenExpiration: expirationDate,
-    });
+    await this.userRepository.update(
+      { id_google: id_user },
+      {
+        token: token,
+        tokenExpiration: expirationDate,
+      },
+    );
 
     return token;
   }
@@ -30,10 +33,13 @@ export class AuthService {
 
     const now = new Date();
     if (user.tokenExpiration < now) {
-      await this.userRepository.update({ id_google: user.id_google }, {
-        token: null,
-        tokenExpiration: null,
-      });
+      await this.userRepository.update(
+        { id_google: user.id_google },
+        {
+          token: null,
+          tokenExpiration: null,
+        },
+      );
       return false;
     }
 
@@ -41,9 +47,12 @@ export class AuthService {
   }
 
   async clearToken(id_user: string): Promise<void> {
-    await this.userRepository.update({ id_google: id_user }, {
-      token: null,
-      tokenExpiration: null,
-    });
+    await this.userRepository.update(
+      { id_google: id_user },
+      {
+        token: null,
+        tokenExpiration: null,
+      },
+    );
   }
 }

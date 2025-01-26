@@ -49,7 +49,6 @@ export class ShopsService {
     }
   }
 
-
   async createShop(createShopDto: CreateShopDto): Promise<ShopsEntity> {
     try {
       const shop = this.shopRepository.create(createShopDto);

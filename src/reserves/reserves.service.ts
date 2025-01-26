@@ -9,7 +9,7 @@ export class ReservesService {
   constructor(
     @InjectRepository(ReservesEntity)
     private readonly reserveRepository: Repository<ReservesEntity>,
-  ) { }
+  ) {}
 
   async getAllReserves(): Promise<ReservesEntity[]> {
     try {
@@ -53,7 +53,10 @@ export class ReservesService {
     }
   }
 
-  async getAllReservesByDate(date: string, idTable: number): Promise<ReservesEntity[]> {
+  async getAllReservesByDate(
+    date: string,
+    idTable: number,
+  ): Promise<ReservesEntity[]> {
     try {
       const startDate = new Date(date);
       const endDate = new Date(date);

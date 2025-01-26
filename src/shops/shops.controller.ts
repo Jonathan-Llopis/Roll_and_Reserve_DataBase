@@ -61,7 +61,6 @@ export class ShopsController {
     }
   }
 
-
   @Post()
   createShop(@Body() createShopDto: CreateShopDto) {
     return this.shopsService.createShop(createShopDto);

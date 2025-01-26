@@ -88,7 +88,10 @@ export class TablesController {
   @Post('qr')
   generate_qr(@Body() body: { table_items: number[] }, @Res() res: any) {
     const { table_items } = body;
-    if (!Array.isArray(table_items) || table_items.some(item => isNaN(item))) {
+    if (
+      !Array.isArray(table_items) ||
+      table_items.some((item) => isNaN(item))
+    ) {
       console.error('Invalid table_items:', table_items);
       return res.status(400).send('Invalid table_items');
     }

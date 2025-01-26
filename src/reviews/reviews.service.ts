@@ -48,7 +48,6 @@ export class ReviewsService {
     }
   }
 
-
   async getAllReviewsByWritter(id_google: string): Promise<ReviewsEntity[]> {
     try {
       const reviews = await this.reviewsRepository.find({

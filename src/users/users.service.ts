@@ -90,7 +90,10 @@ export class UsersService {
   async deleteUser(id_google: string): Promise<void> {
     await this.usersRepository.delete({ id_google });
   }
-  async validateUser(email: string, password: string): Promise<UserEntity | null> {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<UserEntity | null> {
     const user = await this.usersRepository.findOne({ where: { email } });
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;

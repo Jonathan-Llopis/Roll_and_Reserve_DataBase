@@ -1,4 +1,11 @@
-import { Entity, Column, OneToMany, ManyToMany, JoinTable, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+  PrimaryColumn,
+} from 'typeorm';
 import { UserReserveEntity } from '../users_reserves/user_reserves.entity';
 import { ReservesEntity } from '../reserves/reserves.entity';
 import { ReviewsEntity } from '../reviews/reviews.entity';
@@ -36,16 +43,22 @@ export class UserEntity {
   @Column({ nullable: true })
   average_raiting: number;
 
-  @OneToMany(() => ReviewsEntity, (reviews) => reviews.writer, { onDelete: 'CASCADE' })
+  @OneToMany(() => ReviewsEntity, (reviews) => reviews.writer, {
+    onDelete: 'CASCADE',
+  })
   writtenReviews: ReviewsEntity[];
 
-  @OneToMany(() => ReviewsEntity, (reviews) => reviews.reviewed, { onDelete: 'CASCADE' })
+  @OneToMany(() => ReviewsEntity, (reviews) => reviews.reviewed, {
+    onDelete: 'CASCADE',
+  })
   receivedReviews: ReviewsEntity[];
 
   @OneToMany(() => ShopsEntity, (shop) => shop.owner, { onDelete: 'CASCADE' })
   shop_owned: ShopsEntity[];
 
-  @ManyToMany(() => ReservesEntity, (reserve) => reserve.users_in_reserve, { onDelete: 'CASCADE' })
+  @ManyToMany(() => ReservesEntity, (reserve) => reserve.users_in_reserve, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   users_reserve: ReservesEntity[];
 

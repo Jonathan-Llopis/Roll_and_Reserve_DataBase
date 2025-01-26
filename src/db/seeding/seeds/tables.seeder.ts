@@ -17,7 +17,6 @@ export class TablesSeeder implements Seeder {
           where: { id_shop: item.tables_of_shop },
         });
 
-
         return tablesEntry;
       }),
     );
