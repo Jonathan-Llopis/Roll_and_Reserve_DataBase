@@ -108,8 +108,9 @@ export class UsersReservesService {
       );
 
     const currentDate = new Date();
+    const madridDate = new Date(currentDate.setHours(currentDate.getHours() + 1));
     return user.userReserves.filter(
-      (userReserve) => userReserve.reserve.hour_end > currentDate,
+      (userReserve) => userReserve.reserve.hour_end > madridDate,
     );
   }
 
