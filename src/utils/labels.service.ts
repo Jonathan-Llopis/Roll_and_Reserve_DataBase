@@ -99,9 +99,7 @@ export class LabelsService {
             0,
           );
           inputsObj[newObjKey] =
-            process.env.INVENTORY_HOST +
-            '/tables/' +
-            tables_items[itemCount].number_table;
+           'rollandreserve://app/user/userReserves/' + tables_items[itemCount].id_table;
           newObjKey = 'etiqueta' + row + '-' + col;
           position = {
             x:
@@ -124,7 +122,7 @@ export class LabelsService {
           inputsObj[newObjKey] =
             'Mesa: ' + tables_items[itemCount].number_table;
 
-          newObjKey = 'aula' + row + '-' + col;
+          newObjKey = 'shop' + row + '-' + col;
           position = {
             x: labelModel[labelModelName].aula.x + col * colHorizontalIncrement,
             y: labelModel[labelModelName].aula.y + row * colVerticalIncrement,
