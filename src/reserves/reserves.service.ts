@@ -126,9 +126,11 @@ export class ReservesService {
       .createQueryBuilder('reserve')
       .innerJoinAndSelect('reserve.reserve_table', 'table')
       .innerJoinAndSelect('table.tables_of_shop', 'shop')
+      .innerJoinAndSelect('reserve.reserve_of_game', 'game')
       .where('reserve.shop_event = :shopEvent', { shopEvent: true })
       .andWhere('shop.id_shop = :shopId', { shopId: parseInt(shopId) })
-      .groupBy('reserve.event_id')
+      .groupBy('reserve.event_id, game.id_game')
+      .addSelect('game.id_game')
       .getMany();
   }
 }
