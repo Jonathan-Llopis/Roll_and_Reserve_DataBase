@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ReservesService } from './reserves.service';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
+import { ReservesEntity } from './reserves.entity';
 
 @Controller('reserves')
 export class ReservesController {
@@ -93,5 +94,11 @@ export class ReservesController {
       throw new HttpException('Invalid reserve ID', HttpStatus.BAD_REQUEST);
     }
     return this.reservesService.deleteReserve(reserveId);
+  }
+  @Get('shop_events/:idShop')
+  async getAllUniqueShopEvents(
+    @Param('idShop') shopId: string,
+  ): Promise<ReservesEntity[]> {
+    return this.reservesService.findAllUniqueShopEvents(shopId);
   }
 }

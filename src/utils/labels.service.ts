@@ -99,7 +99,8 @@ export class LabelsService {
             0,
           );
           inputsObj[newObjKey] =
-           'rollandreserve://app/user/userReserves/' + tables_items[itemCount].id_table;
+            'rollandreserve://app/user/userReserves/' +
+            tables_items[itemCount].id_table;
           newObjKey = 'etiqueta' + row + '-' + col;
           position = {
             x:

@@ -35,6 +35,12 @@ export class ReservesEntity {
   @Column()
   required_material: string;
 
+  @Column()
+  shop_event: boolean;
+
+  @Column()
+  event_id: string;
+
   @ManyToOne(() => DifficultyEntity, (difficulty) => difficulty.info_difficulty)
   @JoinColumn({ name: 'difficulty_id' })
   difficulty: DifficultyEntity;
