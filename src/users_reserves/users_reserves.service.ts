@@ -111,9 +111,10 @@ export class UsersReservesService {
     const madridDate = new Date(
       currentDate.setHours(currentDate.getHours() + 1),
     );
-    return user.userReserves.filter(
-      (userReserve) => userReserve.reserve.hour_end > madridDate,
-    );
+
+    return user.userReserves
+      .filter((userReserve) => userReserve.reserve.hour_end > madridDate)
+      .sort((a, b) => a.reserve.hour_start.getTime() - b.reserve.hour_start.getTime());
   }
 
   async updateReservesFromUser(

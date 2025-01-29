@@ -23,6 +23,9 @@ export class ReservesService {
           'userReserves',
           'userReserves.user',
         ],
+        order: {
+          hour_start: 'ASC',
+        },
       });
       return reserves;
     } catch (err) {
@@ -76,6 +79,9 @@ export class ReservesService {
           hour_start: Between(startDate, endDate),
           reserve_table: { id_table: idTable },
         },
+        order: {
+          hour_start: 'ASC',
+        },
       });
       return reserves;
     } catch (err) {
@@ -122,6 +128,7 @@ export class ReservesService {
     }
   }
   async findAllUniqueShopEvents(shopId: string): Promise<ReservesEntity[]> {
+    const currentDate = new Date();
     return this.reserveRepository
       .createQueryBuilder('reserve')
       .innerJoinAndSelect('reserve.reserve_table', 'table')
@@ -129,8 +136,10 @@ export class ReservesService {
       .innerJoinAndSelect('reserve.reserve_of_game', 'game')
       .where('reserve.shop_event = :shopEvent', { shopEvent: true })
       .andWhere('shop.id_shop = :shopId', { shopId: parseInt(shopId) })
+      .andWhere('reserve.hour_start > :currentDate', { currentDate })
       .groupBy('reserve.event_id, game.id_game')
       .addSelect('game.id_game')
+      .orderBy('reserve.hour_start', 'ASC')
       .getMany();
   }
 }
