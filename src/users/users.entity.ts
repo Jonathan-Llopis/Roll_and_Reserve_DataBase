@@ -43,6 +43,9 @@ export class UserEntity {
   @Column({ nullable: true })
   average_raiting: number;
 
+  @Column({ nullable: true })
+  token_notification: string;
+
   @OneToMany(() => ReviewsEntity, (reviews) => reviews.writer, {
     onDelete: 'CASCADE',
   })

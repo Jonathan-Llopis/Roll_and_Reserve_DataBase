@@ -99,4 +99,26 @@ export class UsersController {
 
     return { token };
   }
+  @Put(':id/token')
+  async updateTokenNotification(
+    @Param('id') id: string,
+    @Body('token_notificacion') tokenNotificacion: string,
+  ) {
+    if (!id || !tokenNotificacion) {
+      throw new HttpException(
+        'El ID del usuario y el token de notificación son obligatorios',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const updatedUser = await this.usersService.updateNotificationToken(id, tokenNotificacion);
+    if (!updatedUser) {
+      throw new HttpException(
+        'No se pudo actualizar el token de notificación',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return updatedUser;
+  }
 }
