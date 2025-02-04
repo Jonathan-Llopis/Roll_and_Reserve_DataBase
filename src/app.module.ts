@@ -12,7 +12,7 @@ import { UserEntity } from './users/users.entity';
 import { AuthorizationMiddleware } from './authorization.middleware';
 import { AuthService } from './Autentication/auth.service';
 import { MailModule } from './mail/mail.module';
-import { LabelsModule } from './utils/labels.module';
+import { LabelsModule } from './utils/labels/labels.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ShopsModule } from './shops/shops.module';
 import { TablesModule } from './tables/tables.module';
@@ -33,6 +33,7 @@ import { DifficultyEntity } from './difficulty/difficulty.entity';
 import { GameCategoryEntity } from './game_category/game_category.entity';
 import { FilesModule } from './files/files.module';
 import { UserReserveEntity } from './users_reserves/user_reserves.entity';
+import { FcmNotificationModule } from './fcm-notification/fcm-notification.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -95,6 +96,7 @@ import { UserReserveEntity } from './users_reserves/user_reserves.entity';
     ReservesModule,
     UsersReservesModule,
     FilesModule,
+    FcmNotificationModule,
   ],
   controllers: [],
   providers: [AuthorizationMiddleware, AuthService, ReservesService],

@@ -112,7 +112,10 @@ export class UsersService {
     user.avatar = id_archivo.toString();
     return this.usersRepository.save(user);
   }
-  async updateNotificationToken(id_user: string, token: string): Promise<UserEntity> {
+  async updateNotificationToken(
+    id_user: string,
+    token: string,
+  ): Promise<UserEntity> {
     const userEntity = await this.usersRepository.findOne({
       where: { id_google: id_user },
     });

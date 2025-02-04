@@ -70,9 +70,12 @@ export class ReservesController {
     }
   }
 
-  @Post()
-  createReserve(@Body() createReserveDto: CreateReserveDto) {
-    return this.reservesService.createReserve(createReserveDto);
+  @Post(':idShop')
+  createReserve(
+    @Body() createReserveDto: CreateReserveDto,
+    @Param('idShop') idShop: string,
+  ) {
+    return this.reservesService.createReserve(createReserveDto, idShop);
   }
 
   @Put(':id')

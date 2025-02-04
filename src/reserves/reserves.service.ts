@@ -3,13 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
+import * as admin from 'firebase-admin';
+import { FcmNotificationService } from 'src/fcm-notification/fcm-notification.service';
 
 @Injectable()
 export class ReservesService {
   constructor(
     @InjectRepository(ReservesEntity)
     private readonly reserveRepository: Repository<ReservesEntity>,
-  ) {}
+    private readonly fcmNotificationService: FcmNotificationService,
+  ) { }
 
   async getAllReserves(): Promise<ReservesEntity[]> {
     try {
@@ -91,16 +94,21 @@ export class ReservesService {
 
   async createReserve(
     createReserveDto: CreateReserveDto,
+    idShop: string,
   ): Promise<ReservesEntity> {
     try {
       const reserve = this.reserveRepository.create(createReserveDto);
       await this.reserveRepository.save(reserve);
+
+      if (createReserveDto.shop_event == true) {
+        this.fcmNotificationService.sendTopicMessage(idShop, createReserveDto);
+      }
+
       return reserve;
     } catch (err) {
       throw new Error(err);
     }
   }
-
   async updateReserve(
     updateReserveDto: UpdateReserveDto,
     id: number,

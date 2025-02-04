@@ -3,7 +3,7 @@ import * as streamModule from 'stream';
 import { BLANK_PDF } from '@pdfme/common';
 import { generate } from '@pdfme/generator';
 import { text, image, barcodes } from '@pdfme/schemas';
-import { FilesService } from '../files/files.service';
+import { FilesService } from '../../files/files.service';
 import { GridFSBucketReadStream } from 'typeorm';
 import * as fileType from 'file-type';
 

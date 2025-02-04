@@ -99,6 +99,7 @@ export class UsersController {
 
     return { token };
   }
+
   @Put(':id/token')
   async updateTokenNotification(
     @Param('id') id: string,
@@ -111,7 +112,10 @@ export class UsersController {
       );
     }
 
-    const updatedUser = await this.usersService.updateNotificationToken(id, tokenNotificacion);
+    const updatedUser = await this.usersService.updateNotificationToken(
+      id,
+      tokenNotificacion,
+    );
     if (!updatedUser) {
       throw new HttpException(
         'No se pudo actualizar el token de notificación',

@@ -8,6 +8,10 @@ import { ReservesEntity } from '../reserves/reserves.entity';
 import { UserEntity } from '../users/users.entity';
 import { Repository } from 'typeorm';
 import { UserReserveEntity } from './user_reserves.entity';
+import * as admin from 'firebase-admin';
+import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
+
+
 @Injectable()
 export class UsersReservesService {
   constructor(
@@ -17,7 +21,8 @@ export class UsersReservesService {
     private readonly userReserveRepository: Repository<UserReserveEntity>,
     @InjectRepository(ReservesEntity)
     private readonly reservesRepository: Repository<ReservesEntity>,
-  ) {}
+    private readonly fcmNotificationService: FcmNotificationService,
+  ) { }
 
   async addUsertoReserve(
     userId: string,
@@ -52,6 +57,13 @@ export class UsersReservesService {
     userReserve.reserva_confirmada = reservaConfirmada;
 
     await this.userReserveRepository.save(userReserve);
+
+    const registrationTokens = reserve.users_in_reserve
+      .filter((user) => user.token_notification)
+      .map((user) => user.token_notification);
+
+      this.fcmNotificationService.sendMulticastMessage(registrationTokens, 'Nuevo usuario en la reserva', `El usuario ${userId} se ha unido a la reserva.`);
+
     return userReserve;
   }
 
@@ -114,7 +126,10 @@ export class UsersReservesService {
 
     return user.userReserves
       .filter((userReserve) => userReserve.reserve.hour_end > madridDate)
-      .sort((a, b) => a.reserve.hour_start.getTime() - b.reserve.hour_start.getTime());
+      .sort(
+        (a, b) =>
+          a.reserve.hour_start.getTime() - b.reserve.hour_start.getTime(),
+      );
   }
 
   async updateReservesFromUser(
@@ -172,7 +187,28 @@ export class UsersReservesService {
       );
     }
 
+    const reserve = await this.reservesRepository.findOne({
+      where: { id_reserve: parseInt(reserveId) },
+      relations: ['users_in_reserve'],
+    });
+    if (!reserve) {
+      throw new BusinessLogicException(
+        'The reserve with the given id was not found',
+        BusinessError.NOT_FOUND,
+      );
+    }
+
     await this.userReserveRepository.remove(userReserve);
+
+    const registrationTokens = reserve.users_in_reserve
+      .filter((user) => user.token_notification)
+      .map((user) => user.token_notification);
+
+    this.fcmNotificationService.sendMulticastMessage(
+      registrationTokens,
+      'Un usuario ha salido de la reserva',
+      `El usuario ${userId} ha salido de la reserva.`,
+    );
   }
 
   async confirmReserveForUser(
@@ -199,3 +235,4 @@ export class UsersReservesService {
     return this.userReserveRepository.save(userReserve);
   }
 }
+

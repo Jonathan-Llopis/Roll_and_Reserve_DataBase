@@ -1,0 +1,11 @@
+WEB_SERVER_PORT=8000
+MYSQL_ROOT_PASSWORD=generic-root-password
+MYSQL_DATABASE=generic_database
+MYSQL_USER=generic_user
+MYSQL_PASSWORD=generic-password
+ENABLE_TOKEN_VALIDATION=false
+FIREBASE-ADMINSDK.JSON=../../generic-firebase-adminsdk.json
+MONGODB_URI=mongodb://generic_admin:generic_password@mongodb:27017
+MONGO_INITDB_ROOT_USERNAME=generic_admin
+MONGO_INITDB_ROOT_PASSWORD=generic_password
+MONGO_CLUSTER_URL=mongodb://mongodb

@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsDate,
   Length,
+  IsBoolean,
 } from 'class-validator';
 
 export class CreateReserveDto {
@@ -24,6 +25,9 @@ export class CreateReserveDto {
   @IsString()
   @Length(1, 500)
   description: string;
+
+  @IsBoolean()
+  shop_event: boolean;
 
   @IsString()
   @Length(1, 500)
