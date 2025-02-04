@@ -8,9 +8,9 @@ export class FcmNotificationService {
   constructor() {
     admin.initializeApp({
       credential: admin.credential.cert({
-          projectId: serviceAccount.project_id,
-          clientEmail: serviceAccount.client_email,
-          privateKey: serviceAccount.private_key.replace(/\\n/g, '\n')
+          projectId: process.env.PROJECT_ID_FIREBASE,
+          clientEmail: process.env.PRIVATE_KEY_FIREBASE,
+          privateKey:process.env.CLIENT_EMAIL_FIREBASE,
       }),
   });
   }
