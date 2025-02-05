@@ -7,7 +7,10 @@ import { UserReserveEntity } from 'src/users_reserves/user_reserves.entity';
 import { FcmNotificationModule } from 'src/fcm-notification/fcm-notification.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ReservesEntity, UserReserveEntity]), FcmNotificationModule],
+  imports: [
+    TypeOrmModule.forFeature([ReservesEntity, UserReserveEntity]),
+    FcmNotificationModule,
+  ],
   controllers: [ReservesController],
   providers: [ReservesService],
 })

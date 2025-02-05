@@ -12,7 +12,7 @@ export class ReservesService {
     @InjectRepository(ReservesEntity)
     private readonly reserveRepository: Repository<ReservesEntity>,
     private readonly fcmNotificationService: FcmNotificationService,
-  ) { }
+  ) {}
 
   async getAllReserves(): Promise<ReservesEntity[]> {
     try {

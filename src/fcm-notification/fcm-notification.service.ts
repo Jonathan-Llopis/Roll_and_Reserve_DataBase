@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 
-
 @Injectable()
 export class FcmNotificationService {
   constructor() {
@@ -14,7 +13,11 @@ export class FcmNotificationService {
     });
   }
 
-  async sendMulticastMessage(registrationTokens: string[], title: string, body: string): Promise<void> {
+  async sendMulticastMessage(
+    registrationTokens: string[],
+    title: string,
+    body: string,
+  ): Promise<void> {
     const message: admin.messaging.MulticastMessage = {
       data: {
         title: title,
@@ -33,7 +36,10 @@ export class FcmNotificationService {
         console.log('Error sending message:', error);
       });
   }
-  async sendTopicMessage(idShop: string, createReserveDto: { description: string }): Promise<void> {
+  async sendTopicMessage(
+    idShop: string,
+    createReserveDto: { description: string },
+  ): Promise<void> {
     const topic = `${idShop}`;
 
     const message: admin.messaging.Message = {

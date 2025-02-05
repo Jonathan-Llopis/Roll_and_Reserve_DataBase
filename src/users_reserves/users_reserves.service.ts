@@ -11,7 +11,6 @@ import { UserReserveEntity } from './user_reserves.entity';
 import * as admin from 'firebase-admin';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
 
-
 @Injectable()
 export class UsersReservesService {
   constructor(
@@ -22,7 +21,7 @@ export class UsersReservesService {
     @InjectRepository(ReservesEntity)
     private readonly reservesRepository: Repository<ReservesEntity>,
     private readonly fcmNotificationService: FcmNotificationService,
-  ) { }
+  ) {}
 
   async addUsertoReserve(
     userId: string,
@@ -61,8 +60,13 @@ export class UsersReservesService {
     const registrationTokens = reserve.userReserves
       .filter((userReserve) => userReserve.user.token_notification)
       .map((userReserve) => userReserve.user.token_notification);
-
-      this.fcmNotificationService.sendMulticastMessage(registrationTokens, 'Nuevo usuario en la reserva', `El usuario ${userId} se ha unido a la reserva.`);
+    if (registrationTokens.length > 0) {
+      this.fcmNotificationService.sendMulticastMessage(
+        registrationTokens,
+        'Nuevo usuario en la reserva',
+        `El usuario ${userId} se ha unido a la reserva.`,
+      );
+    }
 
     return userReserve;
   }
@@ -204,12 +208,13 @@ export class UsersReservesService {
       .filter((userReserve) => userReserve.user.token_notification)
       .map((userReserve) => userReserve.user.token_notification);
 
-
-    this.fcmNotificationService.sendMulticastMessage(
-      registrationTokens,
-      'Un usuario ha salido de la reserva',
-      `El usuario ${userId} ha salido de la reserva.`,
-    );
+    if (registrationTokens.length > 0) {
+      this.fcmNotificationService.sendMulticastMessage(
+        registrationTokens,
+        'Un usuario ha salido de la reserva',
+        `El usuario ${userId} ha salido de la reserva.`,
+      );
+    }
   }
 
   async confirmReserveForUser(
@@ -236,4 +241,3 @@ export class UsersReservesService {
     return this.userReserveRepository.save(userReserve);
   }
 }
-
