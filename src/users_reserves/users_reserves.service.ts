@@ -61,10 +61,10 @@ export class UsersReservesService {
       .map((userReserve) => userReserve.user.token_notification);
 
     if (registrationTokens.length > 0) {
-      this.fcmNotificationService.sendMulticastMessage(
+      this.fcmNotificationService.sendMulticastNotification(
         registrationTokens,
         'Nuevo usuario en la reserva',
-        `El usuario ${userId} se ha unido a la reserva.`,
+        `El usuario ${user.name} se ha unido a la reserva.`,
       );
     }
 
@@ -178,10 +178,11 @@ export class UsersReservesService {
   async deleteReserveFromUser(userId: string, reserveId: string) {
     const userReserve: UserReserveEntity =
       await this.userReserveRepository.findOne({
-        where: {
-          user: { id_google: userId },
-          reserve: { id_reserve: parseInt(reserveId) },
-        },
+      where: {
+        user: { id_google: userId },
+        reserve: { id_reserve: parseInt(reserveId) },
+      },
+      relations: ['user', 'reserve'],
       });
 
     if (!userReserve) {
@@ -206,15 +207,17 @@ export class UsersReservesService {
 
     console.log(reserve.userReserves);
 
+    const user = userReserve.user.name;
+
     const registrationTokens = (reserve.userReserves || [])
       .filter((userReserve) => userReserve.user.token_notification)
       .map((userReserve) => userReserve.user.token_notification);
 
     if (registrationTokens.length > 0) {
-      this.fcmNotificationService.sendMulticastMessage(
+      this.fcmNotificationService.sendMulticastNotification(
         registrationTokens,
         'Un usuario ha salido de la reserva',
-        `El usuario ${userId} ha salido de la reserva.`,
+        `El usuario ${user} ha salido de la reserva.`,
       );
     }
   }

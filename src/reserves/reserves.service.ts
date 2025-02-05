@@ -100,7 +100,7 @@ export class ReservesService {
       await this.reserveRepository.save(reserve);
 
       if (createReserveDto.shop_event == true) {
-        this.fcmNotificationService.sendTopicMessage(idShop, createReserveDto);
+        this.fcmNotificationService.sendTopicNotification(idShop, createReserveDto);
       }
 
       return reserve;

@@ -13,39 +13,41 @@ export class FcmNotificationService {
     });
   }
 
-  async sendMulticastMessage(
-    registrationTokens: string[],
+  async sendMulticastNotification(
+    notificationTokens: string[],
     title: string,
     body: string,
   ): Promise<void> {
     const message: admin.messaging.MulticastMessage = {
-      data: {
+      notification: {
         title: title,
         body: body,
       },
-      tokens: registrationTokens,
+      tokens: notificationTokens,
     };
+
+    console.log('Sending notification to', message);
 
     await admin
       .messaging()
       .sendEachForMulticast(message)
       .then((response) => {
-        console.log('Successfully sent message:', response);
+        console.log('Successfully sent notification:', response);
       })
       .catch((error) => {
-        console.log('Error sending message:', error);
+        console.log('Error sending notification:', error);
       });
   }
-  async sendTopicMessage(
+  async sendTopicNotification(
     idShop: string,
     createReserveDto: { description: string },
   ): Promise<void> {
     const topic = `${idShop}`;
 
     const message: admin.messaging.Message = {
-      data: {
+      notification: {
         title: 'Nuevo evento creado',
-        description: `Un nuevo evento ha sido creado: ${createReserveDto.description}`,
+        body: `Un nuevo evento ha sido creado: ${createReserveDto.description}`,
       },
       topic: topic,
     };
@@ -54,10 +56,10 @@ export class FcmNotificationService {
       .messaging()
       .send(message)
       .then((response) => {
-        console.log('Successfully sent message:', response);
+        console.log('Successfully sent notification:', response);
       })
       .catch((error) => {
-        console.log('Error sending message:', error);
+        console.log('Error sending notification:', error);
       });
   }
 }
