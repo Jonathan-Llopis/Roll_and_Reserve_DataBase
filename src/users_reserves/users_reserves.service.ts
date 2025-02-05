@@ -58,9 +58,9 @@ export class UsersReservesService {
 
     await this.userReserveRepository.save(userReserve);
 
-    const registrationTokens = reserve.users_in_reserve
-      .filter((user) => user.token_notification)
-      .map((user) => user.token_notification);
+    const registrationTokens = reserve.userReserves
+      .filter((userReserve) => userReserve.user.token_notification)
+      .map((userReserve) => userReserve.user.token_notification);
 
       this.fcmNotificationService.sendMulticastMessage(registrationTokens, 'Nuevo usuario en la reserva', `El usuario ${userId} se ha unido a la reserva.`);
 
@@ -200,9 +200,10 @@ export class UsersReservesService {
 
     await this.userReserveRepository.remove(userReserve);
 
-    const registrationTokens = reserve.users_in_reserve
-      .filter((user) => user.token_notification)
-      .map((user) => user.token_notification);
+    const registrationTokens = reserve.userReserves
+      .filter((userReserve) => userReserve.user.token_notification)
+      .map((userReserve) => userReserve.user.token_notification);
+
 
     this.fcmNotificationService.sendMulticastMessage(
       registrationTokens,
