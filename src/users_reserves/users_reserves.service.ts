@@ -204,7 +204,7 @@ export class UsersReservesService {
 
     await this.userReserveRepository.remove(userReserve);
 
-    const registrationTokens = reserve.userReserves
+    const registrationTokens = (reserve.userReserves || [])
       .filter((userReserve) => userReserve.user.token_notification)
       .map((userReserve) => userReserve.user.token_notification);
 
