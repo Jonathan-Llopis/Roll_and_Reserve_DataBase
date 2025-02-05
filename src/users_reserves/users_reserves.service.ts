@@ -29,7 +29,7 @@ export class UsersReservesService {
   ): Promise<UserReserveEntity> {
     const user: UserEntity = await this.usersRepository.findOne({
       where: { id_google: userId },
-      relations: ['userReserves'],
+      relations: ['userReserves', 'userReserves.user'],
     });
     if (!user) {
       throw new BusinessLogicException(
@@ -40,7 +40,7 @@ export class UsersReservesService {
 
     const reserve: ReservesEntity = await this.reservesRepository.findOne({
       where: { id_reserve: parseInt(reserveId) },
-      relations: ['userReserves'],
+      relations: ['userReserves', 'userReserves.user'],
     });
     if (!reserve) {
       throw new BusinessLogicException(
@@ -57,7 +57,7 @@ export class UsersReservesService {
     await this.userReserveRepository.save(userReserve);
 
     const registrationTokens = (reserve.userReserves || [])
-      .filter((userReserve) => userReserve.user.token_notification)
+      .filter((userReserve) => userReserve.user && userReserve.user.token_notification)
       .map((userReserve) => userReserve.user.token_notification);
 
     if (registrationTokens.length > 0) {
@@ -193,7 +193,7 @@ export class UsersReservesService {
 
     const reserve = await this.reservesRepository.findOne({
       where: { id_reserve: parseInt(reserveId) },
-      relations: ['users_in_reserve'],
+      relations: ['userReserves', 'userReserves.user'],
     });
     if (!reserve) {
       throw new BusinessLogicException(
@@ -203,6 +203,8 @@ export class UsersReservesService {
     }
 
     await this.userReserveRepository.remove(userReserve);
+
+    console.log(reserve.userReserves);
 
     const registrationTokens = (reserve.userReserves || [])
       .filter((userReserve) => userReserve.user.token_notification)
