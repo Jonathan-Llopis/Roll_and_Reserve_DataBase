@@ -8,7 +8,6 @@ import { ReservesEntity } from '../reserves/reserves.entity';
 import { UserEntity } from '../users/users.entity';
 import { Repository } from 'typeorm';
 import { UserReserveEntity } from './user_reserves.entity';
-import * as admin from 'firebase-admin';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
 
 @Injectable()
@@ -57,9 +56,10 @@ export class UsersReservesService {
 
     await this.userReserveRepository.save(userReserve);
 
-    const registrationTokens = reserve.userReserves
+    const registrationTokens = (reserve.userReserves || [])
       .filter((userReserve) => userReserve.user.token_notification)
       .map((userReserve) => userReserve.user.token_notification);
+
     if (registrationTokens.length > 0) {
       this.fcmNotificationService.sendMulticastMessage(
         registrationTokens,

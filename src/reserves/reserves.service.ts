@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
-import * as admin from 'firebase-admin';
 import { FcmNotificationService } from 'src/fcm-notification/fcm-notification.service';
 
 @Injectable()
