@@ -34,17 +34,6 @@ export class UsersReservesController {
     return this.usersReservesService.findReserveById(reserveId);
   }
 
-  @Put(':userId/reserves')
-  async associateReserveToUser(
-    @Body() reservesDto: ReservesEntity[],
-    @Param('userId') userId: string,
-  ) {
-    return this.usersReservesService.updateReservesFromUser(
-      userId,
-      reservesDto,
-    );
-  }
-
   @Delete(':userId/reserves/:reserveId')
   @HttpCode(204)
   async deleteReserveFromUser(

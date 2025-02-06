@@ -49,6 +49,14 @@ export class UsersController {
     return this.usersService.getUser(userId, xml);
   }
 
+  @Get('google/:id_google')
+  getUserByGoogleId(@Param('id_google') idGoogle: string, @Query('xml') xml?: string) {
+    if (!idGoogle) {
+      throw new HttpException('Invalid Google user ID', HttpStatus.BAD_REQUEST);
+    }
+    return this.usersService.getUserByGoogleId(idGoogle, xml);
+  }
+
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
@@ -119,6 +127,37 @@ export class UsersController {
     if (!updatedUser) {
       throw new HttpException(
         'No se pudo actualizar el token de notificación',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return updatedUser;
+  }
+  @Put(':id/password')
+  async updatePassword(
+    @Param('id') id: string,
+    @Body('oldPassword') oldPassword: string,
+    @Body('newPassword') newPassword: string,
+  ) {
+    if (!id || !oldPassword || !newPassword) {
+      throw new HttpException(
+        'El ID del usuario, la contraseña antigua y la nueva contraseña son obligatorios',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const isOldPasswordValid = await this.usersService.validateUserPassword(id, oldPassword);
+    if (!isOldPasswordValid) {
+      throw new HttpException(
+        'La contraseña antigua no es válida',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const updatedUser = await this.usersService.updateUserPassword(id, newPassword);
+    if (!updatedUser) {
+      throw new HttpException(
+        'No se pudo actualizar la contraseña',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

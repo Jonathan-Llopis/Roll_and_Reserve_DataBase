@@ -5,6 +5,7 @@ import * as bcrypt from 'bcryptjs';
 import { UtilsService } from '../utils/utils.service';
 import { UserEntity } from './users.entity';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { parse } from 'path';
 @Injectable()
 export class UsersService {
   constructor(
@@ -44,11 +45,37 @@ export class UsersService {
     xml?: string,
   ): Promise<UserEntity | string | null> {
     const userEntity = await this.usersRepository.findOne({
-      where: { id_google: id_user },
+      where: { id_user: parseInt(id_user) },
       relations: [
         'users_reserve',
         'receivedReviews',
+        'writtenReviews',
+        'shop_owned',
+      ],
+    });
+
+    if (userEntity != null) {
+      if (xml == 'true') {
+        const jsonformatted = JSON.stringify(userEntity);
+        return this.utilsService.convertJSONtoXML(jsonformatted);
+      } else {
+        return userEntity;
+      }
+    } else {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  async getUserByGoogleId(
+    id_google: string,
+    xml?: string,
+  ): Promise<UserEntity | string | null> {
+    const userEntity = await this.usersRepository.findOne({
+      where: { id_google: id_google },
+      relations: [
+        'users_reserve',
         'receivedReviews',
+        'writtenReviews',
         'shop_owned',
       ],
     });
@@ -126,5 +153,23 @@ export class UsersService {
 
     userEntity.token_notification = token;
     return this.usersRepository.save(userEntity);
+  }
+  async validateUserPassword(id_user: string, oldPassword: string): Promise<boolean> {
+    const user = await this.usersRepository.findOne({ where: { id_google: id_user } });
+    if (user && await bcrypt.compare(oldPassword, user.password)) {
+      return true;
+    }
+    return false;
+  }
+
+  async updateUserPassword(id_user: string, newPassword: string): Promise<UserEntity | null> {
+    const user = await this.usersRepository.findOne({ where: { id_google: id_user } });
+    if (!user) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 10);
+    user.password = passwordHash;
+    return this.usersRepository.save(user);
   }
 }

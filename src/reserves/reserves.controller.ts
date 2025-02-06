@@ -19,20 +19,7 @@ export class ReservesController {
 
   @Get()
   getAllReserves() {
-    try {
-      return this.reservesService.getAllReserves();
-    } catch (err) {
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: err,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        {
-          cause: err,
-        },
-      );
-    }
+    return this.reservesService.getAllReserves();
   }
 
   @Get(':id')
@@ -49,25 +36,12 @@ export class ReservesController {
     @Param('date') date: string,
     @Param('idTable') idTable: string,
   ) {
-    try {
-      const [year, month, day] = date.split('-');
-      const formattedDate = `${year}-${month}-${day}`;
-      return this.reservesService.getAllReservesByDate(
-        formattedDate,
-        parseInt(idTable),
-      );
-    } catch (err) {
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: err.message,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        {
-          cause: err,
-        },
-      );
-    }
+    const [year, month, day] = date.split('-');
+    const formattedDate = `${year}-${month}-${day}`;
+    return this.reservesService.getAllReservesByDate(
+      formattedDate,
+      parseInt(idTable),
+    );
   }
 
   @Post(':idShop')
@@ -98,10 +72,9 @@ export class ReservesController {
     }
     return this.reservesService.deleteReserve(reserveId);
   }
+
   @Get('shop_events/:idShop')
-  async getAllUniqueShopEvents(
-    @Param('idShop') shopId: string,
-  ): Promise<ReservesEntity[]> {
+  getAllUniqueShopEvents(@Param('idShop') shopId: string): Promise<ReservesEntity[]> {
     return this.reservesService.findAllUniqueShopEvents(shopId);
   }
 }

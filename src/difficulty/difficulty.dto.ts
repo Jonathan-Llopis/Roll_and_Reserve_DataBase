@@ -17,14 +17,6 @@ export class CreateDifficultyDto {
   @Min(0)
   @Max(100)
   difficulty_rate: number;
-
-  @IsOptional()
-  @IsNumber()
-  info_difficulty_id?: number;
-
-  @IsOptional()
-  @IsNumber()
-  game_difficulty_id?: number;
 }
 
 export class UpdateDifficultyDto {
@@ -42,12 +34,4 @@ export class UpdateDifficultyDto {
   @Min(0)
   @Max(100)
   difficulty_rate?: number;
-
-  @IsOptional()
-  @IsNumber()
-  info_difficulty_id?: number;
-
-  @IsOptional()
-  @IsNumber()
-  game_difficulty_id?: number;
 }

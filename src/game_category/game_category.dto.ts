@@ -1,5 +1,6 @@
 // game-category.dto.ts
 import { IsString, IsOptional, Length, IsNumber } from 'class-validator';
+import { ReservesEntity } from '../reserves/reserves.entity';
 
 export class CreateGameCategoryDto {
   @IsString()
@@ -9,11 +10,8 @@ export class CreateGameCategoryDto {
 
 export class UpdateGameCategoryDto {
   @IsOptional()
-  @IsNumber()
-  id_game_category?: number;
-
   @IsString()
-  @IsOptional()
   @Length(1, 500)
   description?: string;
 }
+

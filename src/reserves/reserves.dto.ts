@@ -1,4 +1,3 @@
-// reserve.dto.ts
 import {
   IsString,
   IsOptional,
@@ -11,10 +10,6 @@ import {
 export class CreateReserveDto {
   @IsNumber()
   total_places: number;
-
-  @IsString()
-  @Length(1, 500)
-  review: string;
 
   @IsDate()
   hour_start: Date;
@@ -48,6 +43,7 @@ export class CreateReserveDto {
   @IsOptional()
   @IsNumber()
   reserve_table_id?: number;
+
 }
 
 export class UpdateReserveDto {
@@ -55,32 +51,31 @@ export class UpdateReserveDto {
   @IsNumber()
   id_reserve?: number;
 
-  @IsNumber()
   @IsOptional()
+  @IsNumber()
   total_places?: number;
 
-  @IsString()
   @IsOptional()
-  @Length(1, 500)
-  review?: string;
-
   @IsDate()
-  @IsOptional()
   hour_start?: Date;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
   hour_end?: Date;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   @Length(1, 500)
   description?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   @Length(1, 500)
   required_material?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  shop_event?: boolean;
 
   @IsOptional()
   @IsNumber()
@@ -97,4 +92,5 @@ export class UpdateReserveDto {
   @IsOptional()
   @IsNumber()
   reserve_table_id?: number;
+
 }

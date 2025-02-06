@@ -1,9 +1,9 @@
-import { IsString, IsOptional, IsNumber, Length } from 'class-validator';
+import { IsString, IsOptional, IsNumber, Length, IsArray } from 'class-validator';
 
 export class CreateShopDto {
-  @IsOptional()
-  @IsNumber()
-  id_shop?: number;
+  @IsString()
+  @Length(1, 500)
+  name: string;
 
   @IsString()
   @Length(1, 500)
@@ -13,14 +13,21 @@ export class CreateShopDto {
   @Length(1, 500)
   logo: string;
 
-  @IsString()
+  @IsNumber()
+  latitud: number;
+
+  @IsNumber()
+  longitud: number;
+
+  @IsNumber()
   owner_id: number;
 }
 
 export class UpdateShopDto {
   @IsOptional()
-  @IsNumber()
-  id_shop?: number;
+  @IsString()
+  @Length(1, 500)
+  name?: string;
 
   @IsOptional()
   @IsString()
@@ -34,5 +41,14 @@ export class UpdateShopDto {
 
   @IsOptional()
   @IsNumber()
+  latitud?: number;
+
+  @IsOptional()
+  @IsNumber()
+  longitud?: number;
+
+  @IsOptional()
+  @IsNumber()
   owner_id?: number;
+
 }

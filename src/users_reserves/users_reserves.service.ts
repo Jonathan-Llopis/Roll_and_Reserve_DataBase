@@ -56,9 +56,16 @@ export class UsersReservesService {
 
     await this.userReserveRepository.save(userReserve);
 
-    const registrationTokens = (reserve.userReserves || [])
-      .filter((userReserve) => userReserve.user && userReserve.user.token_notification)
-      .map((userReserve) => userReserve.user.token_notification);
+    const registrationTokens = Array.from(
+      new Set(
+      (reserve.userReserves || [])
+        .filter(
+        (userReserve) =>
+          userReserve.user && userReserve.user.token_notification,
+        )
+        .map((userReserve) => userReserve.user.token_notification),
+      ),
+    );
 
     if (registrationTokens.length > 0) {
       this.fcmNotificationService.sendMulticastNotification(
@@ -136,53 +143,14 @@ export class UsersReservesService {
       );
   }
 
-  async updateReservesFromUser(
-    userId: string,
-    reserves: ReservesEntity[],
-  ): Promise<UserEntity> {
-    const user: UserEntity = await this.usersRepository.findOne({
-      where: { id_google: userId },
-      relations: ['userReserves'],
-    });
-
-    if (!user)
-      throw new BusinessLogicException(
-        'The user with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
-
-    await this.userReserveRepository.delete({ user: { id_google: userId } });
-
-    for (const reserveData of reserves) {
-      const reserve: ReservesEntity = await this.reservesRepository.findOne({
-        where: { id_reserve: reserveData.id_reserve },
-        relations: ['userReserves'],
-      });
-      if (!reserve)
-        throw new BusinessLogicException(
-          'The reserve with the given id was not found',
-          BusinessError.NOT_FOUND,
-        );
-
-      const userReserve = new UserReserveEntity();
-      userReserve.user = user;
-      userReserve.reserve = reserve;
-      userReserve.reserva_confirmada = false;
-
-      await this.userReserveRepository.save(userReserve);
-    }
-
-    return this.usersRepository.save(user);
-  }
-
   async deleteReserveFromUser(userId: string, reserveId: string) {
     const userReserve: UserReserveEntity =
       await this.userReserveRepository.findOne({
-      where: {
-        user: { id_google: userId },
-        reserve: { id_reserve: parseInt(reserveId) },
-      },
-      relations: ['user', 'reserve'],
+        where: {
+          user: { id_google: userId },
+          reserve: { id_reserve: parseInt(reserveId) },
+        },
+        relations: ['user', 'reserve'],
       });
 
     if (!userReserve) {
@@ -209,9 +177,18 @@ export class UsersReservesService {
 
     const user = userReserve.user.name;
 
-    const registrationTokens = (reserve.userReserves || [])
-      .filter((userReserve) => userReserve.user.token_notification)
-      .map((userReserve) => userReserve.user.token_notification);
+    const registrationTokens = Array.from(
+      new Set(
+      (reserve.userReserves || [])
+        .filter(
+        (userReserve) =>
+          userReserve.user &&
+          userReserve.user.token_notification &&
+          userReserve.user.id_google !== userId,
+        )
+        .map((userReserve) => userReserve.user.token_notification),
+      ),
+    );
 
     if (registrationTokens.length > 0) {
       this.fcmNotificationService.sendMulticastNotification(

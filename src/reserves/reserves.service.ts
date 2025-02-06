@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
@@ -31,7 +31,7 @@ export class ReservesService {
       });
       return reserves;
     } catch (err) {
-      throw new Error(err);
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -50,11 +50,11 @@ export class ReservesService {
         ],
       });
       if (!reserve) {
-        throw new Error('Reserve not found');
+        throw new HttpException('Reserve not found', HttpStatus.NOT_FOUND);
       }
       return reserve;
     } catch (err) {
-      throw new Error(err);
+      throw new HttpException(err.message, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -87,7 +87,7 @@ export class ReservesService {
       });
       return reserves;
     } catch (err) {
-      throw new Error(err);
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -100,14 +100,18 @@ export class ReservesService {
       await this.reserveRepository.save(reserve);
 
       if (createReserveDto.shop_event == true) {
-        this.fcmNotificationService.sendTopicNotification(idShop, createReserveDto);
+        this.fcmNotificationService.sendTopicNotification(
+          idShop,
+          createReserveDto,
+        );
       }
 
       return reserve;
     } catch (err) {
-      throw new Error(err);
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
   async updateReserve(
     updateReserveDto: UpdateReserveDto,
     id: number,
@@ -117,36 +121,45 @@ export class ReservesService {
         where: { id_reserve: id },
       });
       if (!reserve) {
-        throw new Error('Reserve not found');
+        throw new HttpException('Reserve not found', HttpStatus.NOT_FOUND);
       }
       Object.assign(reserve, updateReserveDto);
       await this.reserveRepository.save(reserve);
       return reserve;
     } catch (err) {
-      throw new Error(err);
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   async deleteReserve(id: number): Promise<void> {
     try {
-      await this.reserveRepository.delete(id);
+      const result = await this.reserveRepository.delete(id);
+      if (result.affected === 0) {
+        throw new HttpException('Reserve not found', HttpStatus.NOT_FOUND);
+      }
     } catch (err) {
-      throw new Error(err);
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
   async findAllUniqueShopEvents(shopId: string): Promise<ReservesEntity[]> {
-    const currentDate = new Date();
-    return this.reserveRepository
-      .createQueryBuilder('reserve')
-      .innerJoinAndSelect('reserve.reserve_table', 'table')
-      .innerJoinAndSelect('table.tables_of_shop', 'shop')
-      .innerJoinAndSelect('reserve.reserve_of_game', 'game')
-      .where('reserve.shop_event = :shopEvent', { shopEvent: true })
-      .andWhere('shop.id_shop = :shopId', { shopId: parseInt(shopId) })
-      .andWhere('reserve.hour_start > :currentDate', { currentDate })
-      .groupBy('reserve.event_id, game.id_game')
-      .addSelect('game.id_game')
-      .orderBy('reserve.hour_start', 'ASC')
-      .getMany();
+    try {
+      const currentDate = new Date();
+      const reserves = await this.reserveRepository
+        .createQueryBuilder('reserve')
+        .innerJoinAndSelect('reserve.reserve_table', 'table')
+        .innerJoinAndSelect('table.tables_of_shop', 'shop')
+        .innerJoinAndSelect('reserve.reserve_of_game', 'game')
+        .where('reserve.shop_event = :shopEvent', { shopEvent: true })
+        .andWhere('shop.id_shop = :shopId', { shopId: parseInt(shopId) })
+        .andWhere('reserve.hour_start > :currentDate', { currentDate })
+        .groupBy('reserve.event_id, game.id_game')
+        .addSelect('game.id_game')
+        .orderBy('reserve.hour_start', 'ASC')
+        .getMany();
+      return reserves;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

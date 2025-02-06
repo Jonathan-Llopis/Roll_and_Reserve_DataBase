@@ -14,6 +14,9 @@ import { ShopsEntity } from '../shops/shops.entity';
 @Entity()
 export class UserEntity {
   @PrimaryColumn()
+  id_user: number;
+
+  @Column({ nullable: true })
   id_google: string;
 
   @Column()
