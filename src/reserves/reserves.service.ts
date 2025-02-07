@@ -109,18 +109,19 @@ export class ReservesService {
         if (!shop) {
           throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
         }
-        if (reserve.reserve_table.tables_of_shop.logo) {
+        if (shop.logo) {
           this.fcmNotificationService.sendTopicNotification(
             idShop,
             `Nuevo evento en ${shop.name}`,
-            `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            `Juego: ${reserve.reserve_of_game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
             `${process.env.BASE_URL}/files/logo/${shop.logo}`,
           );
         } else {
-          this.fcmNotificationService.sendTopicNotification(
+            this.fcmNotificationService.sendTopicNotification(
             idShop,
-         `Nuevo evento en ${shop.name}`,
-            `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`, );
+            `Nuevo evento en ${shop.name}`,
+            `Juego: ${reserve.reserve_of_game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            );
         }
       }
 
