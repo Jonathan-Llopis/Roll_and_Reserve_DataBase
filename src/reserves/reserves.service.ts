@@ -99,7 +99,7 @@ export class ReservesService {
       await this.reserveRepository.save(reserve);
 
       if (createReserveDto.shop_event == true) {
-        const reserve = await this.reserveRepository
+        const createdReserve = await this.reserveRepository
           .createQueryBuilder('reserve')
           .innerJoinAndSelect('reserve.reserve_table', 'table')
           .innerJoinAndSelect('table.tables_of_shop', 'shop')
@@ -112,12 +112,12 @@ export class ReservesService {
           );
         }
 
-        if (reserve.reserve_table.tables_of_shop.logo) {
+        if (createdReserve.reserve_table.tables_of_shop.logo) {
           this.fcmNotificationService.sendTopicNotification(
-            reserve.reserve_table.tables_of_shop.id_shop.toString(),
-            `Nuevo evento en ${reserve.reserve_table.tables_of_shop.name}`,
-            `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-            `${process.env.BASE_URL}/files/logo/${reserve.reserve_table.tables_of_shop.logo}`,
+            createdReserve.reserve_table.tables_of_shop.id_shop.toString(),
+            `Nuevo evento en ${createdReserve.reserve_table.tables_of_shop.name}`,
+            `Juego: ${createdReserve.reserve_of_game.name}. Fecha:${createdReserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            `${process.env.BASE_URL}/files/logo/${createdReserve.reserve_table.tables_of_shop.logo}`,
           );
         } else {
           this.fcmNotificationService.sendTopicNotification(
