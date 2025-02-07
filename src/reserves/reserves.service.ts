@@ -99,13 +99,12 @@ export class ReservesService {
       await this.reserveRepository.save(reserve);
 
       if (createReserveDto.shop_event == true) {
-        const createdReserve = await this.reserveRepository
-          .createQueryBuilder('reserve')
-          .innerJoinAndSelect('reserve.reserve_table', 'table')
-          .innerJoinAndSelect('table.tables_of_shop', 'shop')
-          .getOne();
+        const createdReserve = await this.reserveRepository.findOne({
+          where: { id_reserve: reserve.id_reserve },
+          relations: ['reserve_table', 'reserve_table.tables_of_shop', 'reserve_of_game'],
+        });
 
-        if (!reserve) {
+        if (!createdReserve) {
           throw new HttpException(
             'Error al cargar Reserva',
             HttpStatus.NOT_FOUND,
