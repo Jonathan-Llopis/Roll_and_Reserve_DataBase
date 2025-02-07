@@ -93,7 +93,6 @@ export class ReservesService {
 
   async createReserve(
     createReserveDto: CreateReserveDto,
-    idShop: string,
   ): Promise<ReservesEntity> {
     try {
       const reserve = this.reserveRepository.create(createReserveDto);
@@ -104,7 +103,6 @@ export class ReservesService {
           .createQueryBuilder('reserve')
           .innerJoinAndSelect('reserve.reserve_table', 'table')
           .innerJoinAndSelect('table.tables_of_shop', 'shop')
-          .where('shop.id_shop = :idShop', { idShop: parseInt(idShop) })
           .getOne();
 
         if (!reserve) {
@@ -116,14 +114,14 @@ export class ReservesService {
 
         if (reserve.reserve_table.tables_of_shop.logo) {
           this.fcmNotificationService.sendTopicNotification(
-            idShop,
+            reserve.reserve_table.tables_of_shop.id_shop.toString(),
             `Nuevo evento en ${reserve.reserve_table.tables_of_shop.name}`,
             `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
             `${process.env.BASE_URL}/files/logo/${reserve.reserve_table.tables_of_shop.logo}`,
           );
         } else {
           this.fcmNotificationService.sendTopicNotification(
-            idShop,
+            reserve.reserve_table.tables_of_shop.id_shop.toString(),
             `Nuevo evento en ${reserve.reserve_table.tables_of_shop.name}`,
             `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
           );
