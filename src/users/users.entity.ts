@@ -5,6 +5,7 @@ import {
   ManyToMany,
   JoinTable,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserReserveEntity } from '../users_reserves/user_reserves.entity';
 import { ReservesEntity } from '../reserves/reserves.entity';
@@ -13,7 +14,7 @@ import { ShopsEntity } from '../shops/shops.entity';
 
 @Entity()
 export class UserEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id_user: number;
 
   @Column({ nullable: true })
