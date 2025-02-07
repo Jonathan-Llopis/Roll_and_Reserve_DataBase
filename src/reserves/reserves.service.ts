@@ -105,11 +105,6 @@ export class ReservesService {
       const reserve = this.reserveRepository.create(createReserveDto);
       await this.reserveRepository.save(reserve);
       if (createReserveDto.shop_event == true) {
-        const existingEvent = await this.reserveRepository.findOne({
-          where: { event_id: reserve.event_id },
-        });
-
-        if (!existingEvent) {
           const shop = await this.shopRepository.findOne({
         where: { id_shop: parseInt(idShop) },
           });
@@ -135,7 +130,7 @@ export class ReservesService {
         );
           }
         }
-      }
+      
 
       return reserve;
     } catch (err) {
