@@ -105,29 +105,35 @@ export class ReservesService {
       const reserve = this.reserveRepository.create(createReserveDto);
       await this.reserveRepository.save(reserve);
       if (createReserveDto.shop_event == true) {
-        const shop = await this.shopRepository.findOne({
-          where: { id_shop: parseInt(idShop) },
+        const existingEvent = await this.reserveRepository.findOne({
+          where: { event_id: reserve.event_id },
         });
-        const game = await this.gameRepository.findOne({
-          where: { id_game: createReserveDto.reserve_of_game_id },
-        });
-        if (!shop) {
-          throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
-        }
-        
-        if (shop.logo) {
-          this.fcmNotificationService.sendTopicNotification(
-            idShop,
-            `Nuevo evento en ${shop.name}`,
-            `Juego: ${game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-            `${process.env.BASE_URL}/files/${shop.logo}`,
-          );
-        } else {
-            this.fcmNotificationService.sendTopicNotification(
-            idShop,
-            `Nuevo evento en ${shop.name}`,
-            `Juego: ${game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-            );
+
+        if (!existingEvent) {
+          const shop = await this.shopRepository.findOne({
+        where: { id_shop: parseInt(idShop) },
+          });
+          const game = await this.gameRepository.findOne({
+        where: { id_game: createReserveDto.reserve_of_game_id },
+          });
+          if (!shop) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+          }
+
+          if (shop.logo) {
+        this.fcmNotificationService.sendTopicNotification(
+          idShop,
+          `Nuevo evento en ${shop.name}`,
+          `Juego: ${game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+          `${process.env.BASE_URL}/files/${shop.logo}`,
+        );
+          } else {
+        this.fcmNotificationService.sendTopicNotification(
+          idShop,
+          `Nuevo evento en ${shop.name}`,
+          `Juego: ${game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+        );
+          }
         }
       }
 
