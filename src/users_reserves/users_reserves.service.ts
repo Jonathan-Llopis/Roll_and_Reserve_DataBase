@@ -40,7 +40,7 @@ export class UsersReservesService {
 
     const reserve: ReservesEntity = await this.reservesRepository.findOne({
       where: { id_reserve: parseInt(reserveId) },
-      relations: ['userReserves', 'userReserves.user'],
+      relations: ['userReserves', 'userReserves.user', 'reserve_table', 'reserve_table.tables_of_shop'],
     });
     if (!reserve) {
       throw new BusinessLogicException(
@@ -163,7 +163,7 @@ export class UsersReservesService {
 
     const reserve = await this.reservesRepository.findOne({
       where: { id_reserve: parseInt(reserveId) },
-      relations: ['userReserves', 'userReserves.user'],
+      relations: ['userReserves', 'userReserves.user', 'reserve_table', 'reserve_table.tables_of_shop'],
     });
     if (!reserve) {
       throw new BusinessLogicException(
