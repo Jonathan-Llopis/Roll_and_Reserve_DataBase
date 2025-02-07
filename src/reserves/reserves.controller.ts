@@ -44,11 +44,12 @@ export class ReservesController {
     );
   }
 
-  @Post()
+  @Post(':idShop')
   createReserve(
     @Body() createReserveDto: CreateReserveDto,
+    @Param('idShop') idShop: string,
   ) {
-    return this.reservesService.createReserve(createReserveDto);
+    return this.reservesService.createReserve(createReserveDto, idShop);
   }
 
   @Put(':id')
