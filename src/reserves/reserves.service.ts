@@ -4,12 +4,15 @@ import { Between, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
+import { ShopsEntity } from 'src/shops/shops.entity';
 
 @Injectable()
 export class ReservesService {
   constructor(
     @InjectRepository(ReservesEntity)
     private readonly reserveRepository: Repository<ReservesEntity>,
+    @InjectRepository(ShopsEntity)
+    private readonly shopRepository: Repository<ShopsEntity>,
     private readonly fcmNotificationService: FcmNotificationService,
   ) {}
 
@@ -98,22 +101,26 @@ export class ReservesService {
     try {
       const reserve = this.reserveRepository.create(createReserveDto);
       await this.reserveRepository.save(reserve);
-
+      
       if (createReserveDto.shop_event == true) {
-
+        const shop = await this.shopRepository.findOne({
+          where: { id_shop: parseInt(idShop) },
+        });
+        if (!shop) {
+          throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+        }
         if (reserve.reserve_table.tables_of_shop.logo) {
           this.fcmNotificationService.sendTopicNotification(
             idShop,
-            `Nuevo evento en ${reserve.reserve_table.tables_of_shop.name}`,
+            `Nuevo evento en ${shop.name}`,
             `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-            `${process.env.BASE_URL}/files/logo/${reserve.reserve_table.tables_of_shop.logo}`,
+            `${process.env.BASE_URL}/files/logo/${shop.logo}`,
           );
         } else {
           this.fcmNotificationService.sendTopicNotification(
             idShop,
-            `Nuevo evento en ${reserve.reserve_table.tables_of_shop.name}`,
-            `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-          );
+         `Nuevo evento en ${shop.name}`,
+            `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`, );
         }
       }
 
