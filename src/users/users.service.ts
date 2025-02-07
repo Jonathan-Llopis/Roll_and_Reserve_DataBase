@@ -5,7 +5,6 @@ import * as bcrypt from 'bcryptjs';
 import { UtilsService } from '../utils/utils.service';
 import { UserEntity } from './users.entity';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
-import { parse } from 'path';
 @Injectable()
 export class UsersService {
   constructor(
@@ -154,16 +153,26 @@ export class UsersService {
     userEntity.token_notification = token;
     return this.usersRepository.save(userEntity);
   }
-  async validateUserPassword(id_user: string, oldPassword: string): Promise<boolean> {
-    const user = await this.usersRepository.findOne({ where: { id_google: id_user } });
-    if (user && await bcrypt.compare(oldPassword, user.password)) {
+  async validateUserPassword(
+    id_user: string,
+    oldPassword: string,
+  ): Promise<boolean> {
+    const user = await this.usersRepository.findOne({
+      where: { id_google: id_user },
+    });
+    if (user && (await bcrypt.compare(oldPassword, user.password))) {
       return true;
     }
     return false;
   }
 
-  async updateUserPassword(id_user: string, newPassword: string): Promise<UserEntity | null> {
-    const user = await this.usersRepository.findOne({ where: { id_google: id_user } });
+  async updateUserPassword(
+    id_user: string,
+    newPassword: string,
+  ): Promise<UserEntity | null> {
+    const user = await this.usersRepository.findOne({
+      where: { id_google: id_user },
+    });
     if (!user) {
       throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
     }

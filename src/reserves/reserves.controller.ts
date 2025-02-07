@@ -74,7 +74,9 @@ export class ReservesController {
   }
 
   @Get('shop_events/:idShop')
-  getAllUniqueShopEvents(@Param('idShop') shopId: string): Promise<ReservesEntity[]> {
+  getAllUniqueShopEvents(
+    @Param('idShop') shopId: string,
+  ): Promise<ReservesEntity[]> {
     return this.reservesService.findAllUniqueShopEvents(shopId);
   }
 }

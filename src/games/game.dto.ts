@@ -1,13 +1,5 @@
 // game.dto.ts
-import {
-  IsString,
-  IsOptional,
-  IsNumber,
-  Length,
-  ValidateNested,
-  IsArray,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsOptional, IsNumber, Length } from 'class-validator';
 
 export class CreateGameDto {
   @IsString()
@@ -20,7 +12,6 @@ export class CreateGameDto {
 
   @IsNumber()
   difficulty_id: number;
-
 }
 
 export class UpdateGameDto {

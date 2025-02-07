@@ -4,6 +4,8 @@ export default [
     name: 'Generación X',
     address: 'Calle de Puebla, 15, 28004 Madrid',
     logo: '',
+    latitud: 40.423,
+    longitud: -3.705,
     owner_id: 1,
   },
   {
@@ -11,6 +13,8 @@ export default [
     name: 'Dungeon Marvels',
     address: 'Carrer de Sant Pere Més Alt, 46, 08003 Barcelona',
     logo: '',
+    latitud: 41.387,
+    longitud: 2.175,
     owner_id: 1,
   },
   {
@@ -18,6 +22,8 @@ export default [
     name: 'La Comarca',
     address: 'Calle de la Luna, 24, 28004 Madrid',
     logo: '',
+    latitud: 40.423,
+    longitud: -3.705,
     owner_id: 1,
   },
   {
@@ -25,6 +31,8 @@ export default [
     name: 'Júpiter Juegos',
     address: 'Calle de Manuel Silvela, 8, 28010 Madrid',
     logo: '',
+    latitud: 40.430,
+    longitud: -3.703,
     owner_id: 1,
   },
   {
@@ -32,6 +40,8 @@ export default [
     name: 'Zacatrus!',
     address: 'Calle de Fernández de los Ríos, 57, 28015 Madrid',
     logo: '',
+    latitud: 40.433,
+    longitud: -3.712,
     owner_id: 1,
   },
   {
@@ -39,6 +49,8 @@ export default [
     name: 'Kaburi',
     address: 'Passeig de Sant Joan, 11, 08010 Barcelona',
     logo: '',
+    latitud: 41.391,
+    longitud: 2.170,
     owner_id: 1,
   },
   {
@@ -46,6 +58,8 @@ export default [
     name: 'Homoludicus Valencia',
     address: 'Carrer de Sueca, 20, 46006 València',
     logo: '',
+    latitud: 39.462,
+    longitud: -0.376,
     owner_id: 1,
   },
   {
@@ -53,6 +67,8 @@ export default [
     name: 'Juegame Store',
     address: 'Carrer del Dr. García Brustenga, 5, 03005 Alicante',
     logo: '',
+    latitud: 38.345,
+    longitud: -0.490,
     owner_id: 1,
   },
   {
@@ -60,6 +76,8 @@ export default [
     name: 'La Base Secreta',
     address: 'Carrer de la Mare de Déu del Puig, 8, 46011 València',
     logo: '',
+    latitud: 39.470,
+    longitud: -0.331,
     owner_id: 1,
   },
   {
@@ -67,6 +85,8 @@ export default [
     name: 'El Templo del Guerrero',
     address: 'Calle Pintor Aparicio, 18, 03003 Alicante',
     logo: '',
+    latitud: 38.345,
+    longitud: -0.490,
     owner_id: 1,
   },
   {
@@ -74,6 +94,8 @@ export default [
     name: 'La Caverna de Voltir',
     address: 'Carrer de Sant Nicolau, 19, 03801 Alcoy, Alicante',
     logo: '',
+    latitud: 38.705,
+    longitud: -0.474,
     owner_id: 1,
   },
 ];

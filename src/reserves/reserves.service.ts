@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
-import { FcmNotificationService } from 'src/fcm-notification/fcm-notification.service';
+import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
 
 @Injectable()
 export class ReservesService {
@@ -100,10 +100,34 @@ export class ReservesService {
       await this.reserveRepository.save(reserve);
 
       if (createReserveDto.shop_event == true) {
-        this.fcmNotificationService.sendTopicNotification(
-          idShop,
-          createReserveDto,
-        );
+        const reserve = await this.reserveRepository
+          .createQueryBuilder('reserve')
+          .innerJoinAndSelect('reserve.reserve_table', 'table')
+          .innerJoinAndSelect('table.tables_of_shop', 'shop')
+          .where('shop.id_shop = :idShop', { idShop: parseInt(idShop) })
+          .getOne();
+
+        if (!reserve) {
+          throw new HttpException(
+            'Error al cargar Reserva',
+            HttpStatus.NOT_FOUND,
+          );
+        }
+
+        if (reserve.reserve_table.tables_of_shop.logo) {
+          this.fcmNotificationService.sendTopicNotification(
+            idShop,
+            `Nuevo evento en ${reserve.reserve_table.tables_of_shop.name}`,
+            `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            `${process.env.BASE_URL}/files/logo/${reserve.reserve_table.tables_of_shop.logo}`,
+          );
+        } else {
+          this.fcmNotificationService.sendTopicNotification(
+            idShop,
+            `Nuevo evento en ${reserve.reserve_table.tables_of_shop.name}`,
+            `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+          );
+        }
       }
 
       return reserve;

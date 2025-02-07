@@ -58,20 +58,21 @@ export class UsersReservesService {
 
     const registrationTokens = Array.from(
       new Set(
-      (reserve.userReserves || [])
-        .filter(
-        (userReserve) =>
-          userReserve.user && userReserve.user.token_notification,
-        )
-        .map((userReserve) => userReserve.user.token_notification),
+        (reserve.userReserves || [])
+          .filter(
+            (userReserve) =>
+              userReserve.user && userReserve.user.token_notification,
+          )
+          .map((userReserve) => userReserve.user.token_notification),
       ),
     );
 
     if (registrationTokens.length > 0) {
+      const shopName = reserve.reserve_table.tables_of_shop.name;
       this.fcmNotificationService.sendMulticastNotification(
         registrationTokens,
         'Nuevo usuario en la reserva',
-        `El usuario ${user.name} se ha unido a la reserva.`,
+        `El usuario ${user.name} se ha unido a la reserva el día ${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })} en la tienda ${shopName}.`,
       );
     }
 
@@ -173,28 +174,27 @@ export class UsersReservesService {
 
     await this.userReserveRepository.remove(userReserve);
 
-    console.log(reserve.userReserves);
-
     const user = userReserve.user.name;
 
     const registrationTokens = Array.from(
       new Set(
-      (reserve.userReserves || [])
-        .filter(
-        (userReserve) =>
-          userReserve.user &&
-          userReserve.user.token_notification &&
-          userReserve.user.id_google !== userId,
-        )
-        .map((userReserve) => userReserve.user.token_notification),
+        (reserve.userReserves || [])
+          .filter(
+            (userReserve) =>
+              userReserve.user &&
+              userReserve.user.token_notification &&
+              userReserve.user.id_google !== userId,
+          )
+          .map((userReserve) => userReserve.user.token_notification),
       ),
     );
 
     if (registrationTokens.length > 0) {
+      const shopName = reserve.reserve_table.tables_of_shop.name;
       this.fcmNotificationService.sendMulticastNotification(
         registrationTokens,
-        'Un usuario ha salido de la reserva',
-        `El usuario ${user} ha salido de la reserva.`,
+        '❗ Un usuario ha dejado la reserva',
+        `El usuario ${user} ha dejado la reserva el día ${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })} en la tienda ${shopName}.`,
       );
     }
   }

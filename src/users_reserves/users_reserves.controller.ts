@@ -6,13 +6,11 @@ import {
   Param,
   Post,
   Put,
-  Body,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import { isEmpty } from 'class-validator';
 import { UsersReservesService } from './users_reserves.service';
-import { ReservesEntity } from '../reserves/reserves.entity';
 
 @Controller('users')
 export class UsersReservesController {

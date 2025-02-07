@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, Length, IsArray } from 'class-validator';
+import { IsString, IsOptional, IsNumber, Length } from 'class-validator';
 
 export class CreateShopDto {
   @IsString()
@@ -50,5 +50,4 @@ export class UpdateShopDto {
   @IsOptional()
   @IsNumber()
   owner_id?: number;
-
 }

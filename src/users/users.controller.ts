@@ -50,7 +50,10 @@ export class UsersController {
   }
 
   @Get('google/:id_google')
-  getUserByGoogleId(@Param('id_google') idGoogle: string, @Query('xml') xml?: string) {
+  getUserByGoogleId(
+    @Param('id_google') idGoogle: string,
+    @Query('xml') xml?: string,
+  ) {
     if (!idGoogle) {
       throw new HttpException('Invalid Google user ID', HttpStatus.BAD_REQUEST);
     }
@@ -146,7 +149,10 @@ export class UsersController {
       );
     }
 
-    const isOldPasswordValid = await this.usersService.validateUserPassword(id, oldPassword);
+    const isOldPasswordValid = await this.usersService.validateUserPassword(
+      id,
+      oldPassword,
+    );
     if (!isOldPasswordValid) {
       throw new HttpException(
         'La contraseña antigua no es válida',
@@ -154,7 +160,10 @@ export class UsersController {
       );
     }
 
-    const updatedUser = await this.usersService.updateUserPassword(id, newPassword);
+    const updatedUser = await this.usersService.updateUserPassword(
+      id,
+      newPassword,
+    );
     if (!updatedUser) {
       throw new HttpException(
         'No se pudo actualizar la contraseña',

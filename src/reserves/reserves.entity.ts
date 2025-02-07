@@ -8,7 +8,7 @@ import {
   JoinColumn,
   JoinTable,
 } from 'typeorm';
-import { UserReserveEntity } from 'src/users_reserves/user_reserves.entity';
+import { UserReserveEntity } from '../users_reserves/user_reserves.entity';
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { TablesEntity } from '../tables/tables.entity';

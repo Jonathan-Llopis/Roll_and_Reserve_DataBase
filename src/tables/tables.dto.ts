@@ -1,11 +1,4 @@
-import {
-  IsArray,
-  IsNumber,
-  IsObject,
-  IsOptional,
-} from 'class-validator';
-import { ShopsEntity } from '../shops/shops.entity';
-import { ReservesEntity } from '../reserves/reserves.entity';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class CreateTableDto {
   @IsOptional()
@@ -31,5 +24,4 @@ export class UpdateTableDto {
   @IsOptional()
   @IsNumber()
   shop_id: number;
-
 }

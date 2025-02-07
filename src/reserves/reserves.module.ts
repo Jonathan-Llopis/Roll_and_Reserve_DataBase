@@ -3,8 +3,8 @@ import { ReservesController } from './reserves.controller';
 import { ReservesService } from './reserves.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReservesEntity } from './reserves.entity';
-import { UserReserveEntity } from 'src/users_reserves/user_reserves.entity';
-import { FcmNotificationModule } from 'src/fcm-notification/fcm-notification.module';
+import { UserReserveEntity } from '../users_reserves/user_reserves.entity';
+import { FcmNotificationModule } from '../fcm-notification/fcm-notification.module';
 
 @Module({
   imports: [

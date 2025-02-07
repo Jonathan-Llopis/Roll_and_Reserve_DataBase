@@ -37,7 +37,7 @@ const options: DataSourceOptions & SeederOptions = {
     TablesEntity,
     DifficultyEntity,
     UserEntity,
-    UserReserveEntity,
+    UserReserveEntity
   ],
   seeds: [
     DifficultySeeder,

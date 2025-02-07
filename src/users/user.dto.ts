@@ -26,9 +26,12 @@ export class CreateUserDto {
 
   @IsString()
   @Length(8, 100)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
-    message: 'password too weak',
-  })
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    {
+      message: 'password too weak',
+    },
+  )
   password: string;
 
   @IsEmail()
@@ -78,9 +81,12 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   @Length(8, 100)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, {
-    message: 'password too weak',
-  })
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    {
+      message: 'password too weak',
+    },
+  )
   password?: string;
 
   @IsOptional()

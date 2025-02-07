@@ -17,11 +17,13 @@ export class FcmNotificationService {
     notificationTokens: string[],
     title: string,
     body: string,
+    imageUrl?: string,
   ): Promise<void> {
     const message: admin.messaging.MulticastMessage = {
       notification: {
         title: title,
         body: body,
+        imageUrl: imageUrl,
       },
       tokens: notificationTokens,
     };
@@ -38,16 +40,20 @@ export class FcmNotificationService {
         console.log('Error sending notification:', error);
       });
   }
+
   async sendTopicNotification(
     idShop: string,
-    createReserveDto: { description: string },
+    title: string,
+    body: string,
+    imageUrl?: string,
   ): Promise<void> {
     const topic = `${idShop}`;
 
     const message: admin.messaging.Message = {
       notification: {
-        title: 'Nuevo evento creado',
-        body: `Un nuevo evento ha sido creado: ${createReserveDto.description}`,
+        title: title,
+        body: body,
+        imageUrl: imageUrl,
       },
       topic: topic,
     };

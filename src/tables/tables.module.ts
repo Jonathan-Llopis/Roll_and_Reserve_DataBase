@@ -4,7 +4,7 @@ import { TablesService } from './tables.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TablesEntity } from './tables.entity';
 import { LabelsModule } from '../utils/labels/labels.module';
-import { UserReserveEntity } from 'src/users_reserves/user_reserves.entity';
+import { UserReserveEntity } from '../users_reserves/user_reserves.entity';
 
 @Module({
   imports: [

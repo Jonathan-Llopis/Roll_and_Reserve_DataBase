@@ -14,17 +14,16 @@ import {
 import { isEmpty } from 'class-validator';
 import { ShopGamesService } from './shop_games.service';
 import { CreateGameDto } from '../games/game.dto';
-
 import { GamesEntity } from '../games/game.entitiy';
-import { DifficultyService } from 'src/difficulty/difficulty.service';
-import { DifficultyEntity } from 'src/difficulty/difficulty.entity';
+import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ShopsEntity } from 'src/shops/shops.entity';
+import { ShopsEntity } from '../shops/shops.entity';
 
 @Controller('shops')
 export class ShopGamesController {
-  constructor(private readonly shopGamesService: ShopGamesService,
+  constructor(
+    private readonly shopGamesService: ShopGamesService,
     @InjectRepository(ShopsEntity)
     private readonly difficultyRepository: Repository<DifficultyEntity>,
   ) {}
@@ -42,12 +41,17 @@ export class ShopGamesController {
     @Body() gameDto: CreateGameDto[],
     @Param('shopsId') shopId: string,
   ) {
-    const gamesEntity = await Promise.all(gameDto.map(async (game) => {
-      const gameEntity = new GamesEntity();
-      gameEntity.name = game.name;
-      gameEntity.difficulty_of_game = await this.difficultyRepository.findOneBy({ id_difficulty: game.difficulty_id });
-      return gameEntity;
-    }));
+    const gamesEntity = await Promise.all(
+      gameDto.map(async (game) => {
+        const gameEntity = new GamesEntity();
+        gameEntity.name = game.name;
+        gameEntity.difficulty_of_game =
+          await this.difficultyRepository.findOneBy({
+            id_difficulty: game.difficulty_id,
+          });
+        return gameEntity;
+      }),
+    );
     return this.shopGamesService.updateGamesFromShop(shopId, gamesEntity);
   }
 

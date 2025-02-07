@@ -43,7 +43,6 @@ export class CreateReserveDto {
   @IsOptional()
   @IsNumber()
   reserve_table_id?: number;
-
 }
 
 export class UpdateReserveDto {
@@ -92,5 +91,4 @@ export class UpdateReserveDto {
   @IsOptional()
   @IsNumber()
   reserve_table_id?: number;
-
 }
