@@ -97,32 +97,36 @@ export class ReservesService {
     try {
       const reserve = this.reserveRepository.create(createReserveDto);
       await this.reserveRepository.save(reserve);
+      const createdReserve = await this.reserveRepository.findOne({
+        where: { id_reserve: reserve.id_reserve },
+      });
+
+      if (!createdReserve) {
+        throw new HttpException('Error al cargar Reserva', HttpStatus.NOT_FOUND);
+      }
 
       if (createReserveDto.shop_event == true) {
-        const createdReserve = await this.reserveRepository.findOne({
+        const detailedReserve = await this.reserveRepository.findOne({
           where: { id_reserve: reserve.id_reserve },
           relations: ['reserve_table', 'reserve_table.tables_of_shop', 'reserve_of_game'],
         });
 
-        if (!createdReserve) {
-          throw new HttpException(
-            'Error al cargar Reserva',
-            HttpStatus.NOT_FOUND,
-          );
+        if (!detailedReserve) {
+          throw new HttpException('Error al cargar Reserva', HttpStatus.NOT_FOUND);
         }
 
-        if (createdReserve.reserve_table.tables_of_shop.logo) {
+        if (detailedReserve.reserve_table.tables_of_shop.logo) {
           this.fcmNotificationService.sendTopicNotification(
-            createdReserve.reserve_table.tables_of_shop.id_shop.toString(),
-            `Nuevo evento en ${createdReserve.reserve_table.tables_of_shop.name}`,
-            `Juego: ${createdReserve.reserve_of_game.name}. Fecha:${createdReserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-            `${process.env.BASE_URL}/files/logo/${createdReserve.reserve_table.tables_of_shop.logo}`,
+        detailedReserve.reserve_table.tables_of_shop.id_shop.toString(),
+        `Nuevo evento en ${detailedReserve.reserve_table.tables_of_shop.name}`,
+        `Juego: ${detailedReserve.reserve_of_game.name}. Fecha:${detailedReserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+        `${process.env.BASE_URL}/files/logo/${detailedReserve.reserve_table.tables_of_shop.logo}`,
           );
         } else {
           this.fcmNotificationService.sendTopicNotification(
-            reserve.reserve_table.tables_of_shop.id_shop.toString(),
-            `Nuevo evento en ${reserve.reserve_table.tables_of_shop.name}`,
-            `Juego: ${reserve.reserve_of_game.name}. Fecha:${reserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+        detailedReserve.reserve_table.tables_of_shop.id_shop.toString(),
+        `Nuevo evento en ${detailedReserve.reserve_table.tables_of_shop.name}`,
+        `Juego: ${detailedReserve.reserve_of_game.name}. Fecha:${detailedReserve.hour_start.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
           );
         }
       }
