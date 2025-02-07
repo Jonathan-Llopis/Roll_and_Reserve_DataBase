@@ -19,8 +19,8 @@ export class CreateShopDto {
   @IsNumber()
   longitud: number;
 
-  @IsNumber()
-  owner_id: number;
+  @IsString()
+  owner_id: string;
 }
 
 export class UpdateShopDto {
@@ -48,6 +48,6 @@ export class UpdateShopDto {
   longitud?: number;
 
   @IsOptional()
-  @IsNumber()
-  owner_id?: number;
+  @IsString()
+  owner_id?: string;
 }
