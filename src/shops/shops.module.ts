@@ -3,10 +3,9 @@ import { ShopsController } from './shops.controller';
 import { ShopsService } from './shops.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ShopsEntity } from './shops.entity';
-import { UserEntity } from 'src/users/users.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ShopsEntity, UserEntity]),],
+  imports: [TypeOrmModule.forFeature([ShopsEntity])],
   controllers: [ShopsController],
   providers: [ShopsService],
 })
