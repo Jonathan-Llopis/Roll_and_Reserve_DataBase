@@ -10,6 +10,7 @@ export class ShopsService {
   constructor(
     @InjectRepository(ShopsEntity)
     private readonly shopRepository: Repository<ShopsEntity>,
+    @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
