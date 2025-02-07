@@ -101,7 +101,6 @@ export class ReservesService {
     try {
       const reserve = this.reserveRepository.create(createReserveDto);
       await this.reserveRepository.save(reserve);
-      
       if (createReserveDto.shop_event == true) {
         const shop = await this.shopRepository.findOne({
           where: { id_shop: parseInt(idShop) },
@@ -109,12 +108,13 @@ export class ReservesService {
         if (!shop) {
           throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
         }
+        
         if (shop.logo) {
           this.fcmNotificationService.sendTopicNotification(
             idShop,
             `Nuevo evento en ${shop.name}`,
             `Juego: ${reserve.reserve_of_game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-            `${process.env.BASE_URL}/files/logo/${shop.logo}`,
+            `${process.env.BASE_URL}/files/${shop.logo}`,
           );
         } else {
             this.fcmNotificationService.sendTopicNotification(

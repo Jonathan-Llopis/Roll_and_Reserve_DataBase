@@ -80,6 +80,7 @@ export class FilesController {
       );
     }
     res.header('Content-Type', file.contentType);
+    res.header('Content-Disposition', 'inline; filename=' + file.filename);
     return filestream.pipe(res);
   }
 
