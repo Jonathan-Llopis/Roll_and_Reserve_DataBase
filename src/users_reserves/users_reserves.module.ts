@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../users/users.entity';
 import { TablesModule } from '../tables/tables.module';
 import { ReservesEntity } from '../reserves/reserves.entity';
-import { UserReserveEntity } from './user_reserves.entity';
+import { UserReserveEntity } from './users_reserves.entity';
 import { FcmNotificationModule } from '../fcm-notification/fcm-notification.module';
 
 @Module({

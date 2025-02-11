@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GameCategoryEntity } from './game_category.entity';
@@ -14,12 +14,18 @@ export class GameCategoryService {
     private readonly gameCategoryRepository: Repository<GameCategoryEntity>,
   ) {}
 
+  private handleError(err: any) {
+    if (err instanceof HttpException) {
+      throw err;
+    }
+    throw new HttpException('Request failed', HttpStatus.BAD_REQUEST);
+  }
+
   async getAllGameCategories(): Promise<GameCategoryEntity[]> {
     try {
-      const gameCategories = await this.gameCategoryRepository.find();
-      return gameCategories;
+      return await this.gameCategoryRepository.find();
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -29,11 +35,11 @@ export class GameCategoryService {
         where: { id_game_category: id },
       });
       if (!gameCategory) {
-        throw new Error('Game category not found');
+        throw new NotFoundException('Game category not found');
       }
       return gameCategory;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -41,13 +47,11 @@ export class GameCategoryService {
     createGameCategoryDto: CreateGameCategoryDto,
   ): Promise<GameCategoryEntity> {
     try {
-      const gameCategory = this.gameCategoryRepository.create(
-        createGameCategoryDto,
-      );
+      const gameCategory = this.gameCategoryRepository.create(createGameCategoryDto);
       await this.gameCategoryRepository.save(gameCategory);
       return gameCategory;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -60,21 +64,24 @@ export class GameCategoryService {
         where: { id_game_category: id },
       });
       if (!gameCategory) {
-        throw new Error('Game category not found');
+        throw new NotFoundException('Game category not found');
       }
       Object.assign(gameCategory, updateGameCategoryDto);
       await this.gameCategoryRepository.save(gameCategory);
       return gameCategory;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
   async deleteGameCategory(id: number): Promise<void> {
     try {
-      await this.gameCategoryRepository.delete(id);
+      const result = await this.gameCategoryRepository.delete(id);
+      if (result.affected === 0) {
+        throw new NotFoundException('Game category not found');
+      }
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 }

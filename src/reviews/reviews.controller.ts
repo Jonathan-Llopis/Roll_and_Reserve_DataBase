@@ -9,93 +9,200 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto, UpdateReviewDto } from './reviews.dto';
 
+@ApiTags('Reviews')
 @Controller('reviews')
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get all reviews' })
+  @ApiResponse({ status: 200, description: 'Reviews retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
   getAllReviews() {
     try {
       return this.reviewsService.getAllReviews();
     } catch (err) {
       throw new HttpException(
         {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: err,
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Failed to retrieve reviews',
         },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        {
-          cause: err,
-        },
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a review by ID' })
+  @ApiResponse({ status: 200, description: 'Review retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid Reviews ID.' })
+  @ApiResponse({ status: 404, description: 'Review not found.' })
+  @ApiParam({ name: 'id', description: 'ID of the review', example: '1' })
   getReview(@Param('id') id: string) {
-    const reviewsId = id;
-    if (!reviewsId) {
-      throw new HttpException('Invalid Reviews ID', HttpStatus.BAD_REQUEST);
+    try {
+      const reviewsId = parseInt(id);
+      if (isNaN(reviewsId)) {
+        throw new HttpException('Invalid Reviews ID', HttpStatus.BAD_REQUEST);
+      }
+      return this.reviewsService.getReviews(reviewsId);
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Failed to retrieve review',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    return this.reviewsService.getReviews(reviewsId);
   }
 
   @Get('/shop/:idShop')
+  @ApiOperation({ summary: 'Get all reviews by shop ID' })
+  @ApiResponse({ status: 200, description: 'Reviews retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid Shop ID.' })
+  @ApiResponse({ status: 404, description: 'Review not found.' })
+  @ApiParam({ name: 'idShop', description: 'ID of the shop', example: '1' })
   getAllReviewsByShop(@Param('idShop') idShop: string) {
-    if (!idShop) {
-      throw new HttpException('Invalid Shop ID', HttpStatus.BAD_REQUEST);
+    try {
+      const shopId = parseInt(idShop);
+      if (isNaN(shopId)) {
+        throw new HttpException('Invalid Shop ID', HttpStatus.BAD_REQUEST);
+      }
+      return this.reviewsService.getAllReviewsByShop(shopId);
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Failed to retrieve reviews by shop ID',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    return this.reviewsService.getAllReviewsByShop(parseInt(idShop));
   }
 
   @Get('/writter/:idUser')
+  @ApiOperation({ summary: 'Get all reviews by writer ID' })
+  @ApiResponse({ status: 200, description: 'Reviews retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid User ID.' })
+  @ApiResponse({ status: 404, description: 'Review not found.' })
+  @ApiParam({ name: 'idUser', description: 'ID of the writer', example: '1' })
   getAllReviewsByWritter(@Param('idUser') idUser: string) {
-    if (!idUser) {
-      throw new HttpException('Invalid User ID', HttpStatus.BAD_REQUEST);
+    try {
+      if (!idUser) {
+        throw new HttpException('Invalid User ID', HttpStatus.BAD_REQUEST);
+      }
+      return this.reviewsService.getAllReviewsByWritter(idUser);
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Failed to retrieve reviews by writer ID',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    return this.reviewsService.getAllReviewsByWritter(idUser);
   }
 
   @Get('/user/:idUser')
+  @ApiOperation({ summary: 'Get all reviews by user ID' })
+  @ApiResponse({ status: 200, description: 'Reviews retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid User ID.' })
+  @ApiResponse({ status: 404, description: 'Review not found.' })
+  @ApiParam({ name: 'idUser', description: 'ID of the user', example: '1' })
   getAllReviewsByUser(@Param('idUser') idUser: string) {
-    if (!idUser) {
-      throw new HttpException('Invalid User ID', HttpStatus.BAD_REQUEST);
+    try {
+      if (!idUser) {
+        throw new HttpException('Invalid User ID', HttpStatus.BAD_REQUEST);
+      }
+      return this.reviewsService.getAllReviewsByUser(idUser);
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Failed to retrieve reviews by user ID',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    return this.reviewsService.getAllReviewsByUser(idUser);
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new review' })
+  @ApiResponse({ status: 201, description: 'Review created successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid data.' })
+  @ApiResponse({ status: 404, description: 'Review not found.' })
   createReviews(@Body() createReviewsDto: CreateReviewDto) {
-    return this.reviewsService.createReview(createReviewsDto);
+    try {
+      return this.reviewsService.createReview(createReviewsDto);
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Failed to create review',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Update a review by ID' })
+  @ApiResponse({ status: 200, description: 'Review updated successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid Reviews ID.' })
+  @ApiResponse({ status: 404, description: 'Review not found.' })
+  @ApiParam({ name: 'id', description: 'ID of the review', example: '1' })
   updateReview(
     @Param('id') id: string,
     @Body() updateReviewsDto: UpdateReviewDto,
   ) {
-    const reviewsId = id;
-    if (!reviewsId) {
-      throw new HttpException('Invalid Reviews ID', HttpStatus.BAD_REQUEST);
+    try {
+      const reviewsId = parseInt(id);
+      if (isNaN(reviewsId)) {
+        throw new HttpException('Invalid Reviews ID', HttpStatus.BAD_REQUEST);
+      }
+      return this.reviewsService.updateReviews(
+        {
+          ...updateReviewsDto,
+          id_review: reviewsId,
+        },
+        reviewsId,
+      );
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Failed to update review',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    return this.reviewsService.updateReviews(
-      {
-        ...updateReviewsDto,
-        id_review: parseInt(id),
-      },
-      reviewsId,
-    );
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a review by ID' })
+  @ApiResponse({ status: 200, description: 'Review deleted successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid Reviews ID.' })
+  @ApiResponse({ status: 404, description: 'Review not found.' })
+  @ApiParam({ name: 'id', description: 'ID of the review', example: '1' })
   deleteReview(@Param('id') id: string) {
-    const reviewsId = parseInt(id);
-    if (isNaN(reviewsId)) {
-      throw new HttpException('Invalid Reviews ID', HttpStatus.BAD_REQUEST);
+    try {
+      const reviewsId = parseInt(id);
+      if (isNaN(reviewsId)) {
+        throw new HttpException('Invalid Reviews ID', HttpStatus.BAD_REQUEST);
+      }
+      return this.reviewsService.deleteReview(reviewsId);
+    } catch (err) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Failed to delete review',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    return this.reviewsService.deleteReview(reviewsId);
   }
 }

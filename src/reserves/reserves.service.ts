@@ -5,7 +5,7 @@ import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
 import { ShopsEntity } from 'src/shops/shops.entity';
-import { GamesEntity } from 'src/games/game.entitiy';
+import { GamesEntity } from 'src/games/games.entitiy';
 
 @Injectable()
 export class ReservesService {
@@ -18,6 +18,13 @@ export class ReservesService {
     private readonly gameRepository: Repository<GamesEntity>,
     private readonly fcmNotificationService: FcmNotificationService,
   ) {}
+
+  private handleError(err: any) {
+    if (err instanceof HttpException) {
+      throw err;
+    }
+    throw new HttpException('Request failed', HttpStatus.BAD_REQUEST);
+  }
 
   async getAllReserves(): Promise<ReservesEntity[]> {
     try {
@@ -37,7 +44,7 @@ export class ReservesService {
       });
       return reserves;
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      this.handleError(err);
     }
   }
 
@@ -60,7 +67,7 @@ export class ReservesService {
       }
       return reserve;
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.NOT_FOUND);
+      this.handleError(err);
     }
   }
 
@@ -93,48 +100,51 @@ export class ReservesService {
       });
       return reserves;
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      this.handleError(err);
     }
   }
 
   async createReserve(
     createReserveDto: CreateReserveDto,
-    idShop: string,
+    idShop: number,
   ): Promise<ReservesEntity> {
     try {
       const reserve = this.reserveRepository.create(createReserveDto);
       await this.reserveRepository.save(reserve);
       if (createReserveDto.shop_event == true) {
-          const shop = await this.shopRepository.findOne({
-        where: { id_shop: parseInt(idShop) },
-          });
-          const game = await this.gameRepository.findOne({
-        where: { id_game: createReserveDto.reserve_of_game_id },
-          });
-          if (!shop) {
-        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
-          }
-
-          if (shop.logo) {
-        this.fcmNotificationService.sendTopicNotification(
-          idShop,
-          `Nuevo evento en ${shop.name}`,
-          `Juego: ${game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-          `${process.env.BASE_URL}/files/${shop.logo}`,
-        );
-          } else {
-        this.fcmNotificationService.sendTopicNotification(
-          idShop,
-          `Nuevo evento en ${shop.name}`,
-          `Juego: ${game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-        );
-          }
+        const shop = await this.shopRepository.findOne({
+          where: { id_shop: idShop },
+        });
+        const game = await this.gameRepository.findOne({
+          where: { id_game: createReserveDto.reserve_of_game_id },
+        });
+        if (!shop) {
+          throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
         }
-      
+
+        if (!game) {
+          throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
+        }
+
+        if (shop.logo) {
+          this.fcmNotificationService.sendTopicNotification(
+            idShop.toString(),
+            `Nuevo evento en ${shop.name}`,
+            `Juego: ${game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            `${process.env.BASE_URL}/files/${shop.logo}`,
+          );
+        } else {
+          this.fcmNotificationService.sendTopicNotification(
+            idShop.toString(),
+            `Nuevo evento en ${shop.name}`,
+            `Juego: ${game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+          );
+        }
+      }
 
       return reserve;
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      this.handleError(err);
     }
   }
 
@@ -153,7 +163,7 @@ export class ReservesService {
       await this.reserveRepository.save(reserve);
       return reserve;
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      this.handleError(err);
     }
   }
 
@@ -164,20 +174,25 @@ export class ReservesService {
         throw new HttpException('Reserve not found', HttpStatus.NOT_FOUND);
       }
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      this.handleError(err);
     }
   }
 
-  async findAllUniqueShopEvents(shopId: string): Promise<ReservesEntity[]> {
+  async findAllUniqueShopEvents(shopId: number): Promise<ReservesEntity[]> {
     try {
       const currentDate = new Date();
+      const shop = await this.shopRepository.findOne({ where: { id_shop: shopId } });
+      if (!shop) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
+
       const reserves = await this.reserveRepository
         .createQueryBuilder('reserve')
         .innerJoinAndSelect('reserve.reserve_table', 'table')
         .innerJoinAndSelect('table.tables_of_shop', 'shop')
         .innerJoinAndSelect('reserve.reserve_of_game', 'game')
         .where('reserve.shop_event = :shopEvent', { shopEvent: true })
-        .andWhere('shop.id_shop = :shopId', { shopId: parseInt(shopId) })
+        .andWhere('shop.id_shop = :shopId', { shopId: shopId })
         .andWhere('reserve.hour_start > :currentDate', { currentDate })
         .groupBy('reserve.event_id, game.id_game')
         .addSelect('game.id_game')
@@ -185,7 +200,7 @@ export class ReservesService {
         .getMany();
       return reserves;
     } catch (err) {
-      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      this.handleError(err);
     }
   }
 }

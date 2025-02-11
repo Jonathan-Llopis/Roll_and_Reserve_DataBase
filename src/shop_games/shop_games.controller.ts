@@ -13,12 +13,13 @@ import {
 
 import { isEmpty } from 'class-validator';
 import { ShopGamesService } from './shop_games.service';
-import { CreateGameDto } from '../games/game.dto';
-import { GamesEntity } from '../games/game.entitiy';
+import { CreateGameDto } from '../games/games.dto';
+import { GamesEntity } from '../games/games.entitiy';
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopsEntity } from '../shops/shops.entity';
+import { ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 
 @Controller('shops')
 export class ShopGamesController {
@@ -28,19 +29,39 @@ export class ShopGamesController {
     private readonly difficultyRepository: Repository<DifficultyEntity>,
   ) {}
 
+  private validateId(id: string, name: string) {
+    if (isEmpty(id) || isNaN(Number(id))) {
+      throw new HttpException(`Invalid ${name} ID`, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   @Post(':shopsId/games/:gamesId')
+  @ApiOperation({ summary: 'Add a game to a shop' })
+  @ApiResponse({ status: 201, description: 'Game successfully added to shop.' })
+  @ApiResponse({ status: 400, description: 'Invalid shop or game ID.' })
+  @ApiResponse({ status: 404, description: 'The shop or game with the given ID was not found.' })
+  @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
+  @ApiParam({ name: 'gamesId', description: 'ID of the game', example: '1' })
   async addGameToShop(
     @Param('shopsId') shopId: string,
     @Param('gamesId') gameId: string,
   ) {
-    return this.shopGamesService.addGameToShop(shopId, gameId);
+    this.validateId(shopId, 'shop');
+    this.validateId(gameId, 'game');
+    return await this.shopGamesService.addGameToShop(shopId, gameId);
   }
 
   @Put(':shopsId/games')
+  @ApiOperation({ summary: 'Associate games to a shop' })
+  @ApiResponse({ status: 200, description: 'Games successfully associated to shop.' })
+  @ApiResponse({ status: 400, description: 'Invalid shop or game ID.' })
+  @ApiResponse({ status: 404, description: 'The shop or game with the given ID was not found.' })
+  @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
   async associateGameToShop(
     @Body() gameDto: CreateGameDto[],
     @Param('shopsId') shopId: string,
   ) {
+    this.validateId(shopId, 'shop');
     const gamesEntity = await Promise.all(
       gameDto.map(async (game) => {
         const gameEntity = new GamesEntity();
@@ -52,43 +73,50 @@ export class ShopGamesController {
         return gameEntity;
       }),
     );
-    return this.shopGamesService.updateGamesFromShop(shopId, gamesEntity);
+    return await this.shopGamesService.updateGamesFromShop(shopId, gamesEntity);
   }
 
   @Delete(':shopsId/games/:gamesId')
   @HttpCode(204)
+  @ApiOperation({ summary: 'Delete a game from a shop' })
+  @ApiResponse({ status: 204, description: 'Game successfully deleted from shop.' })
+  @ApiResponse({ status: 400, description: 'Invalid shop or game ID.' })
+  @ApiResponse({ status: 404, description: 'The shop or game with the given ID was not found.' })
+  @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
+  @ApiParam({ name: 'gamesId', description: 'ID of the game', example: '1' })
   async deleteGameFromShop(
     @Param('shopsId') shopId: string,
     @Param('gamesId') gameId: string,
   ) {
-    if (isEmpty(shopId) || isEmpty(gameId)) {
-      throw new HttpException(
-        'Invalid shop or game ID',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return this.shopGamesService.deleteGameFromShop(shopId, gameId);
+    this.validateId(shopId, 'shop');
+    this.validateId(gameId, 'game');
+    return await this.shopGamesService.deleteGameFromShop(shopId, gameId);
   }
 
   @Get(':shopsId/games/:gamesId')
+  @ApiOperation({ summary: 'Find a game by shop ID and game ID' })
+  @ApiResponse({ status: 200, description: 'Game successfully found.' })
+  @ApiResponse({ status: 400, description: 'Invalid shop or game ID.' })
+  @ApiResponse({ status: 404, description: 'The shop or game with the given ID was not found.' })
+  @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
+  @ApiParam({ name: 'gamesId', description: 'ID of the game', example: '1' })
   async findGameByShopIdGameId(
     @Param('shopsId') shopId: string,
     @Param('gamesId') gameId: string,
   ) {
-    if (isEmpty(shopId) || isEmpty(gameId)) {
-      throw new HttpException(
-        'Invalid shop or game ID',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return this.shopGamesService.findGameFromShop(shopId, gameId);
+    this.validateId(shopId, 'shop');
+    this.validateId(gameId, 'game');
+    return await this.shopGamesService.findGameFromShop(shopId, gameId);
   }
 
   @Get(':shopsId/games')
+  @ApiOperation({ summary: 'Find games by shop ID' })
+  @ApiResponse({ status: 200, description: 'Games successfully found.' })
+  @ApiResponse({ status: 400, description: 'Invalid shop ID.' })
+  @ApiResponse({ status: 404, description: 'The shop with the given ID was not found.' })
+  @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
   async findGamesByShopId(@Param('shopsId') shopId: string) {
-    if (isEmpty(shopId)) {
-      throw new HttpException('Invalid shop ID', HttpStatus.BAD_REQUEST);
-    }
-    return this.shopGamesService.findGamesFromShop(shopId);
+    this.validateId(shopId, 'shop');
+    return await this.shopGamesService.findGamesFromShop(shopId);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, HttpStatus, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DifficultyEntity } from './difficulty.entity';
@@ -11,12 +11,19 @@ export class DifficultyService {
     private readonly difficultyRepository: Repository<DifficultyEntity>,
   ) {}
 
+  private handleError(err: any) {
+    if (err instanceof HttpException) {
+      throw err;
+    }
+    throw new HttpException('Request failed', HttpStatus.BAD_REQUEST);
+  }
+
   async getAllDifficulties(): Promise<DifficultyEntity[]> {
     try {
       const difficulties = await this.difficultyRepository.find();
       return difficulties;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -26,11 +33,11 @@ export class DifficultyService {
         where: { id_difficulty: id },
       });
       if (!difficulty) {
-        throw new Error('Difficulty not found');
+        throw new NotFoundException('Difficulty not found');
       }
       return difficulty;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -42,7 +49,7 @@ export class DifficultyService {
       await this.difficultyRepository.save(difficulty);
       return difficulty;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -55,21 +62,24 @@ export class DifficultyService {
         where: { id_difficulty: id },
       });
       if (!difficulty) {
-        throw new Error('Difficulty not found');
+        throw new NotFoundException('Difficulty not found');
       }
       Object.assign(difficulty, updateDifficultyDto);
       await this.difficultyRepository.save(difficulty);
       return difficulty;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
   async deleteDifficulty(id: number): Promise<void> {
     try {
-      await this.difficultyRepository.delete(id);
+      const result = await this.difficultyRepository.delete(id);
+      if (result.affected === 0) {
+        throw new NotFoundException('Difficulty not found');
+      }
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 }

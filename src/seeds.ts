@@ -5,7 +5,7 @@ import { UserEntity } from './users/users.entity';
 import { config } from 'dotenv';
 import { DifficultyEntity } from './difficulty/difficulty.entity';
 import { DifficultySeeder } from './db/seeding/seeds/difficulty.seeder';
-import { GamesEntity } from './games/game.entitiy';
+import { GamesEntity } from './games/games.entitiy';
 import { GameCategoryEntity } from './game_category/game_category.entity';
 import { ReservesEntity } from './reserves/reserves.entity';
 import { ReviewsEntity } from './reviews/reviews.entity';
@@ -17,7 +17,7 @@ import { ReservesSeeder } from './db/seeding/seeds/reserves.seeder';
 import { ReviewsSeeder } from './db/seeding/seeds/reviews.seeder';
 import { ShopsSeeder } from './db/seeding/seeds/shops.seeder';
 import { TablesSeeder } from './db/seeding/seeds/tables.seeder';
-import { UserReserveEntity } from './users_reserves/user_reserves.entity';
+import { UserReserveEntity } from './users_reserves/users_reserves.entity';
 config();
 
 const options: DataSourceOptions & SeederOptions = {

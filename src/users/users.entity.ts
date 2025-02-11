@@ -7,7 +7,7 @@ import {
   PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserReserveEntity } from '../users_reserves/user_reserves.entity';
+import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
 import { ReservesEntity } from '../reserves/reserves.entity';
 import { ReviewsEntity } from '../reviews/reviews.entity';
 import { ShopsEntity } from '../shops/shops.entity';

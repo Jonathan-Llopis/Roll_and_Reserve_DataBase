@@ -1,13 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, PreconditionFailedException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  BusinessError,
-  BusinessLogicException,
-} from '../shared/errors/business-errors';
+import { Repository } from 'typeorm';
 import { ReservesEntity } from '../reserves/reserves.entity';
 import { UserEntity } from '../users/users.entity';
-import { Repository } from 'typeorm';
-import { UserReserveEntity } from './user_reserves.entity';
+import { UserReserveEntity } from './users_reserves.entity';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
 
 @Injectable()
@@ -27,26 +23,20 @@ export class UsersReservesService {
     reserveId: string,
     reservaConfirmada: boolean,
   ): Promise<UserReserveEntity> {
-    const user: UserEntity = await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       where: { id_google: userId },
       relations: ['userReserves', 'userReserves.user'],
     });
     if (!user) {
-      throw new BusinessLogicException(
-        'The user with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
+      throw new NotFoundException('The user with the given id was not found');
     }
 
-    const reserve: ReservesEntity = await this.reservesRepository.findOne({
+    const reserve = await this.reservesRepository.findOne({
       where: { id_reserve: parseInt(reserveId) },
       relations: ['userReserves', 'userReserves.user', 'reserve_table', 'reserve_table.tables_of_shop'],
     });
     if (!reserve) {
-      throw new BusinessLogicException(
-        'The reserve with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
+      throw new NotFoundException('The reserve with the given id was not found');
     }
 
     const userReserve = new UserReserveEntity();
@@ -80,15 +70,13 @@ export class UsersReservesService {
   }
 
   async findReserveById(reserveId: string): Promise<ReservesEntity> {
-    const reserve: ReservesEntity = await this.reservesRepository.findOne({
+    const reserve = await this.reservesRepository.findOne({
       where: { id_reserve: parseInt(reserveId) },
       relations: ['userReserves', 'userReserves.user'],
     });
-    if (!reserve)
-      throw new BusinessLogicException(
-        'The reserve with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
+    if (!reserve) {
+      throw new NotFoundException('The reserve with the given id was not found');
+    }
     return reserve;
   }
 
@@ -96,25 +84,22 @@ export class UsersReservesService {
     userId: string,
     reserveId: string,
   ): Promise<UserReserveEntity> {
-    const userReserve: UserReserveEntity =
-      await this.userReserveRepository.findOne({
-        where: {
-          user: { id_google: userId },
-          reserve: { id_reserve: parseInt(reserveId) },
-        },
-        relations: ['user', 'reserve'],
-      });
-    if (!userReserve)
-      throw new BusinessLogicException(
-        'The reserve with the given id is not associated to the user',
-        BusinessError.PRECONDITION_FAILED,
-      );
+    const userReserve = await this.userReserveRepository.findOne({
+      where: {
+        user: { id_google: userId },
+        reserve: { id_reserve: parseInt(reserveId) },
+      },
+      relations: ['user', 'reserve'],
+    });
+    if (!userReserve) {
+      throw new PreconditionFailedException('The reserve with the given id is not associated to the user');
+    }
 
     return userReserve;
   }
 
   async findReservesFromUser(userId: string): Promise<UserReserveEntity[]> {
-    const user: UserEntity = await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       where: { id_google: userId },
       relations: [
         'userReserves',
@@ -125,11 +110,9 @@ export class UsersReservesService {
         'userReserves.reserve.userReserves',
       ],
     });
-    if (!user)
-      throw new BusinessLogicException(
-        'The user with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
+    if (!user) {
+      throw new NotFoundException('The user with the given id was not found');
+    }
 
     const currentDate = new Date();
     const madridDate = new Date(
@@ -145,20 +128,16 @@ export class UsersReservesService {
   }
 
   async deleteReserveFromUser(userId: string, reserveId: string) {
-    const userReserve: UserReserveEntity =
-      await this.userReserveRepository.findOne({
-        where: {
-          user: { id_google: userId },
-          reserve: { id_reserve: parseInt(reserveId) },
-        },
-        relations: ['user', 'reserve'],
-      });
+    const userReserve = await this.userReserveRepository.findOne({
+      where: {
+        user: { id_google: userId },
+        reserve: { id_reserve: parseInt(reserveId) },
+      },
+      relations: ['user', 'reserve'],
+    });
 
     if (!userReserve) {
-      throw new BusinessLogicException(
-        'The reserve with the given id is not associated to the user',
-        BusinessError.PRECONDITION_FAILED,
-      );
+      throw new PreconditionFailedException('The reserve with the given id is not associated to the user');
     }
 
     const reserve = await this.reservesRepository.findOne({
@@ -166,10 +145,7 @@ export class UsersReservesService {
       relations: ['userReserves', 'userReserves.user', 'reserve_table', 'reserve_table.tables_of_shop'],
     });
     if (!reserve) {
-      throw new BusinessLogicException(
-        'The reserve with the given id was not found',
-        BusinessError.NOT_FOUND,
-      );
+      throw new NotFoundException('The reserve with the given id was not found');
     }
 
     await this.userReserveRepository.remove(userReserve);
@@ -203,20 +179,16 @@ export class UsersReservesService {
     userId: string,
     reserveId: string,
   ): Promise<UserReserveEntity> {
-    const userReserve: UserReserveEntity =
-      await this.userReserveRepository.findOne({
-        where: {
-          user: { id_google: userId },
-          reserve: { id_reserve: parseInt(reserveId) },
-        },
-        relations: ['user', 'reserve'],
-      });
+    const userReserve = await this.userReserveRepository.findOne({
+      where: {
+        user: { id_google: userId },
+        reserve: { id_reserve: parseInt(reserveId) },
+      },
+      relations: ['user', 'reserve'],
+    });
 
     if (!userReserve) {
-      throw new BusinessLogicException(
-        'The reserve with the given id is not associated to the user',
-        BusinessError.PRECONDITION_FAILED,
-      );
+      throw new PreconditionFailedException('The reserve with the given id is not associated to the user');
     }
 
     userReserve.reserva_confirmada = true;

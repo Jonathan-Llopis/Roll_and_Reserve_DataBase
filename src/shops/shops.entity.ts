@@ -1,4 +1,4 @@
-import { GamesEntity } from '../games/game.entitiy';
+import { GamesEntity } from '../games/games.entitiy';
 import { ReviewsEntity } from '../reviews/reviews.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { UserEntity } from '../users/users.entity';

@@ -28,11 +28,11 @@ import { ReviewsEntity } from './reviews/reviews.entity';
 import { ShopsEntity } from './shops/shops.entity';
 import { TablesEntity } from './tables/tables.entity';
 import { ReservesEntity } from './reserves/reserves.entity';
-import { GamesEntity } from './games/game.entitiy';
+import { GamesEntity } from './games/games.entitiy';
 import { DifficultyEntity } from './difficulty/difficulty.entity';
 import { GameCategoryEntity } from './game_category/game_category.entity';
 import { FilesModule } from './files/files.module';
-import { UserReserveEntity } from './users_reserves/user_reserves.entity';
+import { UserReserveEntity } from './users_reserves/users_reserves.entity';
 import { FcmNotificationModule } from './fcm-notification/fcm-notification.module';
 @Module({
   imports: [

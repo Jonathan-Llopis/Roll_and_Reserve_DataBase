@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, HttpStatus, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateGameDto, UpdateGameDto } from './game.dto';
-import { GamesEntity } from './game.entitiy';
+import { CreateGameDto, UpdateGameDto } from './games.dto';
+import { GamesEntity } from './games.entitiy';
 
 @Injectable()
 export class GamesService {
@@ -11,6 +11,13 @@ export class GamesService {
     private readonly gameRepository: Repository<GamesEntity>,
   ) {}
 
+  private handleError(err: any) {
+    if (err instanceof HttpException) {
+      throw err;
+    }
+    throw new BadRequestException('An unexpected error occurred');
+  }
+
   async getAllGames(): Promise<GamesEntity[]> {
     try {
       const games = await this.gameRepository.find({
@@ -18,7 +25,7 @@ export class GamesService {
       });
       return games;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -29,11 +36,11 @@ export class GamesService {
         relations: ['difficulty_of_game'],
       });
       if (!game) {
-        throw new Error('Game not found');
+        throw new NotFoundException('Game not found');
       }
       return game;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -43,34 +50,34 @@ export class GamesService {
       await this.gameRepository.save(game);
       return game;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
-  async updateGame(
-    updateGameDto: UpdateGameDto,
-    id: number,
-  ): Promise<GamesEntity> {
+  async updateGame(updateGameDto: UpdateGameDto, id: number): Promise<GamesEntity> {
     try {
       const game = await this.gameRepository.findOne({
         where: { id_game: id },
       });
       if (!game) {
-        throw new Error('Game not found');
+        throw new NotFoundException('Game not found');
       }
       Object.assign(game, updateGameDto);
       await this.gameRepository.save(game);
       return game;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
   async deleteGame(id: number): Promise<void> {
     try {
-      await this.gameRepository.delete(id);
+      const result = await this.gameRepository.delete(id);
+      if (result.affected === 0) {
+        throw new NotFoundException('Game not found');
+      }
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 }

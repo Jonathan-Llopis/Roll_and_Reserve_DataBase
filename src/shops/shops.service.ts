@@ -11,14 +11,21 @@ export class ShopsService {
     private readonly shopRepository: Repository<ShopsEntity>,
   ) {}
 
+  private handleError(err: any) {
+    if (err instanceof HttpException) {
+      throw err;
+    }
+    console.error(err);
+    throw new HttpException('An unexpected error occurred', HttpStatus.BAD_REQUEST);
+  }
+
   async getAllShops(): Promise<ShopsEntity[]> {
     try {
-      const shops = await this.shopRepository.find({
+      return await this.shopRepository.find({
         relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
       });
-      return shops;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -29,23 +36,22 @@ export class ShopsService {
         relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
       });
       if (!shop) {
-        throw new Error('Shop not found');
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
       return shop;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
   async getAllShopsByOwner(idOwner: string): Promise<ShopsEntity[]> {
     try {
-      const shops = await this.shopRepository.find({
+      return await this.shopRepository.find({
         relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
         where: { owner: { id_google: idOwner } },
       });
-      return shops;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -55,46 +61,50 @@ export class ShopsService {
       await this.shopRepository.save(shop);
       return shop;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
-  async updateShop(
-    updateShopDto: UpdateShopDto,
-    id: number,
-  ): Promise<ShopsEntity> {
+  async updateShop(updateShopDto: UpdateShopDto, id: number): Promise<ShopsEntity> {
     try {
       const shop = await this.shopRepository.findOne({
         where: { id_shop: id },
       });
       if (!shop) {
-        throw new Error('Shop not found');
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
       Object.assign(shop, updateShopDto);
       await this.shopRepository.save(shop);
       return shop;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
   async deleteShop(id: number): Promise<void> {
     try {
-      await this.shopRepository.delete(id);
+      const result = await this.shopRepository.delete(id);
+      if (result.affected === 0) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
   async vincularArchivo(id_shop: string, id_archivo: string) {
-    const shop = await this.shopRepository.findOne({
-      where: { id_shop: parseInt(id_shop) },
-    });
+    try {
+      const shop = await this.shopRepository.findOne({
+        where: { id_shop: parseInt(id_shop) },
+      });
 
-    if (!shop) {
-      throw new HttpException('Tienda no encontrada', HttpStatus.NOT_FOUND);
+      if (!shop) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
+      shop.logo = id_archivo.toString();
+      return this.shopRepository.save(shop);
+    } catch (err) {
+      this.handleError(err);
     }
-    shop.logo = id_archivo.toString();
-    return this.shopRepository.save(shop);
   }
 }

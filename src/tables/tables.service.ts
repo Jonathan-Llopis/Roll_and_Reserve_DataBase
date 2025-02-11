@@ -13,6 +13,13 @@ export class TablesService {
     private readonly labelsService: LabelsService,
   ) {}
 
+  private handleError(err: any) {
+    if (err instanceof HttpException) {
+      throw err;
+    }
+    throw new HttpException('Something went wrong', HttpStatus.BAD_REQUEST);
+  }
+
   async getAllTables(): Promise<TablesEntity[]> {
     try {
       const tables = await this.tableRepository.find({
@@ -20,7 +27,7 @@ export class TablesService {
       });
       return tables;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -31,11 +38,11 @@ export class TablesService {
         relations: ['reserves_of_table', 'tables_of_shop'],
       });
       if (!table) {
-        throw new Error('Table not found');
+        throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
       }
       return table;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -47,7 +54,7 @@ export class TablesService {
       });
       return tables;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -57,7 +64,7 @@ export class TablesService {
       await this.tableRepository.save(table);
       return table;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -70,21 +77,24 @@ export class TablesService {
         where: { id_table: id },
       });
       if (!table) {
-        throw new Error('Table not found');
+        throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
       }
       Object.assign(table, updateTableDto);
       await this.tableRepository.save(table);
       return table;
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
   async deleteTable(id: number): Promise<void> {
     try {
-      await this.tableRepository.delete(id);
+      const result = await this.tableRepository.delete(id);
+      if (result.affected === 0) {
+        throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
+      }
     } catch (err) {
-      throw new Error(err);
+      this.handleError(err);
     }
   }
 
@@ -95,15 +105,24 @@ export class TablesService {
         where: table_items,
       });
 
+      if (!inventoryItems.length) {
+        throw new HttpException('Tables not found.', HttpStatus.NOT_FOUND);
+      }
+
       const filterInventoryItems = inventoryItems.filter((item) =>
         table_items.includes(item.id_table),
       );
+
+      if (!filterInventoryItems.length) {
+        throw new HttpException('Tables not found.', HttpStatus.NOT_FOUND);
+      }
+
       this.labelsService.generateLabels(filterInventoryItems, res);
     } catch (error) {
-      throw new HttpException(
-        'Inventario no encontrado' + error,
-        HttpStatus.NOT_FOUND,
-      );
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Invalid table_items', HttpStatus.BAD_REQUEST);
     }
   }
 }

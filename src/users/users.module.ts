@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthService } from '../Autentication/auth.service';
 import { MailModule } from '../mail/mail.module';
 import { ReservesEntity } from '../reserves/reserves.entity';
-import { UserReserveEntity } from '../users_reserves/user_reserves.entity';
+import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
 
 @Module({
   imports: [

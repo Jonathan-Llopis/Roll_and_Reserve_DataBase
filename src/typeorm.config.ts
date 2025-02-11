@@ -5,11 +5,11 @@ import * as dotenv from 'dotenv';
 import { ReviewsEntity } from './reviews/reviews.entity';
 import { DifficultyEntity } from './difficulty/difficulty.entity';
 import { GameCategoryEntity } from './game_category/game_category.entity';
-import { GamesEntity } from './games/game.entitiy';
+import { GamesEntity } from './games/games.entitiy';
 import { ReservesEntity } from './reserves/reserves.entity';
 import { ShopsEntity } from './shops/shops.entity';
 import { TablesEntity } from './tables/tables.entity';
-import { UserReserveEntity } from './users_reserves/user_reserves.entity';
+import { UserReserveEntity } from './users_reserves/users_reserves.entity';
 
 dotenv.config();
 

@@ -10,11 +10,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { AuthService } from '../Autentication/auth.service';
 import { MailService } from '../mail/mail.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { UsersService } from './users.service';
-@Controller('Users')
+
+@Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
@@ -23,120 +25,169 @@ export class UsersController {
   ) {}
 
   @Get()
-  getAllUser(@Query('xml') xml?: string) {
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({ status: 200, description: 'Users retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  async getAllUser() {
     try {
-      return this.usersService.getAllUser(xml);
+      return await this.usersService.getAllUser();
     } catch (err) {
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: err,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        {
-          cause: err,
-        },
-      );
+      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
     }
   }
 
   @Get(':id')
-  getUser(@Param('id') id: string, @Query('xml') xml?: string) {
-    const userId = id;
-    if (!userId) {
-      throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
+  @ApiOperation({ summary: 'Get user by ID' })
+  @ApiResponse({ status: 200, description: 'User retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid user ID.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiParam({ name: 'id', example: '12345' })
+  async getUser(@Param('id') id: string) {
+    try {
+      return await this.usersService.getUser(id);
+    } catch (err) {
+      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
     }
-    return this.usersService.getUser(userId, xml);
   }
 
   @Get('google/:id_google')
-  getUserByGoogleId(
-    @Param('id_google') idGoogle: string,
-    @Query('xml') xml?: string,
-  ) {
-    if (!idGoogle) {
-      throw new HttpException('Invalid Google user ID', HttpStatus.BAD_REQUEST);
+  @ApiOperation({ summary: 'Get user by Google ID' })
+  @ApiResponse({ status: 200, description: 'User retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid Google user ID.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiParam({ name: 'id_google', example: 'google-12345' })
+  async getUserByGoogleId(@Param('id_google') idGoogle: string) {
+    try {
+      return await this.usersService.getUserByGoogleId(idGoogle);
+    } catch (err) {
+      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
     }
-    return this.usersService.getUserByGoogleId(idGoogle, xml);
   }
 
   @Post()
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.createUser(createUserDto);
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({ status: 201, description: 'User created successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    try {
+      return await this.usersService.createUser(createUserDto);
+    } catch (err) {
+      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Put(':id')
-  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const userId = id;
-    if (!userId) {
-      throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
+  @ApiOperation({ summary: 'Update user by ID' })
+  @ApiResponse({ status: 200, description: 'User updated successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid user ID.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiParam({ name: 'id', example: '12345' })
+  async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    try {
+      return await this.usersService.updateUser(updateUserDto, id);
+    } catch (err) {
+      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
     }
-    return this.usersService.updateUser(
-      {
-        ...updateUserDto,
-        id_google: userId,
-      },
-      userId,
-    );
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    const userId = id;
-
-    return this.usersService.deleteUser(userId);
+  @ApiOperation({ summary: 'Delete user by ID' })
+  @ApiResponse({ status: 200, description: 'User deleted successfully.' })
+  @ApiResponse({ status: 400, description: 'Invalid user ID.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiParam({ name: 'id', example: '12345' })
+  async deleteUser(@Param('id') id: string) {
+    try {
+      return await this.usersService.deleteUser(id);
+    } catch (err) {
+      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+    }
   }
   @Post('login')
+  @ApiOperation({ summary: 'User login' })
+  @ApiResponse({ status: 200, description: 'User successfully logged in.' })
+  @ApiResponse({ status: 400, description: 'Username and password are required.' })
+  @ApiResponse({ status: 401, description: 'Invalid credentials.' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: { type: 'string', example: 'user@example.com' },
+        password: { type: 'string', example: 'password123' },
+      },
+      required: ['email', 'password'],
+    },
+  })
   async login(
     @Body('email') email: string,
     @Body('password') password: string,
   ) {
     if (!email || !password) {
       throw new HttpException(
-        'El nombre de usuario y la contraseña son obligatorios',
+        'Username and password are required',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const user = await this.usersService.validateUser(email, password);
-    if (!user) {
-      throw new HttpException(
-        'Credenciales inválidas',
-        HttpStatus.UNAUTHORIZED,
-      );
+    try {
+      const user = await this.usersService.validateUser(email, password);
+      const token = await this.authService.generateToken(user.id_google);
+      return { token };
+    } catch (err) {
+      throw new HttpException(err.message, err.status || HttpStatus.UNAUTHORIZED);
     }
-
-    const token = await this.authService.generateToken(user.id_google);
-
-    return { token };
   }
-
   @Put(':id/token')
+  @ApiOperation({ summary: 'Update notification token' })
+  @ApiResponse({ status: 200, description: 'Notification token updated successfully.' })
+  @ApiResponse({ status: 400, description: 'User ID and notification token are required.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiResponse({ status: 400, description: 'Failed to update notification token.' })
+  @ApiParam({ name: 'id', example: '12345' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token_notificacion: { type: 'string', example: 'notification-token-12345' },
+      },
+      required: ['token_notificacion'],
+    },
+  })
   async updateTokenNotification(
     @Param('id') id: string,
     @Body('token_notificacion') tokenNotificacion: string,
   ) {
     if (!id || !tokenNotificacion) {
       throw new HttpException(
-        'El ID del usuario y el token de notificación son obligatorios',
+        'User ID and notification token are required',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const updatedUser = await this.usersService.updateNotificationToken(
-      id,
-      tokenNotificacion,
-    );
-    if (!updatedUser) {
-      throw new HttpException(
-        'No se pudo actualizar el token de notificación',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    try {
+      return await this.usersService.updateNotificationToken(id, tokenNotificacion);
+    } catch (err) {
+      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
     }
-
-    return updatedUser;
   }
   @Put(':id/password')
+  @ApiOperation({ summary: 'Update user password' })
+  @ApiResponse({ status: 200, description: 'Password updated successfully.' })
+  @ApiResponse({ status: 400, description: 'User ID, old password, and new password are required.' })
+  @ApiResponse({ status: 401, description: 'Old password is invalid.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiResponse({ status: 400, description: 'Failed to update password.' })
+  @ApiParam({ name: 'id', example: '12345' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        oldPassword: { type: 'string', example: 'oldPassword123' },
+        newPassword: { type: 'string', example: 'newPassword123' },
+      },
+      required: ['oldPassword', 'newPassword'],
+    },
+  })
   async updatePassword(
     @Param('id') id: string,
     @Body('oldPassword') oldPassword: string,
@@ -144,33 +195,23 @@ export class UsersController {
   ) {
     if (!id || !oldPassword || !newPassword) {
       throw new HttpException(
-        'El ID del usuario, la contraseña antigua y la nueva contraseña son obligatorios',
+        'User ID, old password, and new password are required',
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const isOldPasswordValid = await this.usersService.validateUserPassword(
-      id,
-      oldPassword,
-    );
-    if (!isOldPasswordValid) {
-      throw new HttpException(
-        'La contraseña antigua no es válida',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    try {
+      const isOldPasswordValid = await this.usersService.validateUserPassword(id, oldPassword);
+      if (!isOldPasswordValid) {
+        throw new HttpException(
+          'Old password is invalid',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
 
-    const updatedUser = await this.usersService.updateUserPassword(
-      id,
-      newPassword,
-    );
-    if (!updatedUser) {
-      throw new HttpException(
-        'No se pudo actualizar la contraseña',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      return await this.usersService.updateUserPassword(id, newPassword);
+    } catch (err) {
+      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
     }
-
-    return updatedUser;
   }
 }
