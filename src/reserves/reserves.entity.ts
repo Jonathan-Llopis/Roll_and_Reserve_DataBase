@@ -38,8 +38,8 @@ export class ReservesEntity {
   @Column()
   shop_event: boolean;
 
-  @Column()
-  event_id: string;
+  @Column({ nullable: true })
+  event_id?: string;
 
   @ManyToOne(() => DifficultyEntity, (difficulty) => difficulty.info_difficulty)
   @JoinColumn({ name: 'difficulty_id' })

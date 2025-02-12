@@ -43,7 +43,6 @@ export class ShopsEntity {
   reviews_shop: ReviewsEntity[];
 
   @ManyToMany(() => GamesEntity, (game) => game.shop)
-  @JoinTable()
   games: GamesEntity[];
 
   @OneToMany(() => TablesEntity, (table) => table.tables_of_shop, {

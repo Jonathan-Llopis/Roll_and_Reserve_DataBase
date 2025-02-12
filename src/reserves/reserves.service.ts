@@ -6,6 +6,9 @@ import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
 import { ShopsEntity } from 'src/shops/shops.entity';
 import { GamesEntity } from 'src/games/games.entitiy';
+import { DifficultyEntity } from 'src/difficulty/difficulty.entity';
+import { GameCategoryEntity } from 'src/game_category/game_category.entity';
+import { TablesEntity } from 'src/tables/tables.entity';
 
 @Injectable()
 export class ReservesService {
@@ -16,6 +19,12 @@ export class ReservesService {
     private readonly shopRepository: Repository<ShopsEntity>,
     @InjectRepository(GamesEntity)
     private readonly gameRepository: Repository<GamesEntity>,
+    @InjectRepository(DifficultyEntity)
+    private readonly difficultyRepository: Repository<DifficultyEntity>,
+    @InjectRepository(GameCategoryEntity)
+    private readonly reserveGameCategoryRepository: Repository<GameCategoryEntity>,
+    @InjectRepository(TablesEntity)
+    private readonly tableRepository: Repository<TablesEntity>,
     private readonly fcmNotificationService: FcmNotificationService,
   ) {}
 
@@ -115,41 +124,76 @@ export class ReservesService {
     idShop: number,
   ): Promise<ReservesEntity> {
     try {
+     
+      
       const reserve = this.reserveRepository.create(createReserveDto);
+     
+      const difficulty = await this.difficultyRepository.findOne({
+        where: { id_difficulty: createReserveDto.difficulty_id },
+      });
+      if (createReserveDto.difficulty_id && !difficulty) {
+        throw new HttpException('Difficulty not found', HttpStatus.NOT_FOUND);
+      }
+      reserve.difficulty = difficulty;
+
+      const reserveGameCategory = await this.reserveGameCategoryRepository.findOne({
+        where: { id_game_category: createReserveDto.reserve_game_category_id },
+      });
+      if (createReserveDto.reserve_game_category_id && !reserveGameCategory) {
+        throw new HttpException('Game category not found', HttpStatus.NOT_FOUND);
+      }
+      reserve.reserve_game_category = reserveGameCategory;
+
+      const reserveOfGame = await this.gameRepository.findOne({
+        where: { id_game: createReserveDto.reserve_of_game_id },
+      });
+      if (createReserveDto.reserve_of_game_id && !reserveOfGame) {
+        throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
+      }
+      reserve.reserve_of_game = reserveOfGame;
+
+      const reserveTable = await this.tableRepository.findOne({
+        where: { id_table: createReserveDto.reserve_table_id },
+      });
+      if (createReserveDto.reserve_table_id && !reserveTable) {
+        throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
+      }
+      reserve.reserve_table = reserveTable;
       await this.reserveRepository.save(reserve);
       if (createReserveDto.shop_event == true) {
+
+        const date = new Date(createReserveDto.hour_start);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear().toString().padStart(4, '0');
+
         const shop = await this.shopRepository.findOne({
           where: { id_shop: idShop },
         });
-        const game = await this.gameRepository.findOne({
-          where: { id_game: createReserveDto.reserve_of_game_id },
-        });
+  
         if (!shop) {
           throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
         }
-
-        if (!game) {
-          throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
-        }
-
+        reserve.event_id = `${reserveOfGame.id_game}-${reserveTable.id_table}-${day}/${month}/${year}`;
         if (shop.logo) {
           this.fcmNotificationService.sendTopicNotification(
             idShop.toString(),
             `Nuevo evento en ${shop.name}`,
-            `Juego: ${game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            `Juego: ${reserveOfGame.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
             `${process.env.BASE_URL}/files/${shop.logo}`,
           );
         } else {
           this.fcmNotificationService.sendTopicNotification(
             idShop.toString(),
             `Nuevo evento en ${shop.name}`,
-            `Juego: ${game.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            `Juego: ${reserveOfGame.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
           );
         }
       }
 
       return reserve;
     } catch (err) {
+      console.log(err);
       this.handleError(err);
     }
   }

@@ -25,18 +25,17 @@ export class ShopGamesService {
   async addGameToShop(shopId: string, gameId: string): Promise<ShopsEntity> {
     try {
       const shop = await this.shopRepository.findOne({
-        where: { id_shop: parseInt(shopId) },
-        relations: ['games'],
+      where: { id_shop: parseInt(shopId) },
+      relations: ['games'],
       });
       if (!shop) {
-        throw new HttpException('The shop with the given id was not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('The shop with the given id was not found', HttpStatus.NOT_FOUND);
       }
       const game = await this.gameRepository.findOne({
-        where: { id_game: parseInt(gameId) },
-        relations: ['shops'],
+      where: { id_game: parseInt(gameId) },
       });
       if (!game) {
-        throw new HttpException('The game with the given id was not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('The game with the given id was not found', HttpStatus.NOT_FOUND);
       }
       shop.games.push(game);
       return this.shopRepository.save(shop);

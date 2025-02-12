@@ -3,13 +3,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ReviewsEntity } from './reviews.entity';
 import { CreateReviewDto, UpdateReviewDto } from './reviews.dto';
+import { ShopsEntity } from 'src/shops/shops.entity';
+import { UserEntity } from 'src/users/users.entity';
 
 @Injectable()
 export class ReviewsService {
   constructor(
     @InjectRepository(ReviewsEntity)
     private readonly reviewsRepository: Repository<ReviewsEntity>,
-  ) {}
+    @InjectRepository(ShopsEntity)
+    private readonly shopRepository: Repository<ShopsEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) { }
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -96,6 +102,20 @@ export class ReviewsService {
   ): Promise<ReviewsEntity> {
     try {
       const review = this.reviewsRepository.create(createReviewsDto);
+      const writer = await this.userRepository.findOne({ where: { id_google: createReviewsDto.writter_id } });
+      if (!writer) {
+        throw new HttpException('Writer not found', HttpStatus.NOT_FOUND);
+      }
+
+      const reviewed = await this.userRepository.findOne({ where: { id_google: createReviewsDto.reviewed_id } });
+      if (!reviewed) {
+        throw new HttpException('Reviewed user not found', HttpStatus.NOT_FOUND);
+      }
+
+      const shop = await this.shopRepository.findOne({ where: { id_shop: createReviewsDto.shop_reviews_id } });
+      if (!shop) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
       await this.reviewsRepository.save(review);
       return review;
     } catch (err) {

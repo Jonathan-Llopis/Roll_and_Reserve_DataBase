@@ -2,13 +2,6 @@ import { IsNumber, IsOptional } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateTableDto {
-  @ApiPropertyOptional({
-    description: 'The unique identifier of the table',
-    example: 1
-  })
-  @IsOptional()
-  @IsNumber()
-  id_table: number;
 
   @ApiPropertyOptional({
     description: 'The number assigned to the table',

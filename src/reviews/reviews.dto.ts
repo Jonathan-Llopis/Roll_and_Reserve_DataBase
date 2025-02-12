@@ -23,16 +23,16 @@ export class CreateReviewDto {
     description: 'The ID of the writer',
     example: 1,
   })
-  @IsNumber()
-  writter_id: number;
+  @IsString()
+  writter_id: string;
 
   @ApiPropertyOptional({
     description: 'The ID of the reviewed entity',
     example: 2,
   })
   @IsOptional()
-  @IsNumber()
-  reviewed_id?: number;
+  @IsString()
+  reviewed_id?: string;
 
   @ApiPropertyOptional({
     description: 'The ID of the shop review',

@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { CreateTableDto, UpdateTableDto } from './tables.dto';
 import { TablesEntity } from './tables.entity';
 import { LabelsService } from '../utils/labels/labels.service';
+import { ShopsEntity } from 'src/shops/shops.entity';
 
 @Injectable()
 export class TablesService {
   constructor(
     @InjectRepository(TablesEntity)
     private readonly tableRepository: Repository<TablesEntity>,
+    @InjectRepository(ShopsEntity)
+    private readonly shopRepository: Repository<ShopsEntity>,
     private readonly labelsService: LabelsService,
   ) {}
 
@@ -67,6 +70,11 @@ export class TablesService {
   async createTable(createTableDto: CreateTableDto): Promise<TablesEntity> {
     try {
       const table = this.tableRepository.create(createTableDto);
+      const shop = await this.shopRepository.findOne({ where: { id_shop: createTableDto.shop_id } });
+      if (!shop) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
+      table.tables_of_shop = shop;
       await this.tableRepository.save(table);
       return table;
     } catch (err) {

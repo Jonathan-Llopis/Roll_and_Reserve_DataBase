@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ShopsEntity } from './shops.entity';
 import { CreateShopDto, UpdateShopDto } from './shops.dto';
+import { UserEntity } from 'src/users/users.entity';
 
 @Injectable()
 export class ShopsService {
   constructor(
     @InjectRepository(ShopsEntity)
     private readonly shopRepository: Repository<ShopsEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
   private handleError(err: any) {
@@ -66,6 +69,11 @@ export class ShopsService {
   async createShop(createShopDto: CreateShopDto): Promise<ShopsEntity> {
     try {
       const shop = this.shopRepository.create(createShopDto);
+      const owner = await this.userRepository.findOne({ where: { id_google: createShopDto.owner_id } });
+      if (!owner) {
+        throw new HttpException('Owner not found', HttpStatus.NOT_FOUND);
+      }
+      shop.owner = owner;
       await this.shopRepository.save(shop);
       return shop;
     } catch (err) {

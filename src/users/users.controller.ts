@@ -47,8 +47,8 @@ export class UsersController {
     schema: {
       type: 'object',
       properties: {
-        email: { type: 'string', example: 'user@example.com' },
-        password: { type: 'string', example: 'password123' },
+        email: { type: 'string', example: 'johndoe@example.com' },
+        password: { type: 'string', example: 'StrongP@ssw0rd' },
       },
       required: ['email', 'password'],
     },
