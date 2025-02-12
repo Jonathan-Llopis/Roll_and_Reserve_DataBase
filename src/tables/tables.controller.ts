@@ -22,6 +22,7 @@ export class TablesController {
   @Get()
   @ApiOperation({ summary: 'Get all tables' })
   @ApiResponse({ status: 200, description: 'Tables retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   getAllTables() {
     return this.tablesService.getAllTables();
@@ -45,6 +46,7 @@ export class TablesController {
   @ApiOperation({ summary: 'Get all tables by shop ID' })
   @ApiParam({ name: 'idShop', example: '1', description: 'ID of the shop' })
   @ApiResponse({ status: 200, description: 'Tables retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Invalid shop ID' })
   getAllTablesByShop(@Param('idShop') idShop: string) {
     const shopId = parseInt(idShop);

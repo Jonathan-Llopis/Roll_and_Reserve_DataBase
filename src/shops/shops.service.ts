@@ -21,9 +21,13 @@ export class ShopsService {
 
   async getAllShops(): Promise<ShopsEntity[]> {
     try {
-      return await this.shopRepository.find({
+      const shops = await this.shopRepository.find({
         relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
       });
+      if (shops.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
+      return shops;
     } catch (err) {
       this.handleError(err);
     }
@@ -46,10 +50,14 @@ export class ShopsService {
 
   async getAllShopsByOwner(idOwner: string): Promise<ShopsEntity[]> {
     try {
-      return await this.shopRepository.find({
+      const shops = await this.shopRepository.find({
         relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
         where: { owner: { id_google: idOwner } },
       });
+      if (shops.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
+      return shops;
     } catch (err) {
       this.handleError(err);
     }

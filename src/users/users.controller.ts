@@ -13,7 +13,7 @@ import {
 import { ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { AuthService } from '../Autentication/auth.service';
 import { MailService } from '../mail/mail.service';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto } from './users.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -27,6 +27,7 @@ export class UsersController {
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Users retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   async getAllUser() {
     try {

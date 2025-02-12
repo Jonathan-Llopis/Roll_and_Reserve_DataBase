@@ -21,6 +21,7 @@ export class ReservesController {
   @Get()
   @ApiOperation({ summary: 'Get all reserves' })
   @ApiResponse({ status: 200, description: 'Successfully retrieved all reserves.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Failed to retrieve reserves.' })
   async getAllReserves() {
     return await this.reservesService.getAllReserves();
@@ -45,6 +46,7 @@ export class ReservesController {
   @ApiParam({ name: 'date', description: 'Date in YYYY-MM-DD format', example: '2023-10-01' })
   @ApiParam({ name: 'idTable', description: 'Table ID', example: '1' })
   @ApiResponse({ status: 200, description: 'Successfully retrieved all reserves by date and table ID.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Failed to retrieve reserves by date and table ID.' })
   async getAllReservesByDate(
     @Param('date') date: string,
@@ -117,6 +119,7 @@ export class ReservesController {
   @ApiOperation({ summary: 'Get all unique shop events by shop ID' })
   @ApiParam({ name: 'idShop', description: 'Shop ID', example: '1' })
   @ApiResponse({ status: 200, description: 'Successfully retrieved all unique shop events.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Failed to retrieve unique shop events.' })
   async getAllUniqueShopEvents(
     @Param('idShop') idShop: string,

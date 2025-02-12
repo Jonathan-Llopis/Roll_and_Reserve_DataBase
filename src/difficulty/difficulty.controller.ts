@@ -20,6 +20,7 @@ export class DifficultyController {
   @Get()
   @ApiOperation({ summary: 'Get all difficulties' })
   @ApiResponse({ status: 200, description: 'Successfully retrieved all difficulties.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   getAllDifficulties() {
     return this.difficultyService.getAllDifficulties();

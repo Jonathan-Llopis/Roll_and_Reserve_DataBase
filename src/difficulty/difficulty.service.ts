@@ -21,6 +21,9 @@ export class DifficultyService {
   async getAllDifficulties(): Promise<DifficultyEntity[]> {
     try {
       const difficulties = await this.difficultyRepository.find();
+      if (difficulties.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
       return difficulties;
     } catch (err) {
       this.handleError(err);

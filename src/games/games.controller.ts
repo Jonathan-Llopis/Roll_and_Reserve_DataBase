@@ -21,6 +21,7 @@ export class GamesController {
   @Get()
   @ApiOperation({ summary: 'Get all games' })
   @ApiResponse({ status: 200, description: 'Games retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   getAllGames() {
     return this.gamesService.getAllGames();

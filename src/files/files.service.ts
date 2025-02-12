@@ -71,6 +71,10 @@ export class FilesService {
         .find({})
         .toArray();
 
+      if (files.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
+
       return files.map((file) => ({
         id: file._id.toString(),
         file: {

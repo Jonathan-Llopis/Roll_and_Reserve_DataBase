@@ -75,6 +75,7 @@ export class FilesController {
   @Get('')
   @ApiOperation({ summary: 'Get all files' })
   @ApiResponse({ status: 200, description: 'Successfully retrieved all files.', type: [FileInfoVm] })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'An error occurred while retrieving files.' })
   async getAllFiles(): Promise<{ id: string; file: FileInfoVm }[]> {
     const files = await this.filesService.findAll();

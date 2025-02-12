@@ -23,6 +23,9 @@ export class GamesService {
       const games = await this.gameRepository.find({
         relations: ['difficulty_of_game'],
       });
+      if (games.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
       return games;
     } catch (err) {
       this.handleError(err);

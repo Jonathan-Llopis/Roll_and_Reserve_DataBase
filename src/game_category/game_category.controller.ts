@@ -25,6 +25,7 @@ export class GameCategoryController {
   @Get()
   @ApiOperation({ summary: 'Get all game categories' })
   @ApiResponse({ status: 200, description: 'Successfully retrieved all game categories.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Failed to retrieve game categories.' })
   async getAllGameCategories() {
     try {

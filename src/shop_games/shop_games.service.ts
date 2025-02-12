@@ -87,6 +87,10 @@ export class ShopGamesService {
         throw new HttpException('The shop with the given id was not found', HttpStatus.NOT_FOUND);
       }
 
+      if (shop.games.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
+
       return shop.games;
     } catch (err) {
       this.handleError(err);

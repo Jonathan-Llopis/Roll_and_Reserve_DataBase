@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { UtilsService } from '../utils/utils.service';
 import { UserEntity } from './users.entity';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { CreateUserDto, UpdateUserDto } from './users.dto';
 
 @Injectable()
 export class UsersService {
@@ -31,6 +31,10 @@ export class UsersService {
           'shop_owned',
         ],
       });
+
+      if (users.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
 
       return users;
     } catch (err) {
@@ -128,6 +132,9 @@ export class UsersService {
   async validateUser(email: string, password: string): Promise<UserEntity | null> {
     try {
       const user = await this.usersRepository.findOne({ where: { email } });
+      if (!user) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
       if (user && await bcrypt.compare(password, user.password)) {
         return user;
       }

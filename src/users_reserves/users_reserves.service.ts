@@ -119,12 +119,18 @@ export class UsersReservesService {
       currentDate.setHours(currentDate.getHours() + 1),
     );
 
-    return user.userReserves
+    const userReserves = user.userReserves
       .filter((userReserve) => userReserve.reserve.hour_end > madridDate)
       .sort(
         (a, b) =>
           a.reserve.hour_start.getTime() - b.reserve.hour_start.getTime(),
       );
+
+    if (userReserves.length === 0) {
+      throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+    }
+
+    return userReserves;
   }
 
   async deleteReserveFromUser(userId: string, reserveId: string) {
@@ -195,3 +201,4 @@ export class UsersReservesService {
     return this.userReserveRepository.save(userReserve);
   }
 }
+

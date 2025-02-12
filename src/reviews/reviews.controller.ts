@@ -21,6 +21,7 @@ export class ReviewsController {
   @Get()
   @ApiOperation({ summary: 'Get all reviews' })
   @ApiResponse({ status: 200, description: 'Reviews retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   getAllReviews() {
     try {
@@ -63,6 +64,7 @@ export class ReviewsController {
   @Get('/shop/:idShop')
   @ApiOperation({ summary: 'Get all reviews by shop ID' })
   @ApiResponse({ status: 200, description: 'Reviews retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Invalid Shop ID.' })
   @ApiResponse({ status: 404, description: 'Review not found.' })
   @ApiParam({ name: 'idShop', description: 'ID of the shop', example: '1' })
@@ -87,6 +89,7 @@ export class ReviewsController {
   @Get('/writter/:idUser')
   @ApiOperation({ summary: 'Get all reviews by writer ID' })
   @ApiResponse({ status: 200, description: 'Reviews retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Invalid User ID.' })
   @ApiResponse({ status: 404, description: 'Review not found.' })
   @ApiParam({ name: 'idUser', description: 'ID of the writer', example: '1' })
@@ -110,6 +113,7 @@ export class ReviewsController {
   @Get('/user/:idUser')
   @ApiOperation({ summary: 'Get all reviews by user ID' })
   @ApiResponse({ status: 200, description: 'Reviews retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Invalid User ID.' })
   @ApiResponse({ status: 404, description: 'Review not found.' })
   @ApiParam({ name: 'idUser', description: 'ID of the user', example: '1' })

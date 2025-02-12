@@ -23,7 +23,11 @@ export class GameCategoryService {
 
   async getAllGameCategories(): Promise<GameCategoryEntity[]> {
     try {
-      return await this.gameCategoryRepository.find();
+      const gameCategories = await this.gameCategoryRepository.find();
+      if (gameCategories.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
+      return gameCategories;
     } catch (err) {
       this.handleError(err);
     }

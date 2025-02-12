@@ -21,6 +21,7 @@ export class ShopsController {
   @Get()
   @ApiOperation({ summary: 'Get all shops' })
   @ApiResponse({ status: 200, description: 'Shops retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   getAllShops() {
     try {
@@ -64,6 +65,7 @@ export class ShopsController {
   @ApiOperation({ summary: 'Get all shops by owner ID' })
   @ApiParam({ name: 'idOwner', description: 'ID of the owner', type: String, example: '1' })
   @ApiResponse({ status: 200, description: 'Shops retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 404, description: 'Owner not found.' })
   getAllShopsByOwner(@Param('idOwner') idOwner: string) {

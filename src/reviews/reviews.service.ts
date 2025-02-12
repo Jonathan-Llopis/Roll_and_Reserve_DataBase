@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException, HttpException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ReviewsEntity } from './reviews.entity';
@@ -20,9 +20,13 @@ export class ReviewsService {
 
   async getAllReviews(): Promise<ReviewsEntity[]> {
     try {
-      return await this.reviewsRepository.find({
+      const reviews = await this.reviewsRepository.find({
         relations: ['writer', 'reviewed', 'shop_reviews'],
       });
+      if (reviews.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
+      return reviews;
     } catch (err) {
       this.handleError(err);
     }
@@ -44,10 +48,14 @@ export class ReviewsService {
 
   async getAllReviewsByShop(idShop: number): Promise<ReviewsEntity[]> {
     try {
-      return await this.reviewsRepository.find({
+      const reviews = await this.reviewsRepository.find({
         relations: ['writer', 'reviewed', 'shop_reviews'],
         where: { shop_reviews: { id_shop: idShop } },
       });
+      if (reviews.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
+      return reviews;
     } catch (err) {
       this.handleError(err);
     }
@@ -55,10 +63,14 @@ export class ReviewsService {
 
   async getAllReviewsByWritter(id_google: string): Promise<ReviewsEntity[]> {
     try {
-      return await this.reviewsRepository.find({
+      const reviews = await this.reviewsRepository.find({
         relations: ['writer', 'reviewed', 'shop_reviews'],
         where: { writer: { id_google: id_google } },
       });
+      if (reviews.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
+      return reviews;
     } catch (err) {
       this.handleError(err);
     }
@@ -66,10 +78,14 @@ export class ReviewsService {
 
   async getAllReviewsByUser(id_google: string): Promise<ReviewsEntity[]> {
     try {
-      return await this.reviewsRepository.find({
+      const reviews = await this.reviewsRepository.find({
         relations: ['writer', 'reviewed', 'shop_reviews'],
         where: { reviewed: { id_google: id_google } },
       });
+      if (reviews.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
+      return reviews;
     } catch (err) {
       this.handleError(err);
     }

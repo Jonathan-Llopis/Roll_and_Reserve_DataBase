@@ -25,6 +25,9 @@ export class TablesService {
       const tables = await this.tableRepository.find({
         relations: ['reserves_of_table', 'tables_of_shop'],
       });
+      if (!tables.length) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
       return tables;
     } catch (err) {
       this.handleError(err);
@@ -52,6 +55,9 @@ export class TablesService {
         relations: ['reserves_of_table', 'tables_of_shop'],
         where: { tables_of_shop: { id_shop: idShop } },
       });
+      if (!tables.length) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
       return tables;
     } catch (err) {
       this.handleError(err);
@@ -100,21 +106,21 @@ export class TablesService {
 
   async generate_qr(table_items: any, res: any) {
     try {
-      const inventoryItems = await this.tableRepository.find({
+      const tablesItems = await this.tableRepository.find({
         relations: ['reserves_of_table', 'tables_of_shop'],
         where: table_items,
       });
 
-      if (!inventoryItems.length) {
-        throw new HttpException('Tables not found.', HttpStatus.NOT_FOUND);
+      if (!tablesItems.length) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
       }
 
-      const filterInventoryItems = inventoryItems.filter((item) =>
+      const filterInventoryItems = tablesItems.filter((item) =>
         table_items.includes(item.id_table),
       );
 
       if (!filterInventoryItems.length) {
-        throw new HttpException('Tables not found.', HttpStatus.NOT_FOUND);
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
       }
 
       this.labelsService.generateLabels(filterInventoryItems, res);

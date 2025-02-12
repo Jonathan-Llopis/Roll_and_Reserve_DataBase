@@ -42,6 +42,9 @@ export class ReservesService {
           hour_start: 'ASC',
         },
       });
+      if (reserves.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
       return reserves;
     } catch (err) {
       this.handleError(err);
@@ -98,6 +101,9 @@ export class ReservesService {
           hour_start: 'ASC',
         },
       });
+      if (reserves.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
       return reserves;
     } catch (err) {
       this.handleError(err);
@@ -198,6 +204,9 @@ export class ReservesService {
         .addSelect('game.id_game')
         .orderBy('reserve.hour_start', 'ASC')
         .getMany();
+      if (reserves.length === 0) {
+        throw new HttpException('No Content', HttpStatus.NO_CONTENT);
+      }
       return reserves;
     } catch (err) {
       this.handleError(err);
