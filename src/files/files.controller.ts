@@ -15,7 +15,7 @@ import { FileResponseVm } from './view-models/file-response-vm.model';
 import { UsersService } from '../users/users.service';
 import { FileInfoVm } from './view-models/file-info-vm.model';
 import { ShopsService } from '../shops/shops.service';
-import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopsEntity } from 'src/shops/shops.entity';
 import { Repository } from 'typeorm';
@@ -34,6 +34,7 @@ export class FilesController {
   ) {}
 
   @Post('')
+  @ApiBearerAuth()
   @UseInterceptors(FilesInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -50,6 +51,7 @@ export class FilesController {
   @ApiOperation({ summary: 'Upload files' })
   @ApiResponse({ status: 201, description: 'Files successfully uploaded.' })
   @ApiResponse({ status: 400, description: 'An error occurred while uploading files.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async upload(@UploadedFiles() files) {
     const response = [];
     files.forEach((file) => {
@@ -72,86 +74,8 @@ export class FilesController {
     return response;
   }
 
-  @Get('')
-  @ApiOperation({ summary: 'Get all files' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved all files.', type: [FileInfoVm] })
-  @ApiResponse({ status: 204, description: 'No content.' })
-  @ApiResponse({ status: 400, description: 'An error occurred while retrieving files.' })
-  async getAllFiles(): Promise<{ id: string; file: FileInfoVm }[]> {
-    const files = await this.filesService.findAll();
-    return files;
-  }
-
-  @Get('info/:id')
-  @ApiOperation({ summary: 'Get file info by ID' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved file info.', type: FileResponseVm })
-  @ApiResponse({ status: 400, description: 'Invalid file ID.' })
-  @ApiResponse({ status: 404, description: 'File not found.' })
-  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
-  async getFileInfo(@Param('id') id: string): Promise<FileResponseVm> {
-    const file = await this.filesService.findInfo(id);
-    const filestream = await this.filesService.readStream(id);
-    if (!filestream) {
-      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
-    }
-    return {
-      message: 'File has been detected',
-      file: file,
-    };
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: 'Get file by ID' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved file.' })
-  @ApiResponse({ status: 400, description: 'Invalid file ID.' })
-  @ApiResponse({ status: 404, description: 'File not found.' })
-  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
-  async getFile(@Param('id') id: string, @Res() res) {
-    const file = await this.filesService.findInfo(id);
-    const filestream = await this.filesService.readStream(id);
-    if (!filestream) {
-      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
-    }
-    res.header('Content-Type', file.contentType);
-    return filestream.pipe(res);
-  }
-
-  @Get('download/:id')
-  @ApiOperation({ summary: 'Download file by ID' })
-  @ApiResponse({ status: 200, description: 'Successfully downloaded file.' })
-  @ApiResponse({ status: 400, description: 'Invalid file ID.' })
-  @ApiResponse({ status: 404, description: 'File not found.' })
-  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
-  async downloadFile(@Param('id') id: string, @Res() res) {
-    const file = await this.filesService.findInfo(id);
-    const filestream = await this.filesService.readStream(id);
-    if (!filestream) {
-      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
-    }
-    res.header('Content-Type', file.contentType);
-    res.header('Content-Disposition', 'attachment; filename=' + file.filename);
-    return filestream.pipe(res);
-  }
-
-  @Get('delete/:id')
-  @ApiOperation({ summary: 'Delete file by ID' })
-  @ApiResponse({ status: 200, description: 'Successfully deleted file.', type: FileResponseVm })
-  @ApiResponse({ status: 400, description: 'Invalid file ID.' })
-  @ApiResponse({ status: 404, description: 'File not found.' })
-  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
-  async deleteFile(@Param('id') id: string): Promise<FileResponseVm> {
-    const file = await this.filesService.findInfo(id);
-    const filestream = await this.filesService.deleteFile(id);
-    if (!filestream) {
-      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
-    }
-    return {
-      message: 'File has been deleted',
-      file: file,
-    };
-  }
-
   @Post('avatar/:id')
+  @ApiBearerAuth()
   @UseInterceptors(
     FilesInterceptor('file', 10, {
       fileFilter: (req, file, callback) => {
@@ -177,6 +101,7 @@ export class FilesController {
   @ApiOperation({ summary: 'Upload avatar for user by ID' })
   @ApiResponse({ status: 200, description: 'Successfully uploaded avatar.' })
   @ApiResponse({ status: 400, description: 'Invalid user ID or file type.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @ApiParam({ name: 'id', type: 'string', description: 'ID of the user', example: '12345' })
   async uploadAvatar(@UploadedFiles() files, @Param('id') idUser: string) {
@@ -207,6 +132,7 @@ export class FilesController {
   }
 
   @Post('logo/:id')
+  @ApiBearerAuth()
   @UseInterceptors(
     FilesInterceptor('file', 10, {
       fileFilter: (req, file, callback) => {
@@ -232,6 +158,7 @@ export class FilesController {
   @ApiOperation({ summary: 'Upload logo for shop by ID' })
   @ApiResponse({ status: 200, description: 'Successfully uploaded logo.' })
   @ApiResponse({ status: 400, description: 'Invalid shop ID or file type.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
   @ApiParam({ name: 'id', type: 'string', description: 'ID of the shop', example: '12345' })
   async uploadShopLogo(@UploadedFiles() files, @Param('id') idShop: string) {
@@ -262,5 +189,94 @@ export class FilesController {
       response.push(fileReponse);
     });
     return response;
+  }
+
+  @Get('')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all files' })
+  @ApiResponse({ status: 200, description: 'Successfully retrieved all files.', type: [FileInfoVm] })
+  @ApiResponse({ status: 204, description: 'No content.' })
+  @ApiResponse({ status: 400, description: 'An error occurred while retrieving files.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  async getAllFiles(): Promise<{ id: string; file: FileInfoVm }[]> {
+    const files = await this.filesService.findAll();
+    return files;
+  }
+
+  @Get('info/:id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get file info by ID' })
+  @ApiResponse({ status: 200, description: 'Successfully retrieved file info.', type: FileResponseVm })
+  @ApiResponse({ status: 400, description: 'Invalid file ID.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'File not found.' })
+  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
+  async getFileInfo(@Param('id') id: string): Promise<FileResponseVm> {
+    const file = await this.filesService.findInfo(id);
+    const filestream = await this.filesService.readStream(id);
+    if (!filestream) {
+      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+    }
+    return {
+      message: 'File has been detected',
+      file: file,
+    };
+  }
+
+  @Get(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get file by ID' })
+  @ApiResponse({ status: 200, description: 'Successfully retrieved file.' })
+  @ApiResponse({ status: 400, description: 'Invalid file ID.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'File not found.' })
+  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
+  async getFile(@Param('id') id: string, @Res() res) {
+    const file = await this.filesService.findInfo(id);
+    const filestream = await this.filesService.readStream(id);
+    if (!filestream) {
+      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+    }
+    res.header('Content-Type', file.contentType);
+    return filestream.pipe(res);
+  }
+
+  @Get('download/:id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Download file by ID' })
+  @ApiResponse({ status: 200, description: 'Successfully downloaded file.' })
+  @ApiResponse({ status: 400, description: 'Invalid file ID.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'File not found.' })
+  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
+  async downloadFile(@Param('id') id: string, @Res() res) {
+    const file = await this.filesService.findInfo(id);
+    const filestream = await this.filesService.readStream(id);
+    if (!filestream) {
+      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+    }
+    res.header('Content-Type', file.contentType);
+    res.header('Content-Disposition', 'attachment; filename=' + file.filename);
+    return filestream.pipe(res);
+  }
+
+  @Get('delete/:id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete file by ID' })
+  @ApiResponse({ status: 200, description: 'Successfully deleted file.', type: FileResponseVm })
+  @ApiResponse({ status: 400, description: 'Invalid file ID.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'File not found.' })
+  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
+  async deleteFile(@Param('id') id: string): Promise<FileResponseVm> {
+    const file = await this.filesService.findInfo(id);
+    const filestream = await this.filesService.deleteFile(id);
+    if (!filestream) {
+      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+    }
+    return {
+      message: 'File has been deleted',
+      file: file,
+    };
   }
 }
