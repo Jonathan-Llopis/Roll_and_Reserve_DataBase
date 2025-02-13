@@ -76,16 +76,16 @@ export class UpdateReviewDto {
     example: 1,
   })
   @IsOptional()
-  @IsNumber()
-  writter_id?: number;
+  @IsString()
+  writter_id?: string;
 
   @ApiPropertyOptional({
     description: 'The ID of the reviewed entity',
     example: 2,
   })
   @IsOptional()
-  @IsNumber()
-  reviewed_id?: number;
+  @IsString()
+  reviewed_id?: string;
 
   @ApiPropertyOptional({
     description: 'The ID of the shop review',

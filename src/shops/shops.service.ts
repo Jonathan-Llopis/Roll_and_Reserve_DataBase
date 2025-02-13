@@ -85,9 +85,17 @@ export class ShopsService {
     try {
       const shop = await this.shopRepository.findOne({
         where: { id_shop: id },
+        relations: ['owner'],
       });
       if (!shop) {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
+      if (updateShopDto.owner_id) {
+        const owner = await this.userRepository.findOne({ where: { id_google: updateShopDto.owner_id } });
+        if (!owner) {
+          throw new HttpException('Owner not found', HttpStatus.NOT_FOUND);
+        }
+        shop.owner = owner;
       }
       Object.assign(shop, updateShopDto);
       await this.shopRepository.save(shop);

@@ -125,7 +125,6 @@ export class ReservesService {
   ): Promise<ReservesEntity> {
     try {
      
-      
       const reserve = this.reserveRepository.create(createReserveDto);
      
       const difficulty = await this.difficultyRepository.findOne({
@@ -205,10 +204,57 @@ export class ReservesService {
     try {
       const reserve = await this.reserveRepository.findOne({
         where: { id_reserve: id },
+        relations: [
+          'reserve_of_game',
+          'reserve_game_category',
+          'difficulty',
+          'reserve_table',
+        ],
       });
       if (!reserve) {
         throw new HttpException('Reserve not found', HttpStatus.NOT_FOUND);
       }
+
+      if (updateReserveDto.difficulty_id) {
+        const difficulty = await this.difficultyRepository.findOne({
+          where: { id_difficulty: updateReserveDto.difficulty_id },
+        });
+        if (!difficulty) {
+          throw new HttpException('Difficulty not found', HttpStatus.NOT_FOUND);
+        }
+        reserve.difficulty = difficulty;
+      }
+
+      if (updateReserveDto.reserve_game_category_id) {
+        const reserveGameCategory = await this.reserveGameCategoryRepository.findOne({
+          where: { id_game_category: updateReserveDto.reserve_game_category_id },
+        });
+        if (!reserveGameCategory) {
+          throw new HttpException('Game category not found', HttpStatus.NOT_FOUND);
+        }
+        reserve.reserve_game_category = reserveGameCategory;
+      }
+
+      if (updateReserveDto.reserve_of_game_id) {
+        const reserveOfGame = await this.gameRepository.findOne({
+          where: { id_game: updateReserveDto.reserve_of_game_id },
+        });
+        if (!reserveOfGame) {
+          throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
+        }
+        reserve.reserve_of_game = reserveOfGame;
+      }
+
+      if (updateReserveDto.reserve_table_id) {
+        const reserveTable = await this.tableRepository.findOne({
+          where: { id_table: updateReserveDto.reserve_table_id },
+        });
+        if (!reserveTable) {
+          throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
+        }
+        reserve.reserve_table = reserveTable;
+      }
+
       Object.assign(reserve, updateReserveDto);
       await this.reserveRepository.save(reserve);
       return reserve;

@@ -89,10 +89,20 @@ export class TablesService {
     try {
       const table = await this.tableRepository.findOne({
         where: { id_table: id },
+        relations: ['tables_of_shop'],
       });
       if (!table) {
         throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
       }
+
+      if (updateTableDto.shop_id) {
+        const shop = await this.shopRepository.findOne({ where: { id_shop: updateTableDto.shop_id } });
+        if (!shop) {
+          throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+        }
+        table.tables_of_shop = shop;
+      }
+
       Object.assign(table, updateTableDto);
       await this.tableRepository.save(table);
       return table;

@@ -130,10 +130,36 @@ export class ReviewsService {
     try {
       const review = await this.reviewsRepository.findOne({
         where: { id_review: id },
+        relations: ['writer', 'reviewed', 'shop_reviews'],
       });
       if (!review) {
         throw new NotFoundException('Review not found');
       }
+
+      if (updateReviewsDto.writter_id) {
+        const writer = await this.userRepository.findOne({ where: { id_google: updateReviewsDto.writter_id } });
+        if (!writer) {
+          throw new NotFoundException('Writer not found');
+        }
+        review.writer = writer;
+      }
+
+      if (updateReviewsDto.reviewed_id) {
+        const reviewed = await this.userRepository.findOne({ where: { id_google: updateReviewsDto.reviewed_id } });
+        if (!reviewed) {
+          throw new NotFoundException('Reviewed user not found');
+        }
+        review.reviewed = reviewed;
+      }
+
+      if (updateReviewsDto.shop_reviews_id) {
+        const shop = await this.shopRepository.findOne({ where: { id_shop: updateReviewsDto.shop_reviews_id } });
+        if (!shop) {
+          throw new NotFoundException('Shop not found');
+        }
+        review.shop_reviews = shop;
+      }
+
       Object.assign(review, updateReviewsDto);
       await this.reviewsRepository.save(review);
       return review;

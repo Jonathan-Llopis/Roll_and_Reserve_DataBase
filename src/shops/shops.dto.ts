@@ -48,7 +48,7 @@ export class CreateShopDto {
 
   @ApiProperty({
     description: 'The ID of the shop owner',
-    example: 'owner123'
+    example: '1234567890abcdef'
   })
   @IsString()
   owner_id: string;

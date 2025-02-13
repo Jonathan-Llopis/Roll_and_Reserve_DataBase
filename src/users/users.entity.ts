@@ -17,7 +17,7 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id_user: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   id_google: string;
 
   @Column()
