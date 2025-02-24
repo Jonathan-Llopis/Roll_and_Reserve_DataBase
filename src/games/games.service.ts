@@ -1,8 +1,18 @@
-import { Injectable, NotFoundException, BadRequestException, HttpStatus, HttpException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { CreateGameDto, UpdateGameDto } from './games.dto';
 import { GamesEntity } from './games.entitiy';
+import axios from 'axios';
+
+
+const uri = 'https://api.rawg.io/api/games';
 
 @Injectable()
 export class GamesService {
@@ -10,6 +20,8 @@ export class GamesService {
     @InjectRepository(GamesEntity)
     private readonly gameRepository: Repository<GamesEntity>,
   ) {}
+  
+  
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -32,13 +44,15 @@ export class GamesService {
     }
   }
 
-  async getGame(id: number): Promise<GamesEntity> {
+  async getGame(gameName: string): Promise<GamesEntity> {
     try {
       const game = await this.gameRepository.findOne({
-        where: { id_game: id },
+        where: { name: Like(`%${gameName}%`) },
         relations: ['difficulty_of_game'],
       });
       if (!game) {
+        const response = await axios.post(uri, gameName);
+      return response.data;
         throw new NotFoundException('Game not found');
       }
       return game;
@@ -57,7 +71,10 @@ export class GamesService {
     }
   }
 
-  async updateGame(updateGameDto: UpdateGameDto, id: number): Promise<GamesEntity> {
+  async updateGame(
+    updateGameDto: UpdateGameDto,
+    id: number,
+  ): Promise<GamesEntity> {
     try {
       const game = await this.gameRepository.findOne({
         where: { id_game: id },
@@ -65,7 +82,7 @@ export class GamesService {
       if (!game) {
         throw new NotFoundException('Game not found');
       }
-      Object.assign(game, updateGameDto);
+      this.gameRepository.merge(game, updateGameDto);
       await this.gameRepository.save(game);
       return game;
     } catch (err) {

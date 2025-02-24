@@ -6,7 +6,7 @@ export class CreateShopDto {
     description: 'The name of the shop',
     minLength: 1,
     maxLength: 500,
-    example: 'My Shop'
+    example: 'My Shop',
   })
   @IsString()
   @Length(1, 500)
@@ -16,7 +16,7 @@ export class CreateShopDto {
     description: 'The address of the shop',
     minLength: 1,
     maxLength: 500,
-    example: '123 Main St'
+    example: '123 Main St',
   })
   @IsString()
   @Length(1, 500)
@@ -26,7 +26,7 @@ export class CreateShopDto {
     description: 'The logo of the shop',
     minLength: 1,
     maxLength: 500,
-    example: 'logo.png'
+    example: 'logo.png',
   })
   @IsString()
   @Length(1, 500)
@@ -34,21 +34,21 @@ export class CreateShopDto {
 
   @ApiProperty({
     description: 'The latitude of the shop location',
-    example: 40.7128
+    example: 40.7128,
   })
   @IsNumber()
   latitud: number;
 
   @ApiProperty({
     description: 'The longitude of the shop location',
-    example: -74.0060
+    example: -74.006,
   })
   @IsNumber()
   longitud: number;
 
   @ApiProperty({
     description: 'The ID of the shop owner',
-    example: '1234567890abcdef'
+    example: '1234567890abcdef',
   })
   @IsString()
   owner_id: string;
@@ -59,7 +59,7 @@ export class UpdateShopDto {
     description: 'The name of the shop',
     minLength: 1,
     maxLength: 500,
-    example: 'My Shop'
+    example: 'My Shop',
   })
   @IsOptional()
   @IsString()
@@ -70,7 +70,7 @@ export class UpdateShopDto {
     description: 'The address of the shop',
     minLength: 1,
     maxLength: 500,
-    example: '123 Main St'
+    example: '123 Main St',
   })
   @IsOptional()
   @IsString()
@@ -81,7 +81,7 @@ export class UpdateShopDto {
     description: 'The logo of the shop',
     minLength: 1,
     maxLength: 500,
-    example: 'logo.png'
+    example: 'logo.png',
   })
   @IsOptional()
   @IsString()
@@ -90,7 +90,7 @@ export class UpdateShopDto {
 
   @ApiPropertyOptional({
     description: 'The latitude of the shop location',
-    example: 40.7128
+    example: 40.7128,
   })
   @IsOptional()
   @IsNumber()
@@ -98,7 +98,7 @@ export class UpdateShopDto {
 
   @ApiPropertyOptional({
     description: 'The longitude of the shop location',
-    example: -74.0060
+    example: -74.006,
   })
   @IsOptional()
   @IsNumber()
@@ -106,7 +106,7 @@ export class UpdateShopDto {
 
   @ApiPropertyOptional({
     description: 'The ID of the shop owner',
-    example: 'owner123'
+    example: 'owner123',
   })
   @IsOptional()
   @IsString()

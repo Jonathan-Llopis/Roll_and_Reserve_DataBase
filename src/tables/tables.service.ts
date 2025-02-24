@@ -70,7 +70,9 @@ export class TablesService {
   async createTable(createTableDto: CreateTableDto): Promise<TablesEntity> {
     try {
       const table = this.tableRepository.create(createTableDto);
-      const shop = await this.shopRepository.findOne({ where: { id_shop: createTableDto.shop_id } });
+      const shop = await this.shopRepository.findOne({
+        where: { id_shop: createTableDto.shop_id },
+      });
       if (!shop) {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
@@ -96,14 +98,16 @@ export class TablesService {
       }
 
       if (updateTableDto.shop_id) {
-        const shop = await this.shopRepository.findOne({ where: { id_shop: updateTableDto.shop_id } });
+        const shop = await this.shopRepository.findOne({
+          where: { id_shop: updateTableDto.shop_id },
+        });
         if (!shop) {
           throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
         }
         table.tables_of_shop = shop;
       }
 
-      Object.assign(table, updateTableDto);
+      this.tableRepository.merge(table, updateTableDto);
       await this.tableRepository.save(table);
       return table;
     } catch (err) {

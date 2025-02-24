@@ -8,9 +8,14 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { AuthService } from '../Autentication/auth.service';
 import { MailService } from '../mail/mail.service';
 import { CreateUserDto, UpdateUserDto } from './users.dto';
@@ -33,7 +38,10 @@ export class UsersController {
     try {
       return await this.usersService.createUser(createUserDto);
     } catch (err) {
-      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        err.message,
+        err.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -41,7 +49,10 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'User login' })
   @ApiResponse({ status: 200, description: 'User successfully logged in.' })
-  @ApiResponse({ status: 400, description: 'Username and password are required.' })
+  @ApiResponse({
+    status: 400,
+    description: 'Username and password are required.',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiBody({
     schema: {
@@ -69,7 +80,10 @@ export class UsersController {
       const token = await this.authService.generateToken(user.id_google);
       return { token };
     } catch (err) {
-      throw new HttpException(err.message, err.status || HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        err.message,
+        err.status || HttpStatus.UNAUTHORIZED,
+      );
     }
   }
 
@@ -81,19 +95,31 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @ApiParam({ name: 'id', example: '12345' })
-  async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     try {
       return await this.usersService.updateUser(updateUserDto, id);
     } catch (err) {
-      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        err.message,
+        err.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
   @Put(':id/token')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update notification token' })
-  @ApiResponse({ status: 200, description: 'Notification token updated successfully.' })
-  @ApiResponse({ status: 400, description: 'User ID and notification token are required.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Notification token updated successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'User ID and notification token are required.',
+  })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiParam({ name: 'id', example: '12345' })
@@ -101,7 +127,10 @@ export class UsersController {
     schema: {
       type: 'object',
       properties: {
-        token_notificacion: { type: 'string', example: 'notification-token-12345' },
+        token_notificacion: {
+          type: 'string',
+          example: 'notification-token-12345',
+        },
       },
       required: ['token_notificacion'],
     },
@@ -118,9 +147,15 @@ export class UsersController {
     }
 
     try {
-      return await this.usersService.updateNotificationToken(id, tokenNotificacion);
+      return await this.usersService.updateNotificationToken(
+        id,
+        tokenNotificacion,
+      );
     } catch (err) {
-      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        err.message,
+        err.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -128,7 +163,10 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user password' })
   @ApiResponse({ status: 200, description: 'Password updated successfully.' })
-  @ApiResponse({ status: 400, description: 'User ID, old password, and new password are required.' })
+  @ApiResponse({
+    status: 400,
+    description: 'User ID, old password, and new password are required.',
+  })
   @ApiResponse({ status: 401, description: 'Old password is invalid.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
@@ -157,7 +195,10 @@ export class UsersController {
     }
 
     try {
-      const isOldPasswordValid = await this.usersService.validateUserPassword(id, oldPassword);
+      const isOldPasswordValid = await this.usersService.validateUserPassword(
+        id,
+        oldPassword,
+      );
       if (!isOldPasswordValid) {
         throw new HttpException(
           'Old password is invalid',
@@ -167,7 +208,10 @@ export class UsersController {
 
       return await this.usersService.updateUserPassword(id, newPassword);
     } catch (err) {
-      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        err.message,
+        err.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -182,7 +226,10 @@ export class UsersController {
     try {
       return await this.usersService.getAllUser();
     } catch (err) {
-      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        err.message,
+        err.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -198,7 +245,10 @@ export class UsersController {
     try {
       return await this.usersService.getUser(id);
     } catch (err) {
-      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        err.message,
+        err.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -214,7 +264,10 @@ export class UsersController {
     try {
       return await this.usersService.getUserByGoogleId(idGoogle);
     } catch (err) {
-      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        err.message,
+        err.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -230,7 +283,10 @@ export class UsersController {
     try {
       return await this.usersService.deleteUser(id);
     } catch (err) {
-      throw new HttpException(err.message, err.status || HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        err.message,
+        err.status || HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }

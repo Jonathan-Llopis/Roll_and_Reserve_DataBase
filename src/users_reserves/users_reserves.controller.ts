@@ -2,7 +2,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   Param,
   Post,
   Put,
@@ -11,7 +10,13 @@ import {
 } from '@nestjs/common';
 import { isEmpty } from 'class-validator';
 import { UsersReservesService } from './users_reserves.service';
-import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
 @ApiTags('ReservesUsers')
 @Controller('users')
@@ -27,8 +32,14 @@ export class UsersReservesController {
   @Post(':userId/reserves/:reserveId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Add a reserve to a user' })
-  @ApiResponse({ status: 201, description: 'Reserve successfully added to user.' })
-  @ApiResponse({ status: 404, description: 'The user or reserve with the given id was not found.' })
+  @ApiResponse({
+    status: 201,
+    description: 'Reserve successfully added to user.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'The user or reserve with the given id was not found.',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 400, description: 'Invalid user or reserve ID.' })
   @ApiParam({ name: 'userId', example: '123' })
@@ -39,7 +50,11 @@ export class UsersReservesController {
   ) {
     this.validateReserveId(reserveId);
     try {
-      return await this.usersReservesService.addUsertoReserve(userId, reserveId, false);
+      return await this.usersReservesService.addUsertoReserve(
+        userId,
+        reserveId,
+        false,
+      );
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -50,8 +65,14 @@ export class UsersReservesController {
   @ApiOperation({ summary: 'Confirm a reserve for a user' })
   @ApiResponse({ status: 200, description: 'Reserve successfully confirmed.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'The reserve with the given id was not found.' })
-  @ApiResponse({ status: 412, description: 'The reserve with the given id is not associated to the user.' })
+  @ApiResponse({
+    status: 404,
+    description: 'The reserve with the given id was not found.',
+  })
+  @ApiResponse({
+    status: 412,
+    description: 'The reserve with the given id is not associated to the user.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid user or reserve ID.' })
   @ApiParam({ name: 'userId', example: '123' })
   @ApiParam({ name: 'reserveId', example: '456' })
@@ -67,7 +88,10 @@ export class UsersReservesController {
     }
     this.validateReserveId(reserveId);
     try {
-      return await this.usersReservesService.confirmReserveForUser(userId, reserveId);
+      return await this.usersReservesService.confirmReserveForUser(
+        userId,
+        reserveId,
+      );
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -79,7 +103,10 @@ export class UsersReservesController {
   @ApiResponse({ status: 200, description: 'Reserve found.' })
   @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'The reserve with the given id was not found.' })
+  @ApiResponse({
+    status: 404,
+    description: 'The reserve with the given id was not found.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid reserve ID.' })
   @ApiParam({ name: 'reserveId', example: '456' })
   async findReserveById(@Param('reserveId') reserveId: string) {
@@ -99,8 +126,14 @@ export class UsersReservesController {
   @ApiOperation({ summary: 'Find a reserve by user ID and reserve ID' })
   @ApiResponse({ status: 200, description: 'Reserve found.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'The reserve with the given id was not found.' })
-  @ApiResponse({ status: 412, description: 'The reserve with the given id is not associated to the user.' })
+  @ApiResponse({
+    status: 404,
+    description: 'The reserve with the given id was not found.',
+  })
+  @ApiResponse({
+    status: 412,
+    description: 'The reserve with the given id is not associated to the user.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid user or reserve ID.' })
   @ApiParam({ name: 'userId', example: '123' })
   @ApiParam({ name: 'reserveId', example: '456' })
@@ -116,7 +149,10 @@ export class UsersReservesController {
     }
     this.validateReserveId(reserveId);
     try {
-      return await this.usersReservesService.findReserveFromUser(userId, reserveId);
+      return await this.usersReservesService.findReserveFromUser(
+        userId,
+        reserveId,
+      );
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -128,7 +164,10 @@ export class UsersReservesController {
   @ApiResponse({ status: 200, description: 'Reserves found.' })
   @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'The user with the given id was not found.' })
+  @ApiResponse({
+    status: 404,
+    description: 'The user with the given id was not found.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid user ID.' })
   @ApiParam({ name: 'userId', example: '123' })
   async findReservesByUserId(@Param('userId') userId: string) {
@@ -145,9 +184,18 @@ export class UsersReservesController {
   @Delete(':userId/reserves/:reserveId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a reserve from a user' })
-  @ApiResponse({ status: 204, description: 'Reserve successfully deleted from user.' })
-  @ApiResponse({ status: 404, description: 'The user or reserve with the given id was not found.' })
-  @ApiResponse({ status: 412, description: 'The reserve with the given id is not associated to the user.' })
+  @ApiResponse({
+    status: 204,
+    description: 'Reserve successfully deleted from user.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'The user or reserve with the given id was not found.',
+  })
+  @ApiResponse({
+    status: 412,
+    description: 'The reserve with the given id is not associated to the user.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid user or reserve ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiParam({ name: 'userId', example: '123' })
@@ -164,7 +212,10 @@ export class UsersReservesController {
     }
     this.validateReserveId(reserveId);
     try {
-      return await this.usersReservesService.deleteReserveFromUser(userId, reserveId);
+      return await this.usersReservesService.deleteReserveFromUser(
+        userId,
+        reserveId,
+      );
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

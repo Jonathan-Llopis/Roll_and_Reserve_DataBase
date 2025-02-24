@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, PreconditionFailedException, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  PreconditionFailedException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ReservesEntity } from '../reserves/reserves.entity';
@@ -33,10 +39,17 @@ export class UsersReservesService {
 
     const reserve = await this.reservesRepository.findOne({
       where: { id_reserve: parseInt(reserveId) },
-      relations: ['userReserves', 'userReserves.user', 'reserve_table', 'reserve_table.tables_of_shop'],
+      relations: [
+        'userReserves',
+        'userReserves.user',
+        'reserve_table',
+        'reserve_table.tables_of_shop',
+      ],
     });
     if (!reserve) {
-      throw new NotFoundException('The reserve with the given id was not found');
+      throw new NotFoundException(
+        'The reserve with the given id was not found',
+      );
     }
 
     const userReserve = new UserReserveEntity();
@@ -75,7 +88,9 @@ export class UsersReservesService {
       relations: ['userReserves', 'userReserves.user'],
     });
     if (!reserve) {
-      throw new NotFoundException('The reserve with the given id was not found');
+      throw new NotFoundException(
+        'The reserve with the given id was not found',
+      );
     }
     return reserve;
   }
@@ -92,7 +107,9 @@ export class UsersReservesService {
       relations: ['user', 'reserve'],
     });
     if (!userReserve) {
-      throw new PreconditionFailedException('The reserve with the given id is not associated to the user');
+      throw new PreconditionFailedException(
+        'The reserve with the given id is not associated to the user',
+      );
     }
 
     return userReserve;
@@ -143,15 +160,24 @@ export class UsersReservesService {
     });
 
     if (!userReserve) {
-      throw new PreconditionFailedException('The reserve with the given id is not associated to the user');
+      throw new PreconditionFailedException(
+        'The reserve with the given id is not associated to the user',
+      );
     }
 
     const reserve = await this.reservesRepository.findOne({
       where: { id_reserve: parseInt(reserveId) },
-      relations: ['userReserves', 'userReserves.user', 'reserve_table', 'reserve_table.tables_of_shop'],
+      relations: [
+        'userReserves',
+        'userReserves.user',
+        'reserve_table',
+        'reserve_table.tables_of_shop',
+      ],
     });
     if (!reserve) {
-      throw new NotFoundException('The reserve with the given id was not found');
+      throw new NotFoundException(
+        'The reserve with the given id was not found',
+      );
     }
 
     await this.userReserveRepository.remove(userReserve);
@@ -194,11 +220,12 @@ export class UsersReservesService {
     });
 
     if (!userReserve) {
-      throw new PreconditionFailedException('The reserve with the given id is not associated to the user');
+      throw new PreconditionFailedException(
+        'The reserve with the given id is not associated to the user',
+      );
     }
 
     userReserve.reserva_confirmada = true;
     return this.userReserveRepository.save(userReserve);
   }
 }
-

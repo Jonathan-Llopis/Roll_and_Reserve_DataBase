@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ReviewsEntity } from './reviews.entity';
@@ -15,7 +21,7 @@ export class ReviewsService {
     private readonly shopRepository: Repository<ShopsEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -102,17 +108,26 @@ export class ReviewsService {
   ): Promise<ReviewsEntity> {
     try {
       const review = this.reviewsRepository.create(createReviewsDto);
-      const writer = await this.userRepository.findOne({ where: { id_google: createReviewsDto.writter_id } });
+      const writer = await this.userRepository.findOne({
+        where: { id_google: createReviewsDto.writter_id },
+      });
       if (!writer) {
         throw new HttpException('Writer not found', HttpStatus.NOT_FOUND);
       }
 
-      const reviewed = await this.userRepository.findOne({ where: { id_google: createReviewsDto.reviewed_id } });
+      const reviewed = await this.userRepository.findOne({
+        where: { id_google: createReviewsDto.reviewed_id },
+      });
       if (!reviewed) {
-        throw new HttpException('Reviewed user not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'Reviewed user not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
 
-      const shop = await this.shopRepository.findOne({ where: { id_shop: createReviewsDto.shop_reviews_id } });
+      const shop = await this.shopRepository.findOne({
+        where: { id_shop: createReviewsDto.shop_reviews_id },
+      });
       if (!shop) {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
@@ -137,7 +152,9 @@ export class ReviewsService {
       }
 
       if (updateReviewsDto.writter_id) {
-        const writer = await this.userRepository.findOne({ where: { id_google: updateReviewsDto.writter_id } });
+        const writer = await this.userRepository.findOne({
+          where: { id_google: updateReviewsDto.writter_id },
+        });
         if (!writer) {
           throw new NotFoundException('Writer not found');
         }
@@ -145,7 +162,9 @@ export class ReviewsService {
       }
 
       if (updateReviewsDto.reviewed_id) {
-        const reviewed = await this.userRepository.findOne({ where: { id_google: updateReviewsDto.reviewed_id } });
+        const reviewed = await this.userRepository.findOne({
+          where: { id_google: updateReviewsDto.reviewed_id },
+        });
         if (!reviewed) {
           throw new NotFoundException('Reviewed user not found');
         }
@@ -153,14 +172,16 @@ export class ReviewsService {
       }
 
       if (updateReviewsDto.shop_reviews_id) {
-        const shop = await this.shopRepository.findOne({ where: { id_shop: updateReviewsDto.shop_reviews_id } });
+        const shop = await this.shopRepository.findOne({
+          where: { id_shop: updateReviewsDto.shop_reviews_id },
+        });
         if (!shop) {
           throw new NotFoundException('Shop not found');
         }
         review.shop_reviews = shop;
       }
 
-      Object.assign(review, updateReviewsDto);
+      this.reviewsRepository.merge(review, updateReviewsDto);
       await this.reviewsRepository.save(review);
       return review;
     } catch (err) {

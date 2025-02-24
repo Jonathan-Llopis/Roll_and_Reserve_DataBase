@@ -13,7 +13,15 @@ import { GameCategoryEntity } from 'src/game_category/game_category.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ReservesEntity, UserReserveEntity, ShopsEntity, GamesEntity, TablesEntity, DifficultyEntity, GameCategoryEntity]),
+    TypeOrmModule.forFeature([
+      ReservesEntity,
+      UserReserveEntity,
+      ShopsEntity,
+      GamesEntity,
+      TablesEntity,
+      DifficultyEntity,
+      GameCategoryEntity,
+    ]),
     FcmNotificationModule,
   ],
   controllers: [ReservesController],

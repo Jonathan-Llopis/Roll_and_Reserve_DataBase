@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException, HttpStatus, HttpException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DifficultyEntity } from './difficulty.entity';
@@ -67,7 +72,7 @@ export class DifficultyService {
       if (!difficulty) {
         throw new NotFoundException('Difficulty not found');
       }
-      Object.assign(difficulty, updateDifficultyDto);
+      this.difficultyRepository.merge(difficulty, updateDifficultyDto);
       await this.difficultyRepository.save(difficulty);
       return difficulty;
     } catch (err) {

@@ -19,7 +19,10 @@ export class ShopsService {
       throw err;
     }
     console.error(err);
-    throw new HttpException('An unexpected error occurred', HttpStatus.BAD_REQUEST);
+    throw new HttpException(
+      'An unexpected error occurred',
+      HttpStatus.BAD_REQUEST,
+    );
   }
 
   async getAllShops(): Promise<ShopsEntity[]> {
@@ -69,7 +72,9 @@ export class ShopsService {
   async createShop(createShopDto: CreateShopDto): Promise<ShopsEntity> {
     try {
       const shop = this.shopRepository.create(createShopDto);
-      const owner = await this.userRepository.findOne({ where: { id_google: createShopDto.owner_id } });
+      const owner = await this.userRepository.findOne({
+        where: { id_google: createShopDto.owner_id },
+      });
       if (!owner) {
         throw new HttpException('Owner not found', HttpStatus.NOT_FOUND);
       }
@@ -81,7 +86,10 @@ export class ShopsService {
     }
   }
 
-  async updateShop(updateShopDto: UpdateShopDto, id: number): Promise<ShopsEntity> {
+  async updateShop(
+    updateShopDto: UpdateShopDto,
+    id: number,
+  ): Promise<ShopsEntity> {
     try {
       const shop = await this.shopRepository.findOne({
         where: { id_shop: id },
@@ -91,13 +99,15 @@ export class ShopsService {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
       if (updateShopDto.owner_id) {
-        const owner = await this.userRepository.findOne({ where: { id_google: updateShopDto.owner_id } });
+        const owner = await this.userRepository.findOne({
+          where: { id_google: updateShopDto.owner_id },
+        });
         if (!owner) {
           throw new HttpException('Owner not found', HttpStatus.NOT_FOUND);
         }
         shop.owner = owner;
       }
-      Object.assign(shop, updateShopDto);
+      this.shopRepository.merge(shop, updateShopDto);
       await this.shopRepository.save(shop);
       return shop;
     } catch (err) {

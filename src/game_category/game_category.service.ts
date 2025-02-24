@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GameCategoryEntity } from './game_category.entity';
@@ -51,7 +57,9 @@ export class GameCategoryService {
     createGameCategoryDto: CreateGameCategoryDto,
   ): Promise<GameCategoryEntity> {
     try {
-      const gameCategory = this.gameCategoryRepository.create(createGameCategoryDto);
+      const gameCategory = this.gameCategoryRepository.create(
+        createGameCategoryDto,
+      );
       await this.gameCategoryRepository.save(gameCategory);
       return gameCategory;
     } catch (err) {
@@ -70,7 +78,7 @@ export class GameCategoryService {
       if (!gameCategory) {
         throw new NotFoundException('Game category not found');
       }
-      Object.assign(gameCategory, updateGameCategoryDto);
+      this.gameCategoryRepository.merge(gameCategory, updateGameCategoryDto);
       await this.gameCategoryRepository.save(gameCategory);
       return gameCategory;
     } catch (err) {

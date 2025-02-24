@@ -12,7 +12,10 @@ export class FilesService {
     this.bucket = new GridFSBucket(this.connection.db, { bucketName: 'fs' });
   }
 
-  private handleError(err: any, status: HttpStatus = HttpStatus.BAD_REQUEST): never {
+  private handleError(
+    err: any,
+    status: HttpStatus = HttpStatus.BAD_REQUEST,
+  ): never {
     if (err instanceof HttpException) {
       throw err;
     }

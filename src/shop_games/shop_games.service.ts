@@ -19,23 +19,32 @@ export class ShopGamesService {
     if (err instanceof HttpException) {
       throw err;
     }
-    throw new HttpException(err.message || 'Bad request', err.status || HttpStatus.BAD_REQUEST);
+    throw new HttpException(
+      err.message || 'Bad request',
+      err.status || HttpStatus.BAD_REQUEST,
+    );
   }
 
   async addGameToShop(shopId: string, gameId: string): Promise<ShopsEntity> {
     try {
       const shop = await this.shopRepository.findOne({
-      where: { id_shop: parseInt(shopId) },
-      relations: ['games'],
+        where: { id_shop: parseInt(shopId) },
+        relations: ['games'],
       });
       if (!shop) {
-      throw new HttpException('The shop with the given id was not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'The shop with the given id was not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
       const game = await this.gameRepository.findOne({
-      where: { id_game: parseInt(gameId) },
+        where: { id_game: parseInt(gameId) },
       });
       if (!game) {
-      throw new HttpException('The game with the given id was not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'The game with the given id was not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
       shop.games.push(game);
       return this.shopRepository.save(shop);
@@ -51,7 +60,10 @@ export class ShopGamesService {
         relations: ['shop'],
       });
       if (!game) {
-        throw new HttpException('The game with the given id was not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'The game with the given id was not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       const shop = await this.shopRepository.findOne({
@@ -59,7 +71,10 @@ export class ShopGamesService {
         relations: ['games'],
       });
       if (!shop) {
-        throw new HttpException('The shop with the given id was not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'The shop with the given id was not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       const shopGame = shop.games.find(
@@ -67,7 +82,10 @@ export class ShopGamesService {
       );
 
       if (!shopGame) {
-        throw new HttpException('The game with the given id is not associated to the shop', HttpStatus.PRECONDITION_FAILED);
+        throw new HttpException(
+          'The game with the given id is not associated to the shop',
+          HttpStatus.PRECONDITION_FAILED,
+        );
       }
 
       return shopGame;
@@ -83,7 +101,10 @@ export class ShopGamesService {
         relations: ['games'],
       });
       if (!shop) {
-        throw new HttpException('The shop with the given id was not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'The shop with the given id was not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       if (shop.games.length === 0) {
@@ -107,7 +128,10 @@ export class ShopGamesService {
       });
 
       if (!shop) {
-        throw new HttpException('The shop with the given id was not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'The shop with the given id was not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       for (let i = 0; i < games.length; i++) {
@@ -116,7 +140,10 @@ export class ShopGamesService {
           relations: ['shop'],
         });
         if (!game) {
-          throw new HttpException('The game with the given id was not found', HttpStatus.NOT_FOUND);
+          throw new HttpException(
+            'The game with the given id was not found',
+            HttpStatus.NOT_FOUND,
+          );
         }
       }
       shop.games = games;
@@ -133,7 +160,10 @@ export class ShopGamesService {
         relations: ['shop'],
       });
       if (!game) {
-        throw new HttpException('The game with the given id was not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'The game with the given id was not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       const shop = await this.shopRepository.findOne({
@@ -141,7 +171,10 @@ export class ShopGamesService {
         relations: ['games'],
       });
       if (!shop) {
-        throw new HttpException('The shop with the given id was not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'The shop with the given id was not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       const shopGame = shop.games.find(
@@ -149,10 +182,15 @@ export class ShopGamesService {
       );
 
       if (!shopGame) {
-        throw new HttpException('The game with the given id is not associated to the shop', HttpStatus.PRECONDITION_FAILED);
+        throw new HttpException(
+          'The game with the given id is not associated to the shop',
+          HttpStatus.PRECONDITION_FAILED,
+        );
       }
 
-      shop.games = shop.games.filter((game) => game.id_game !== parseInt(gameId));
+      shop.games = shop.games.filter(
+        (game) => game.id_game !== parseInt(gameId),
+      );
       return this.shopRepository.save(shop);
     } catch (err) {
       this.handleError(err);

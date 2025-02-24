@@ -6,7 +6,7 @@ export class CreateGameCategoryDto {
     description: 'The description of the game category',
     minimum: 1,
     default: 1,
-    example: 'Action'
+    example: 'Action',
   })
   @IsString()
   @Length(1, 500)
@@ -18,7 +18,7 @@ export class UpdateGameCategoryDto {
     description: 'The description of the game category',
     minimum: 1,
     default: 1,
-    example: 'Adventure'
+    example: 'Adventure',
   })
   @IsOptional()
   @IsString()

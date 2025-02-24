@@ -29,7 +29,7 @@ const config = {
     GamesEntity,
     GameCategoryEntity,
     DifficultyEntity,
-    UserReserveEntity
+    UserReserveEntity,
   ],
   migrations: ['./../../../migrations/*.ts'],
   synchronize: false,

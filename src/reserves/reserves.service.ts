@@ -124,9 +124,8 @@ export class ReservesService {
     idShop: number,
   ): Promise<ReservesEntity> {
     try {
-     
       const reserve = this.reserveRepository.create(createReserveDto);
-     
+
       const difficulty = await this.difficultyRepository.findOne({
         where: { id_difficulty: createReserveDto.difficulty_id },
       });
@@ -135,11 +134,17 @@ export class ReservesService {
       }
       reserve.difficulty = difficulty;
 
-      const reserveGameCategory = await this.reserveGameCategoryRepository.findOne({
-        where: { id_game_category: createReserveDto.reserve_game_category_id },
-      });
+      const reserveGameCategory =
+        await this.reserveGameCategoryRepository.findOne({
+          where: {
+            id_game_category: createReserveDto.reserve_game_category_id,
+          },
+        });
       if (createReserveDto.reserve_game_category_id && !reserveGameCategory) {
-        throw new HttpException('Game category not found', HttpStatus.NOT_FOUND);
+        throw new HttpException(
+          'Game category not found',
+          HttpStatus.NOT_FOUND,
+        );
       }
       reserve.reserve_game_category = reserveGameCategory;
 
@@ -160,7 +165,6 @@ export class ReservesService {
       reserve.reserve_table = reserveTable;
       await this.reserveRepository.save(reserve);
       if (createReserveDto.shop_event == true) {
-
         const date = new Date(createReserveDto.hour_start);
         const day = date.getDate().toString().padStart(2, '0');
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -169,7 +173,7 @@ export class ReservesService {
         const shop = await this.shopRepository.findOne({
           where: { id_shop: idShop },
         });
-  
+
         if (!shop) {
           throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
         }
@@ -226,11 +230,17 @@ export class ReservesService {
       }
 
       if (updateReserveDto.reserve_game_category_id) {
-        const reserveGameCategory = await this.reserveGameCategoryRepository.findOne({
-          where: { id_game_category: updateReserveDto.reserve_game_category_id },
-        });
+        const reserveGameCategory =
+          await this.reserveGameCategoryRepository.findOne({
+            where: {
+              id_game_category: updateReserveDto.reserve_game_category_id,
+            },
+          });
         if (!reserveGameCategory) {
-          throw new HttpException('Game category not found', HttpStatus.NOT_FOUND);
+          throw new HttpException(
+            'Game category not found',
+            HttpStatus.NOT_FOUND,
+          );
         }
         reserve.reserve_game_category = reserveGameCategory;
       }
@@ -255,7 +265,7 @@ export class ReservesService {
         reserve.reserve_table = reserveTable;
       }
 
-      Object.assign(reserve, updateReserveDto);
+      this.reserveRepository.merge(reserve, updateReserveDto);
       await this.reserveRepository.save(reserve);
       return reserve;
     } catch (err) {
@@ -277,7 +287,9 @@ export class ReservesService {
   async findAllUniqueShopEvents(shopId: number): Promise<ReservesEntity[]> {
     try {
       const currentDate = new Date();
-      const shop = await this.shopRepository.findOne({ where: { id_shop: shopId } });
+      const shop = await this.shopRepository.findOne({
+        where: { id_shop: shopId },
+      });
       if (!shop) {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }

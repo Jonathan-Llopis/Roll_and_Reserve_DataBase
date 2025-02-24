@@ -2,17 +2,16 @@ import { IsNumber, IsOptional } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateTableDto {
-
   @ApiPropertyOptional({
     description: 'The number assigned to the table',
-    example: 5
+    example: 5,
   })
   @IsNumber()
   number_table: number;
 
   @ApiPropertyOptional({
     description: 'The unique identifier of the shop',
-    example: 10
+    example: 10,
   })
   @IsNumber()
   shop_id: number;
@@ -21,7 +20,7 @@ export class CreateTableDto {
 export class UpdateTableDto {
   @ApiPropertyOptional({
     description: 'The unique identifier of the table',
-    example: 1
+    example: 1,
   })
   @IsOptional()
   @IsNumber()
@@ -29,7 +28,7 @@ export class UpdateTableDto {
 
   @ApiPropertyOptional({
     description: 'The number assigned to the table',
-    example: 5
+    example: 5,
   })
   @IsOptional()
   @IsNumber()
@@ -37,7 +36,7 @@ export class UpdateTableDto {
 
   @ApiPropertyOptional({
     description: 'The unique identifier of the shop',
-    example: 10
+    example: 10,
   })
   @IsOptional()
   @IsNumber()

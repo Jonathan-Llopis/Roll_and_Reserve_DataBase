@@ -11,17 +11,17 @@ export class ShopsSeeder implements Seeder {
 
     const shopsEntries = await Promise.all(
       shopsData.map(async (item) => {
-      const shopsEntry = new ShopsEntity();
-      shopsEntry.address = item.address;
-      shopsEntry.name = item.name;
-      shopsEntry.logo = item.logo;
-      shopsEntry.latitud = item.latitud;
-      shopsEntry.longitud = item.longitud;
-      shopsEntry.owner = await userRepository.findOne({
-        where: { id_google: item.owner_id.toString() },
-      });
+        const shopsEntry = new ShopsEntity();
+        shopsEntry.address = item.address;
+        shopsEntry.name = item.name;
+        shopsEntry.logo = item.logo;
+        shopsEntry.latitud = item.latitud;
+        shopsEntry.longitud = item.longitud;
+        shopsEntry.owner = await userRepository.findOne({
+          where: { id_google: item.owner_id.toString() },
+        });
 
-      return shopsEntry;
+        return shopsEntry;
       }),
     );
 

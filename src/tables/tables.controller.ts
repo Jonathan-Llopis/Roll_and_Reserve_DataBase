@@ -10,7 +10,12 @@ import {
   Put,
   Res,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { TablesService } from './tables.service';
 import { CreateTableDto, UpdateTableDto } from './tables.dto';
 import { ApiBody } from '@nestjs/swagger';

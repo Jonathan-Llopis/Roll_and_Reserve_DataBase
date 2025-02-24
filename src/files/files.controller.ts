@@ -15,7 +15,14 @@ import { FileResponseVm } from './view-models/file-response-vm.model';
 import { UsersService } from '../users/users.service';
 import { FileInfoVm } from './view-models/file-info-vm.model';
 import { ShopsService } from '../shops/shops.service';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopsEntity } from 'src/shops/shops.entity';
 import { Repository } from 'typeorm';
@@ -25,11 +32,11 @@ import { UserEntity } from 'src/users/users.entity';
 export class FilesController {
   constructor(
     private filesService: FilesService,
-     @InjectRepository(UserEntity)
-        private readonly usersRepository: Repository<UserEntity>,
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
     private readonly userService: UsersService,
     @InjectRepository(ShopsEntity)
-        private readonly shopRepository: Repository<ShopsEntity>,
+    private readonly shopRepository: Repository<ShopsEntity>,
     private readonly shopService: ShopsService,
   ) {}
 
@@ -41,7 +48,7 @@ export class FilesController {
     schema: {
       type: 'object',
       properties: {
-        file: { 
+        file: {
           type: 'string',
           format: 'binary',
         },
@@ -50,7 +57,10 @@ export class FilesController {
   })
   @ApiOperation({ summary: 'Upload files' })
   @ApiResponse({ status: 201, description: 'Files successfully uploaded.' })
-  @ApiResponse({ status: 400, description: 'An error occurred while uploading files.' })
+  @ApiResponse({
+    status: 400,
+    description: 'An error occurred while uploading files.',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async upload(@UploadedFiles() files) {
     const response = [];
@@ -80,7 +90,13 @@ export class FilesController {
     FilesInterceptor('file', 10, {
       fileFilter: (req, file, callback) => {
         if (!file.mimetype.startsWith('image/')) {
-          return callback(new HttpException('Only image files are allowed', HttpStatus.BAD_REQUEST), false);
+          return callback(
+            new HttpException(
+              'Only image files are allowed',
+              HttpStatus.BAD_REQUEST,
+            ),
+            false,
+          );
         }
         callback(null, true);
       },
@@ -91,7 +107,7 @@ export class FilesController {
     schema: {
       type: 'object',
       properties: {
-        file: { 
+        file: {
           type: 'string',
           format: 'binary',
         },
@@ -103,9 +119,16 @@ export class FilesController {
   @ApiResponse({ status: 400, description: 'Invalid user ID or file type.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  @ApiParam({ name: 'id', type: 'string', description: 'ID of the user', example: '12345' })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    description: 'ID of the user',
+    example: '12345',
+  })
   async uploadAvatar(@UploadedFiles() files, @Param('id') idUser: string) {
-    const user = await this.usersRepository.findOne({ where: { id_google: idUser } });
+    const user = await this.usersRepository.findOne({
+      where: { id_google: idUser },
+    });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -137,7 +160,13 @@ export class FilesController {
     FilesInterceptor('file', 10, {
       fileFilter: (req, file, callback) => {
         if (!file.mimetype.startsWith('image/')) {
-          return callback(new HttpException('Only image files are allowed', HttpStatus.BAD_REQUEST), false);
+          return callback(
+            new HttpException(
+              'Only image files are allowed',
+              HttpStatus.BAD_REQUEST,
+            ),
+            false,
+          );
         }
         callback(null, true);
       },
@@ -148,7 +177,7 @@ export class FilesController {
     schema: {
       type: 'object',
       properties: {
-        file: { 
+        file: {
           type: 'string',
           format: 'binary',
         },
@@ -160,12 +189,22 @@ export class FilesController {
   @ApiResponse({ status: 400, description: 'Invalid shop ID or file type.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
-  @ApiParam({ name: 'id', type: 'string', description: 'ID of the shop', example: '12345' })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    description: 'ID of the shop',
+    example: '12345',
+  })
   async uploadShopLogo(@UploadedFiles() files, @Param('id') idShop: string) {
     if (isNaN(Number(idShop))) {
-      throw new HttpException('Invalid shop ID. ID must be a number.', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Invalid shop ID. ID must be a number.',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    const shop = await this.shopRepository.findOne({ where: { id_shop: parseInt(idShop) } });
+    const shop = await this.shopRepository.findOne({
+      where: { id_shop: parseInt(idShop) },
+    });
     if (!shop) {
       throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
     }
@@ -194,9 +233,16 @@ export class FilesController {
   @Get('')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all files' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved all files.', type: [FileInfoVm] })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved all files.',
+    type: [FileInfoVm],
+  })
   @ApiResponse({ status: 204, description: 'No content.' })
-  @ApiResponse({ status: 400, description: 'An error occurred while retrieving files.' })
+  @ApiResponse({
+    status: 400,
+    description: 'An error occurred while retrieving files.',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async getAllFiles(): Promise<{ id: string; file: FileInfoVm }[]> {
     const files = await this.filesService.findAll();
@@ -206,11 +252,20 @@ export class FilesController {
   @Get('info/:id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get file info by ID' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved file info.', type: FileResponseVm })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved file info.',
+    type: FileResponseVm,
+  })
   @ApiResponse({ status: 400, description: 'Invalid file ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'File not found.' })
-  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    description: 'ID of the file',
+    example: '12345',
+  })
   async getFileInfo(@Param('id') id: string): Promise<FileResponseVm> {
     const file = await this.filesService.findInfo(id);
     const filestream = await this.filesService.readStream(id);
@@ -230,7 +285,12 @@ export class FilesController {
   @ApiResponse({ status: 400, description: 'Invalid file ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'File not found.' })
-  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    description: 'ID of the file',
+    example: '12345',
+  })
   async getFile(@Param('id') id: string, @Res() res) {
     const file = await this.filesService.findInfo(id);
     const filestream = await this.filesService.readStream(id);
@@ -248,7 +308,12 @@ export class FilesController {
   @ApiResponse({ status: 400, description: 'Invalid file ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'File not found.' })
-  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    description: 'ID of the file',
+    example: '12345',
+  })
   async downloadFile(@Param('id') id: string, @Res() res) {
     const file = await this.filesService.findInfo(id);
     const filestream = await this.filesService.readStream(id);
@@ -263,11 +328,20 @@ export class FilesController {
   @Get('delete/:id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete file by ID' })
-  @ApiResponse({ status: 200, description: 'Successfully deleted file.', type: FileResponseVm })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully deleted file.',
+    type: FileResponseVm,
+  })
   @ApiResponse({ status: 400, description: 'Invalid file ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'File not found.' })
-  @ApiParam({ name: 'id', type: 'string', description: 'ID of the file', example: '12345' })
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+    description: 'ID of the file',
+    example: '12345',
+  })
   async deleteFile(@Param('id') id: string): Promise<FileResponseVm> {
     const file = await this.filesService.findInfo(id);
     const filestream = await this.filesService.deleteFile(id);

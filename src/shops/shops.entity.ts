@@ -10,7 +10,6 @@ import {
   ManyToOne,
   OneToMany,
   ManyToMany,
-  JoinTable,
 } from 'typeorm';
 
 @Entity()

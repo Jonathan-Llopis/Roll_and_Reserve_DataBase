@@ -2,7 +2,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   Param,
   Post,
   Put,
@@ -19,7 +18,12 @@ import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopsEntity } from '../shops/shops.entity';
-import { ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
 @Controller('shops')
 export class ShopGamesController {
@@ -41,7 +45,10 @@ export class ShopGamesController {
   @ApiResponse({ status: 201, description: 'Game successfully added to shop.' })
   @ApiResponse({ status: 400, description: 'Invalid shop or game ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'The shop or game with the given ID was not found.' })
+  @ApiResponse({
+    status: 404,
+    description: 'The shop or game with the given ID was not found.',
+  })
   @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
   @ApiParam({ name: 'gamesId', description: 'ID of the game', example: '1' })
   async addGameToShop(
@@ -56,10 +63,16 @@ export class ShopGamesController {
   @Put(':shopsId/games')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Associate games to a shop' })
-  @ApiResponse({ status: 200, description: 'Games successfully associated to shop.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Games successfully associated to shop.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid shop or game ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'The shop or game with the given ID was not found.' })
+  @ApiResponse({
+    status: 404,
+    description: 'The shop or game with the given ID was not found.',
+  })
   @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
   async associateGameToShop(
     @Body() gameDto: CreateGameDto[],
@@ -87,7 +100,10 @@ export class ShopGamesController {
   @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Invalid shop or game ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'The shop or game with the given ID was not found.' })
+  @ApiResponse({
+    status: 404,
+    description: 'The shop or game with the given ID was not found.',
+  })
   @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
   @ApiParam({ name: 'gamesId', description: 'ID of the game', example: '1' })
   async findGameByShopIdGameId(
@@ -106,7 +122,10 @@ export class ShopGamesController {
   @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Invalid shop ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'The shop with the given ID was not found.' })
+  @ApiResponse({
+    status: 404,
+    description: 'The shop with the given ID was not found.',
+  })
   @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
   async findGamesByShopId(@Param('shopsId') shopId: string) {
     this.validateId(shopId, 'shop');
@@ -116,10 +135,16 @@ export class ShopGamesController {
   @Delete(':shopsId/games/:gamesId')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a game from a shop' })
-  @ApiResponse({ status: 200, description: 'Game successfully deleted from shop.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Game successfully deleted from shop.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid shop or game ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'The shop or game with the given ID was not found.' })
+  @ApiResponse({
+    status: 404,
+    description: 'The shop or game with the given ID was not found.',
+  })
   @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
   @ApiParam({ name: 'gamesId', description: 'ID of the game', example: '1' })
   async deleteGameFromShop(

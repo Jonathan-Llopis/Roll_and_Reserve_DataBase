@@ -9,7 +9,13 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ShopsService } from './shops.service';
 import { CreateShopDto, UpdateShopDto } from './shops.dto';
 
@@ -41,7 +47,12 @@ export class ShopsController {
   @Put(':id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a shop by ID' })
-  @ApiParam({ name: 'id', description: 'ID of the shop', type: String, example: '1' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the shop',
+    type: String,
+    example: '1',
+  })
   @ApiResponse({ status: 200, description: 'Shop updated successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid shop ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
@@ -88,7 +99,12 @@ export class ShopsController {
   @Get(':id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get shop by ID' })
-  @ApiParam({ name: 'id', description: 'ID of the shop', type: String, example: '1' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the shop',
+    type: String,
+    example: '1',
+  })
   @ApiResponse({ status: 200, description: 'Shop retrieved successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid shop ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
@@ -114,7 +130,12 @@ export class ShopsController {
   @Get('/owner/:idOwner')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all shops by owner ID' })
-  @ApiParam({ name: 'idOwner', description: 'ID of the owner', type: String, example: '1' })
+  @ApiParam({
+    name: 'idOwner',
+    description: 'ID of the owner',
+    type: String,
+    example: '1',
+  })
   @ApiResponse({ status: 200, description: 'Shops retrieved successfully.' })
   @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
@@ -137,7 +158,12 @@ export class ShopsController {
   @Delete(':id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a shop by ID' })
-  @ApiParam({ name: 'id', description: 'ID of the shop', type: String, example: '1' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the shop',
+    type: String,
+    example: '1',
+  })
   @ApiResponse({ status: 200, description: 'Shop deleted successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid shop ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })

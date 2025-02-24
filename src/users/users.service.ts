@@ -12,7 +12,7 @@ export class UsersService {
     private readonly utilsService: UtilsService,
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -97,7 +97,10 @@ export class UsersService {
     }
   }
 
-  async updateUser(updateUserDto: UpdateUserDto, id_user: string): Promise<UserEntity> {
+  async updateUser(
+    updateUserDto: UpdateUserDto,
+    id_user: string,
+  ): Promise<UserEntity> {
     try {
       const userEntity = await this.usersRepository.findOne({
         where: { id_google: id_user },
@@ -129,13 +132,16 @@ export class UsersService {
     }
   }
 
-  async validateUser(email: string, password: string): Promise<UserEntity | null> {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<UserEntity | null> {
     try {
       const user = await this.usersRepository.findOne({ where: { email } });
       if (!user) {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);
       }
-      if (user && await bcrypt.compare(password, user.password)) {
+      if (user && (await bcrypt.compare(password, user.password))) {
         return user;
       }
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
@@ -144,7 +150,10 @@ export class UsersService {
     }
   }
 
-  async vincularArchivo(id_user: string, id_archivo: string): Promise<UserEntity> {
+  async vincularArchivo(
+    id_user: string,
+    id_archivo: string,
+  ): Promise<UserEntity> {
     try {
       const user = await this.usersRepository.findOne({
         where: { id_google: id_user },
@@ -161,7 +170,10 @@ export class UsersService {
     }
   }
 
-  async updateNotificationToken(id_user: string, token: string): Promise<UserEntity> {
+  async updateNotificationToken(
+    id_user: string,
+    token: string,
+  ): Promise<UserEntity> {
     try {
       const userEntity = await this.usersRepository.findOne({
         where: { id_google: id_user },
@@ -178,7 +190,10 @@ export class UsersService {
     }
   }
 
-  async validateUserPassword(id_user: string, oldPassword: string): Promise<boolean> {
+  async validateUserPassword(
+    id_user: string,
+    oldPassword: string,
+  ): Promise<boolean> {
     try {
       const user = await this.usersRepository.findOne({
         where: { id_google: id_user },
@@ -194,7 +209,10 @@ export class UsersService {
     }
   }
 
-  async updateUserPassword(id_user: string, newPassword: string): Promise<UserEntity> {
+  async updateUserPassword(
+    id_user: string,
+    newPassword: string,
+  ): Promise<UserEntity> {
     try {
       const user = await this.usersRepository.findOne({
         where: { id_google: id_user },

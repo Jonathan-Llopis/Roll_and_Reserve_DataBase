@@ -9,7 +9,13 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { GamesService } from './games.service';
 import { CreateGameDto, UpdateGameDto } from './games.dto';
 
@@ -31,7 +37,12 @@ export class GamesController {
   @Put(':id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a game by ID' })
-  @ApiParam({ name: 'id', description: 'ID of the game', type: 'string', example: '1' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the game',
+    type: 'string',
+    example: '1',
+  })
   @ApiResponse({ status: 200, description: 'Game updated successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid game ID or input.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
@@ -58,23 +69,29 @@ export class GamesController {
   @Get(':id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get a game by ID' })
-  @ApiParam({ name: 'id', description: 'ID of the game', type: 'string', example: '1' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the game',
+    type: 'string',
+    example: '1',
+  })
   @ApiResponse({ status: 200, description: 'Game retrieved successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid game ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Game not found.' })
-  getGame(@Param('id') id: string) {
-    const gameId = parseInt(id);
-    if (isNaN(gameId)) {
-      throw new HttpException('Invalid game ID', HttpStatus.BAD_REQUEST);
-    }
-    return this.gamesService.getGame(gameId);
+  getGame(@Param('id') gameName: string) {
+    return this.gamesService.getGame(gameName);
   }
 
   @Delete(':id')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a game by ID' })
-  @ApiParam({ name: 'id', description: 'ID of the game', type: 'string', example: '1' })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the game',
+    type: 'string',
+    example: '1',
+  })
   @ApiResponse({ status: 200, description: 'Game deleted successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid game ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })

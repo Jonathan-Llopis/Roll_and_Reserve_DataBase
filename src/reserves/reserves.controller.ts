@@ -9,7 +9,12 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { ReservesService } from './reserves.service';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { ReservesEntity } from './reserves.entity';
@@ -52,13 +57,19 @@ export class ReservesController {
     if (isNaN(reserveId)) {
       throw new HttpException('Invalid reserve ID', HttpStatus.BAD_REQUEST);
     }
-    return await this.reservesService.updateReserve(updateReserveDto, reserveId);
+    return await this.reservesService.updateReserve(
+      updateReserveDto,
+      reserveId,
+    );
   }
 
   @Get()
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all reserves' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved all reserves.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved all reserves.',
+  })
   @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 400, description: 'Failed to retrieve reserves.' })
@@ -70,7 +81,10 @@ export class ReservesController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get a reserve by ID' })
   @ApiParam({ name: 'id', description: 'Reserve ID', example: '1' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved the reserve.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved the reserve.',
+  })
   @ApiResponse({ status: 400, description: 'Invalid reserve ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Reserve not found.' })
@@ -85,11 +99,21 @@ export class ReservesController {
   @Get('date/:date/:idTable')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all reserves by date and table ID' })
-  @ApiParam({ name: 'date', description: 'Date in YYYY-MM-DD format', example: '2023-10-01' })
+  @ApiParam({
+    name: 'date',
+    description: 'Date in YYYY-MM-DD format',
+    example: '2023-10-01',
+  })
   @ApiParam({ name: 'idTable', description: 'Table ID', example: '1' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved all reserves by date and table ID.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved all reserves by date and table ID.',
+  })
   @ApiResponse({ status: 204, description: 'No content.' })
-  @ApiResponse({ status: 400, description: 'Failed to retrieve reserves by date and table ID.' })
+  @ApiResponse({
+    status: 400,
+    description: 'Failed to retrieve reserves by date and table ID.',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async getAllReservesByDate(
     @Param('date') date: string,
@@ -97,7 +121,10 @@ export class ReservesController {
   ) {
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(date)) {
-      throw new HttpException('Invalid date format. Expected YYYY-MM-DD', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Invalid date format. Expected YYYY-MM-DD',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const tableId = parseInt(idTable);
     if (isNaN(tableId)) {
@@ -115,9 +142,15 @@ export class ReservesController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all unique shop events by shop ID' })
   @ApiParam({ name: 'idShop', description: 'Shop ID', example: '1' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved all unique shop events.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved all unique shop events.',
+  })
   @ApiResponse({ status: 204, description: 'No content.' })
-  @ApiResponse({ status: 400, description: 'Failed to retrieve unique shop events.' })
+  @ApiResponse({
+    status: 400,
+    description: 'Failed to retrieve unique shop events.',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async getAllUniqueShopEvents(
     @Param('idShop') idShop: string,

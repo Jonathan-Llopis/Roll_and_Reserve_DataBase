@@ -4,7 +4,6 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
