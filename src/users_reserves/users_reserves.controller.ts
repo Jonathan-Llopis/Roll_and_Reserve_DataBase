@@ -21,7 +21,7 @@ import {
 @ApiTags('ReservesUsers')
 @Controller('users')
 export class UsersReservesController {
-  constructor(private readonly usersReservesService: UsersReservesService) {}
+  constructor(private readonly usersReservesService: UsersReservesService) { }
 
   private validateReserveId(reserveId: string) {
     if (isNaN(Number(reserveId))) {
@@ -49,15 +49,13 @@ export class UsersReservesController {
     @Param('reserveId') reserveId: string,
   ) {
     this.validateReserveId(reserveId);
-    try {
-      return await this.usersReservesService.addUsertoReserve(
-        userId,
-        reserveId,
-        false,
-      );
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+
+    return await this.usersReservesService.addUsertoReserve(
+      userId,
+      reserveId,
+      false,
+    );
+
   }
 
   @Put(':userId/reserves/:reserveId/confirm')
@@ -87,14 +85,12 @@ export class UsersReservesController {
       );
     }
     this.validateReserveId(reserveId);
-    try {
-      return await this.usersReservesService.confirmReserveForUser(
-        userId,
-        reserveId,
-      );
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+
+    return await this.usersReservesService.confirmReserveForUser(
+      userId,
+      reserveId,
+    );
+
   }
 
   @Get('reserves/:reserveId')
@@ -114,11 +110,8 @@ export class UsersReservesController {
       throw new HttpException('Invalid reserve ID', HttpStatus.BAD_REQUEST);
     }
     this.validateReserveId(reserveId);
-    try {
-      return await this.usersReservesService.findReserveById(reserveId);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this.usersReservesService.findReserveById(reserveId);
+
   }
 
   @Get(':userId/reserves/:reserveId')
@@ -148,14 +141,11 @@ export class UsersReservesController {
       );
     }
     this.validateReserveId(reserveId);
-    try {
-      return await this.usersReservesService.findReserveFromUser(
-        userId,
-        reserveId,
-      );
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this.usersReservesService.findReserveFromUser(
+      userId,
+      reserveId,
+    );
+
   }
 
   @Get(':userId/reserves')
@@ -173,11 +163,8 @@ export class UsersReservesController {
   async findReservesByUserId(@Param('userId') userId: string) {
     if (isEmpty(userId)) {
       throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
-    }
-    try {
+    } else {
       return await this.usersReservesService.findReservesFromUser(userId);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -211,13 +198,11 @@ export class UsersReservesController {
       );
     }
     this.validateReserveId(reserveId);
-    try {
-      return await this.usersReservesService.deleteReserveFromUser(
-        userId,
-        reserveId,
-      );
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+
+    return await this.usersReservesService.deleteReserveFromUser(
+      userId,
+      reserveId,
+    );
+
   }
 }
