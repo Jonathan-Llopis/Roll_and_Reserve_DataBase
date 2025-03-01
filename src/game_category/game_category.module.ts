@@ -8,5 +8,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   imports: [TypeOrmModule.forFeature([GameCategoryEntity])],
   controllers: [GameCategoryController],
   providers: [GameCategoryService],
+  exports: [GameCategoryService],
 })
 export class GameCategoryModule {}

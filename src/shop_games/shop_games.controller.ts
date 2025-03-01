@@ -24,13 +24,14 @@ import {
   ApiParam,
   ApiBearerAuth,
 } from '@nestjs/swagger';
+import { GameCategoryEntity } from '../game_category/game_category.entity';
 
 @Controller('shops')
 export class ShopGamesController {
   constructor(
     private readonly shopGamesService: ShopGamesService,
     @InjectRepository(ShopsEntity)
-    private readonly difficultyRepository: Repository<DifficultyEntity>,
+    private readonly gameCategoryRepository: Repository<GameCategoryEntity>,
   ) {}
 
   private validateId(id: string, name: string) {
@@ -83,9 +84,9 @@ export class ShopGamesController {
       gameDto.map(async (game) => {
         const gameEntity = new GamesEntity();
         gameEntity.name = game.name;
-        gameEntity.difficulty_of_game =
-          await this.difficultyRepository.findOneBy({
-            id_difficulty: game.difficulty_id,
+        gameEntity.gameCategory =
+          await this.gameCategoryRepository.findOneBy({
+            description: game.category_name,
           });
         return gameEntity;
       }),

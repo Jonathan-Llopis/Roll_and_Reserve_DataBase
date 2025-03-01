@@ -45,12 +45,6 @@ export class ReservesEntity {
   @JoinColumn({ name: 'difficulty_id' })
   difficulty: DifficultyEntity;
 
-  @ManyToOne(
-    () => GameCategoryEntity,
-    (game_category) => game_category.game_category_reserve,
-  )
-  @JoinColumn({ name: 'game_category_reserve' })
-  reserve_game_category: GameCategoryEntity;
 
   @ManyToOne(() => GamesEntity, (game) => game.game_reserve, {
     onDelete: 'CASCADE',

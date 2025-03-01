@@ -34,6 +34,7 @@ import { GameCategoryEntity } from './game_category/game_category.entity';
 import { FilesModule } from './files/files.module';
 import { UserReserveEntity } from './users_reserves/users_reserves.entity';
 import { FcmNotificationModule } from './fcm-notification/fcm-notification.module';
+import { HttpModule } from './http/http.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -97,6 +98,14 @@ import { FcmNotificationModule } from './fcm-notification/fcm-notification.modul
     UsersReservesModule,
     FilesModule,
     FcmNotificationModule,
+    HttpModule,
+    HttpModule.forFeature({
+      serviceName: 'Bgg-Api',
+      config: {
+        baseURL: 'http://localhost:8070/api',
+        enableLogging: true,
+      },
+    }),
   ],
   controllers: [],
   providers: [AuthorizationMiddleware, AuthService, ReservesService],

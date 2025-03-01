@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateTableDto, UpdateTableDto } from './tables.dto';
 import { TablesEntity } from './tables.entity';
 import { LabelsService } from '../utils/labels/labels.service';
-import { ShopsEntity } from 'src/shops/shops.entity';
+import { ShopsEntity } from '../shops/shops.entity';
 
 @Injectable()
 export class TablesService {

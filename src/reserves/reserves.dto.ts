@@ -82,6 +82,14 @@ export class CreateReserveDto {
   reserve_of_game_id?: number;
 
   @ApiPropertyOptional({
+    description: 'Name of the game',
+    example: 'Chess',
+  })
+  @IsOptional()
+  @IsString()
+  game_name?: string;
+
+  @ApiPropertyOptional({
     description: 'ID of the table',
     example: 4,
   })
@@ -176,6 +184,13 @@ export class UpdateReserveDto {
   @IsOptional()
   @IsNumber()
   reserve_of_game_id?: number;
+  @ApiPropertyOptional({
+    description: 'Name of the game',
+    example: 'Chess',
+  })
+  @IsOptional()
+  @IsString()
+  game_name?: string;
 
   @ApiPropertyOptional({
     description: 'ID of the table',

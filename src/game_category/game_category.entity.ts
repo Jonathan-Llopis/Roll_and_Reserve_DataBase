@@ -1,3 +1,4 @@
+import { GamesEntity } from '../games/games.entitiy';
 import { ReservesEntity } from '../reserves/reserves.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
@@ -9,6 +10,7 @@ export class GameCategoryEntity {
   @Column()
   description: string;
 
-  @OneToMany(() => ReservesEntity, (reserve) => reserve.reserve_game_category)
-  game_category_reserve: ReservesEntity[];
+  @OneToMany(() => GamesEntity, (game) => game.gameCategory)
+  game_category: GamesEntity[];
+
 }

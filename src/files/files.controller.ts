@@ -24,9 +24,9 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ShopsEntity } from 'src/shops/shops.entity';
+import { ShopsEntity } from '../shops/shops.entity';
 import { Repository } from 'typeorm';
-import { UserEntity } from 'src/users/users.entity';
+import { UserEntity } from '../users/users.entity';
 
 @Controller('/files')
 export class FilesController {

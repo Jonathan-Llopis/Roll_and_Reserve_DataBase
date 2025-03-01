@@ -3,19 +3,20 @@ import { Seeder } from 'typeorm-extension';
 import gamesData from '../../../data/games';
 import { DifficultyEntity } from '../../../difficulty/difficulty.entity';
 import { GamesEntity } from '../../../games/games.entitiy';
+import { GameCategoryEntity } from '../../../game_category/game_category.entity';
 
 export class GamesSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
     const gamesRepository = dataSource.getRepository(GamesEntity);
-    const difficultyRepository = dataSource.getRepository(DifficultyEntity);
+    const gameCategoryRepository = dataSource.getRepository(GameCategoryEntity);
 
     const gamesEntries = await Promise.all(
       gamesData.map(async (item) => {
         const gamesEntry = new GamesEntity();
         gamesEntry.name = item.name;
         gamesEntry.description = item.description;
-        gamesEntry.difficulty_of_game = await difficultyRepository.findOne({
-          where: { id_difficulty: item.difficulty_id },
+        gamesEntry.gameCategory = await gameCategoryRepository.findOne({
+          where: { id_game_category: item.game_category_id },
         });
         return gamesEntry;
       }),

@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TablesEntity } from './tables.entity';
 import { LabelsModule } from '../utils/labels/labels.module';
 import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
-import { ShopsEntity } from 'src/shops/shops.entity';
+import { ShopsEntity } from '../shops/shops.entity';
 
 @Module({
   imports: [

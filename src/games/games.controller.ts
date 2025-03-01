@@ -79,8 +79,8 @@ export class GamesController {
   @ApiResponse({ status: 400, description: 'Invalid game ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Game not found.' })
-  getGame(@Param('id') gameName: string) {
-    return this.gamesService.getGame(gameName);
+  getGame(@Param('id') gameId: number) {
+    return this.gamesService.getGame(gameId);
   }
 
   @Delete(':id')
@@ -102,5 +102,21 @@ export class GamesController {
       throw new HttpException('Invalid game ID', HttpStatus.BAD_REQUEST);
     }
     return this.gamesService.deleteGame(gameId);
+  }
+  @Get('search/:name')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Search games by name' })
+  @ApiParam({
+    name: 'name',
+    description: 'Name of the game',
+    type: 'string',
+    example: 'Chess',
+  })
+  @ApiResponse({ status: 200, description: 'Games retrieved successfully.' })
+  @ApiResponse({ status: 204, description: 'No content.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  searchGameByName(@Param('name') name: string) {
+    return this.gamesService.searchGameByName(name);
   }
 }

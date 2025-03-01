@@ -22,8 +22,4 @@ export class DifficultyEntity {
   @OneToMany(() => ReservesEntity, (reserve) => reserve.difficulty)
   @JoinColumn()
   info_difficulty: ReservesEntity;
-
-  @OneToMany(() => GamesEntity, (game) => game.difficulty_of_game)
-  @JoinColumn()
-  game_difficulty: GamesEntity;
 }

@@ -15,7 +15,7 @@ export class CreateGameDto {
   @ApiProperty({
     description: 'The description of the game',
     minLength: 1,
-    maxLength: 1000,
+    maxLength: 10000,
     example: 'A strategic board game',
   })
   @IsString()
@@ -27,8 +27,8 @@ export class CreateGameDto {
     minimum: 1,
     example: 3,
   })
-  @IsNumber()
-  difficulty_id: number;
+  @IsString()
+  category_name?: string;
 }
 
 export class UpdateGameDto {
@@ -51,7 +51,7 @@ export class UpdateGameDto {
   })
   @IsOptional()
   @IsString()
-  @Length(1, 1000)
+  @Length(1, 10000)
   description?: string;
 
   @ApiPropertyOptional({
@@ -60,6 +60,6 @@ export class UpdateGameDto {
     example: 3,
   })
   @IsOptional()
-  @IsNumber()
-  difficulty_id?: number;
+  @IsString()
+  category_name?: string;
 }

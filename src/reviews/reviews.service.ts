@@ -9,8 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ReviewsEntity } from './reviews.entity';
 import { CreateReviewDto, UpdateReviewDto } from './reviews.dto';
-import { ShopsEntity } from 'src/shops/shops.entity';
-import { UserEntity } from 'src/users/users.entity';
+import { ShopsEntity } from '../shops/shops.entity';
+import { UserEntity } from '../users/users.entity';
 
 @Injectable()
 export class ReviewsService {

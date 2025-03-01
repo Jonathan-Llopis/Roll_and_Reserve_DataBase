@@ -1,14 +1,16 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between, Like, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
-import { ShopsEntity } from 'src/shops/shops.entity';
-import { GamesEntity } from 'src/games/games.entitiy';
-import { DifficultyEntity } from 'src/difficulty/difficulty.entity';
-import { GameCategoryEntity } from 'src/game_category/game_category.entity';
-import { TablesEntity } from 'src/tables/tables.entity';
+import { ShopsEntity } from '../shops/shops.entity';
+import { GamesEntity } from '../games/games.entitiy';
+import { DifficultyEntity } from '../difficulty/difficulty.entity';
+import { GameCategoryEntity } from '../game_category/game_category.entity';
+import { TablesEntity } from '../tables/tables.entity';
+import { GamesService } from 'src/games/games.service';
+import { HttpService } from '../http/http.service';
 
 @Injectable()
 export class ReservesService {
@@ -26,7 +28,10 @@ export class ReservesService {
     @InjectRepository(TablesEntity)
     private readonly tableRepository: Repository<TablesEntity>,
     private readonly fcmNotificationService: FcmNotificationService,
-  ) {}
+    private readonly gameService: GamesService,
+    @Inject('Bgg-Api')
+    private readonly httpService: HttpService,
+  ) { }
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -134,25 +139,26 @@ export class ReservesService {
       }
       reserve.difficulty = difficulty;
 
-      const reserveGameCategory =
-        await this.reserveGameCategoryRepository.findOne({
-          where: {
-            id_game_category: createReserveDto.reserve_game_category_id,
-          },
-        });
-      if (createReserveDto.reserve_game_category_id && !reserveGameCategory) {
-        throw new HttpException(
-          'Game category not found',
-          HttpStatus.NOT_FOUND,
-        );
-      }
-      reserve.reserve_game_category = reserveGameCategory;
-
-      const reserveOfGame = await this.gameRepository.findOne({
-        where: { id_game: createReserveDto.reserve_of_game_id },
+      let reserveOfGame = await this.gameRepository.findOne({
+        where: { name: Like(`%${createReserveDto.game_name}%`) },
       });
       if (createReserveDto.reserve_of_game_id && !reserveOfGame) {
-        throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
+        const externalGames = await this.httpService.get('http://rollandreserve.blog:8070/bgg-api/api/v4/geekitems', {
+          params: { objectid: createReserveDto.reserve_of_game_id, objecttype: 'thing' },
+          headers: { accept: 'application/json' },
+        });
+        const externalGamesData = externalGames.data as { item: any };
+        if (externalGamesData && externalGamesData.item) {
+          const game = externalGamesData.item;
+          reserveOfGame = await this.gameService.createGame({
+            name: game.name,
+            description: game.description,
+            category_name: game.links.boardgamecategory[0].name,
+          });
+        }
+        if (!reserveOfGame) {
+          throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
+        }
       }
       reserve.reserve_of_game = reserveOfGame;
 
@@ -228,29 +234,26 @@ export class ReservesService {
         }
         reserve.difficulty = difficulty;
       }
-
-      if (updateReserveDto.reserve_game_category_id) {
-        const reserveGameCategory =
-          await this.reserveGameCategoryRepository.findOne({
-            where: {
-              id_game_category: updateReserveDto.reserve_game_category_id,
-            },
-          });
-        if (!reserveGameCategory) {
-          throw new HttpException(
-            'Game category not found',
-            HttpStatus.NOT_FOUND,
-          );
-        }
-        reserve.reserve_game_category = reserveGameCategory;
-      }
-
       if (updateReserveDto.reserve_of_game_id) {
-        const reserveOfGame = await this.gameRepository.findOne({
+        let reserveOfGame = await this.gameRepository.findOne({
           where: { id_game: updateReserveDto.reserve_of_game_id },
         });
         if (!reserveOfGame) {
-          throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
+          const externalGames = await this.httpService.get('http://rollandreserve.blog:8070/bgg-api/api/v4/geekitems', {
+            params: { objectid: updateReserveDto.reserve_of_game_id, objecttype: 'thing' },
+            headers: { accept: 'application/json' },
+          });
+          const externalGamesData = externalGames.data as { items: any[] };
+        if (externalGamesData && externalGamesData.items && externalGamesData.items.length > 0) {
+          const game = externalGamesData.items[0];
+            reserveOfGame = await this.gameService.createGame({
+              name: game.name,
+              description: game.description,
+              category_name: game.links.boardgamesubdomain[0].name,
+            });
+          } else {
+            throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
+          }
         }
         reserve.reserve_of_game = reserveOfGame;
       }
