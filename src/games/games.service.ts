@@ -179,11 +179,11 @@ export class GamesService {
         let externalGames;
         try {
             externalGames = await this.httpService.get(
-            'http://localhost:8070/bgg-api/api/v5/search/boardgame',
-            {
+              'http://localhost:8070/bgg-api/api/v5/search/boardgame',
+              {
               params: { q: name, showcount: 20 },
               headers: { accept: 'application/json' },
-            },
+              },
             );
         } catch (error) {
           if (error.code === 'ECONNREFUSED') {
