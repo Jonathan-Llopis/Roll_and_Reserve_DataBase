@@ -61,7 +61,7 @@ export class ReservesService {
       }
       return reserves;
     } catch (err) {
-      this.handleError(err);
+      this.handleError(new HttpException('No Content', HttpStatus.NO_CONTENT));
     }
   }
 
