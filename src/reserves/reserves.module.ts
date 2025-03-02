@@ -28,7 +28,7 @@ import { GamesModule } from '../games/games.module';
     HttpModule.forFeature({
       serviceName: 'Bgg-Api',
       config: {
-        baseURL: 'http://localhost:8070/api',
+        baseURL: 'http://localhost:80/api',
       },
     }),
     GamesModule,

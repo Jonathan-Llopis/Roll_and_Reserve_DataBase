@@ -244,11 +244,7 @@ export class ReservesService {
     try {
       const reserve = await this.reserveRepository.findOne({
         where: { id_reserve: id },
-        relations: [
-          'reserve_of_game',
-          'difficulty',
-          'reserve_table',
-        ],
+        relations: ['reserve_of_game', 'difficulty', 'reserve_table'],
       });
       if (!reserve) {
         throw new HttpException('Reserve not found', HttpStatus.NOT_FOUND);

@@ -14,7 +14,7 @@ import { GameCategoryEntity } from '../game_category/game_category.entity';
     HttpModule.forFeature({
       serviceName: 'Bgg-Api',
       config: {
-        baseURL: 'http://localhost:8070/api',
+        baseURL: 'http://localhost:80/api',
       },
     }),
   ],
