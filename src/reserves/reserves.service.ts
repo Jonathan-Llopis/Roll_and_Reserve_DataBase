@@ -45,7 +45,6 @@ export class ReservesService {
       const reserves = await this.reserveRepository.find({
         relations: [
           'reserve_of_game',
-          'reserve_game_category',
           'difficulty',
           'reserve_table',
           'users_in_reserve',
@@ -78,7 +77,6 @@ export class ReservesService {
         where: { id_reserve: id },
         relations: [
           'reserve_of_game',
-          'reserve_game_category',
           'difficulty',
           'reserve_table',
           'users_in_reserve',
@@ -114,7 +112,6 @@ export class ReservesService {
       const reserves = await this.reserveRepository.find({
         relations: [
           'reserve_of_game',
-          'reserve_game_category',
           'difficulty',
           'reserve_table',
           'users_in_reserve',
@@ -249,7 +246,6 @@ export class ReservesService {
         where: { id_reserve: id },
         relations: [
           'reserve_of_game',
-          'reserve_game_category',
           'difficulty',
           'reserve_table',
         ],
