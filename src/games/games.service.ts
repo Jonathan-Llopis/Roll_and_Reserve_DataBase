@@ -24,7 +24,7 @@ export class GamesService {
     private readonly gameCategoryService: GameCategoryService,
     @Inject('Bgg-Api')
     private readonly httpService: HttpService,
-  ) {}
+  ) { }
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -176,13 +176,25 @@ export class GamesService {
       }
 
       if (games.length === 0) {
-        const externalGames = await this.httpService.get(
-          'http://rollandreserve.blog:8070/bgg-api/api/v5/search/boardgame',
-          {
-            params: { q: name, showcount: 20 },
-            headers: { accept: 'application/json' },
-          },
-        );
+        let externalGames;
+        try {
+          externalGames = await this.httpService.get(
+            'http://rollandreserve.blog:8070/bgg-api/api/v5/search/boardgame',
+            {
+              params: { q: name, showcount: 20 },
+              headers: { accept: 'application/json' },
+            },
+          );
+        } catch (error) {
+          if (error.code === 'ECONNREFUSED') {
+            console.error('Connection refused to external API');
+            throw new HttpException(
+              'External API is not reachable',
+              HttpStatus.SERVICE_UNAVAILABLE,
+            );
+          }
+          throw error;
+        }
         const externalGamesData = externalGames.data as { items: any[] };
         if (
           externalGamesData &&
