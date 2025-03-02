@@ -10,7 +10,6 @@ import {
 } from 'typeorm';
 import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
-import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { UserEntity } from '../users/users.entity';
 import { GamesEntity } from '../games/games.entitiy';
@@ -44,7 +43,6 @@ export class ReservesEntity {
   @ManyToOne(() => DifficultyEntity, (difficulty) => difficulty.info_difficulty)
   @JoinColumn({ name: 'difficulty_id' })
   difficulty: DifficultyEntity;
-
 
   @ManyToOne(() => GamesEntity, (game) => game.game_reserve, {
     onDelete: 'CASCADE',

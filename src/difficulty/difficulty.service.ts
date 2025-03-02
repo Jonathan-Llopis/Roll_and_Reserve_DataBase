@@ -31,7 +31,14 @@ export class DifficultyService {
       }
       return difficulties;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -45,7 +52,14 @@ export class DifficultyService {
       }
       return difficulty;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -57,7 +71,14 @@ export class DifficultyService {
       await this.difficultyRepository.save(difficulty);
       return difficulty;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -76,7 +97,14 @@ export class DifficultyService {
       await this.difficultyRepository.save(difficulty);
       return difficulty;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -87,7 +115,14 @@ export class DifficultyService {
         throw new NotFoundException('Difficulty not found');
       }
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

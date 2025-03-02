@@ -3,7 +3,10 @@ import { HttpService, CustomAxiosRequestConfig } from './http.service';
 
 @Module({})
 export class HttpModule {
-  private static getDynamicHttpModule(option: { serviceName: string; config: CustomAxiosRequestConfig }) {
+  private static getDynamicHttpModule(option: {
+    serviceName: string;
+    config: CustomAxiosRequestConfig;
+  }) {
     const httpService = new HttpService(option.config);
     const providerName = option.serviceName;
     return {
@@ -18,7 +21,11 @@ export class HttpModule {
     };
   }
 
-  static forFeature(options: { serviceName: string; config: CustomAxiosRequestConfig } | { serviceName: string; config: CustomAxiosRequestConfig }[]): DynamicModule {
+  static forFeature(
+    options:
+      | { serviceName: string; config: CustomAxiosRequestConfig }
+      | { serviceName: string; config: CustomAxiosRequestConfig }[],
+  ): DynamicModule {
     if (Array.isArray(options)) {
       return options.reduce(
         (acc, option) => {
@@ -57,7 +64,10 @@ export class HttpModule {
     };
   }
 
-  static forFeatureWithProvider(options: { serviceName: string; config: CustomAxiosRequestConfig }): {
+  static forFeatureWithProvider(options: {
+    serviceName: string;
+    config: CustomAxiosRequestConfig;
+  }): {
     module: DynamicModule;
     provider: Provider;
   } {

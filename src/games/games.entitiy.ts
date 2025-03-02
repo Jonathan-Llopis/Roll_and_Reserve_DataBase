@@ -21,9 +21,11 @@ export class GamesEntity {
 
   @Column({ length: 1024 })
   description: string;
-  
 
-  @ManyToOne(() => GameCategoryEntity, (gameCategory) => gameCategory.game_category)
+  @ManyToOne(
+    () => GameCategoryEntity,
+    (gameCategory) => gameCategory.game_category,
+  )
   @JoinColumn({ name: 'game_category_id' })
   gameCategory: GameCategoryEntity;
 

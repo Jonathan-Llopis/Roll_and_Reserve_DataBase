@@ -1,7 +1,6 @@
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 import gamesData from '../../../data/games';
-import { DifficultyEntity } from '../../../difficulty/difficulty.entity';
 import { GamesEntity } from '../../../games/games.entitiy';
 import { GameCategoryEntity } from '../../../game_category/game_category.entity';
 

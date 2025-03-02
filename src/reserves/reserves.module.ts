@@ -25,10 +25,12 @@ import { GamesModule } from '../games/games.module';
       GameCategoryEntity,
     ]),
     FcmNotificationModule,
-    HttpModule.forFeature({  serviceName: 'Bgg-Api',
-        config: {
-          baseURL: 'http://localhost:8070/api',
-        }, }),
+    HttpModule.forFeature({
+      serviceName: 'Bgg-Api',
+      config: {
+        baseURL: 'http://localhost:8070/api',
+      },
+    }),
     GamesModule,
   ],
   controllers: [ReservesController],

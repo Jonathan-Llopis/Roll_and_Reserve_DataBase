@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, Length } from 'class-validator';
+import { IsString, IsOptional, Length } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateGameDto {

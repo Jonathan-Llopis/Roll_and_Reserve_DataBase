@@ -31,7 +31,7 @@ export class ReservesService {
     private readonly gameService: GamesService,
     @Inject('Bgg-Api')
     private readonly httpService: HttpService,
-  ) { }
+  ) {}
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -61,7 +61,14 @@ export class ReservesService {
       }
       return reserves;
     } catch (err) {
-      this.handleError(new HttpException('No Content', HttpStatus.NO_CONTENT));
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -84,7 +91,14 @@ export class ReservesService {
       }
       return reserve;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -120,7 +134,14 @@ export class ReservesService {
       }
       return reserves;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -143,10 +164,16 @@ export class ReservesService {
         where: { name: Like(`%${createReserveDto.game_name}%`) },
       });
       if (createReserveDto.reserve_of_game_id && !reserveOfGame) {
-        const externalGames = await this.httpService.get('http://rollandreserve.blog:8070/bgg-api/api/v4/geekitems', {
-          params: { objectid: createReserveDto.reserve_of_game_id, objecttype: 'thing' },
-          headers: { accept: 'application/json' },
-        });
+        const externalGames = await this.httpService.get(
+          'http://rollandreserve.blog:8070/bgg-api/api/v4/geekitems',
+          {
+            params: {
+              objectid: createReserveDto.reserve_of_game_id,
+              objecttype: 'thing',
+            },
+            headers: { accept: 'application/json' },
+          },
+        );
         const externalGamesData = externalGames.data as { item: any };
         if (externalGamesData && externalGamesData.item) {
           const game = externalGamesData.item;
@@ -202,8 +229,14 @@ export class ReservesService {
 
       return reserve;
     } catch (err) {
-      console.log(err);
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -239,13 +272,23 @@ export class ReservesService {
           where: { id_game: updateReserveDto.reserve_of_game_id },
         });
         if (!reserveOfGame) {
-          const externalGames = await this.httpService.get('http://rollandreserve.blog:8070/bgg-api/api/v4/geekitems', {
-            params: { objectid: updateReserveDto.reserve_of_game_id, objecttype: 'thing' },
-            headers: { accept: 'application/json' },
-          });
+          const externalGames = await this.httpService.get(
+            'http://rollandreserve.blog:8070/bgg-api/api/v4/geekitems',
+            {
+              params: {
+                objectid: updateReserveDto.reserve_of_game_id,
+                objecttype: 'thing',
+              },
+              headers: { accept: 'application/json' },
+            },
+          );
           const externalGamesData = externalGames.data as { items: any[] };
-        if (externalGamesData && externalGamesData.items && externalGamesData.items.length > 0) {
-          const game = externalGamesData.items[0];
+          if (
+            externalGamesData &&
+            externalGamesData.items &&
+            externalGamesData.items.length > 0
+          ) {
+            const game = externalGamesData.items[0];
             reserveOfGame = await this.gameService.createGame({
               name: game.name,
               description: game.description,
@@ -272,7 +315,14 @@ export class ReservesService {
       await this.reserveRepository.save(reserve);
       return reserve;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -283,7 +333,14 @@ export class ReservesService {
         throw new HttpException('Reserve not found', HttpStatus.NOT_FOUND);
       }
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -314,7 +371,14 @@ export class ReservesService {
       }
       return reserves;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

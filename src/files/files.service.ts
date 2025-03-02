@@ -88,7 +88,14 @@ export class FilesService {
         },
       }));
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

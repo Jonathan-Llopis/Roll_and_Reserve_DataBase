@@ -35,7 +35,14 @@ export class ShopsService {
       }
       return shops;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -50,7 +57,14 @@ export class ShopsService {
       }
       return shop;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -65,7 +79,14 @@ export class ShopsService {
       }
       return shops;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -82,7 +103,14 @@ export class ShopsService {
       await this.shopRepository.save(shop);
       return shop;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -111,7 +139,14 @@ export class ShopsService {
       await this.shopRepository.save(shop);
       return shop;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -122,7 +157,14 @@ export class ShopsService {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -138,7 +180,14 @@ export class ShopsService {
       shop.logo = id_archivo.toString();
       return this.shopRepository.save(shop);
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

@@ -33,7 +33,14 @@ export class TablesService {
       }
       return tables;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -48,7 +55,14 @@ export class TablesService {
       }
       return table;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -63,7 +77,14 @@ export class TablesService {
       }
       return tables;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -80,7 +101,14 @@ export class TablesService {
       await this.tableRepository.save(table);
       return table;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -111,7 +139,14 @@ export class TablesService {
       await this.tableRepository.save(table);
       return table;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -122,7 +157,14 @@ export class TablesService {
         throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
       }
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 

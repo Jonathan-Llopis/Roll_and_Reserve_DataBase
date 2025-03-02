@@ -34,12 +34,13 @@ export class ShopsController {
     try {
       return this.shopsService.createShop(createShopDto);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Could not create shop',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -65,12 +66,13 @@ export class ShopsController {
     try {
       return this.shopsService.updateShop(updateShopDto, shopId);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Could not update shop',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -86,12 +88,13 @@ export class ShopsController {
     try {
       return this.shopsService.getAllShops();
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Could not retrieve shops',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -117,12 +120,13 @@ export class ShopsController {
     try {
       return this.shopsService.getShop(shopId);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Could not retrieve shop',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -145,12 +149,13 @@ export class ShopsController {
     try {
       return this.shopsService.getAllShopsByOwner(idOwner);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Could not retrieve shops by owner',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -176,12 +181,13 @@ export class ShopsController {
     try {
       return this.shopsService.deleteShop(shopId);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Could not delete shop',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

@@ -35,12 +35,13 @@ export class ReviewsController {
     try {
       return this.reviewsService.createReview(createReviewsDto);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Failed to create review',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -70,12 +71,13 @@ export class ReviewsController {
         reviewsId,
       );
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Failed to update review',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -91,12 +93,13 @@ export class ReviewsController {
     try {
       return this.reviewsService.getAllReviews();
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Failed to retrieve reviews',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -117,12 +120,13 @@ export class ReviewsController {
       }
       return this.reviewsService.getReviews(reviewsId);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Failed to retrieve review',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -144,12 +148,13 @@ export class ReviewsController {
       }
       return this.reviewsService.getAllReviewsByShop(shopId);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Failed to retrieve reviews by shop ID',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -170,12 +175,13 @@ export class ReviewsController {
       }
       return this.reviewsService.getAllReviewsByWritter(idUser);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Failed to retrieve reviews by writer ID',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -196,12 +202,13 @@ export class ReviewsController {
       }
       return this.reviewsService.getAllReviewsByUser(idUser);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Failed to retrieve reviews by user ID',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -222,12 +229,13 @@ export class ReviewsController {
       }
       return this.reviewsService.deleteReview(reviewsId);
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Failed to delete review',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

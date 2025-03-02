@@ -50,12 +50,13 @@ export class GameCategoryController {
         createGameCategoryDto,
       );
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Failed to create game category',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -131,12 +132,13 @@ export class GameCategoryController {
     try {
       return await this.gameCategoryService.getAllGameCategories();
     } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
       throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Failed to retrieve game categories',
-        },
-        HttpStatus.BAD_REQUEST,
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

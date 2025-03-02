@@ -25,8 +25,6 @@ export class GamesService {
     @Inject('Bgg-Api')
     private readonly httpService: HttpService,
   ) {}
-  
-  
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -46,7 +44,14 @@ export class GamesService {
       }
       return games;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -61,20 +66,26 @@ export class GamesService {
       }
       return game;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   async createGame(createGameDto: CreateGameDto): Promise<GamesEntity> {
     try {
-
       const game = this.gameRepository.create(createGameDto);
-      var gameCategory = await this.gameCategoryRepository.findOne({
+      let gameCategory = await this.gameCategoryRepository.findOne({
         where: { description: createGameDto.category_name },
       });
       if (createGameDto.category_name && !gameCategory) {
         gameCategory = await this.gameCategoryService.createGameCategory({
-          description: createGameDto.category_name, 
+          description: createGameDto.category_name,
         });
       }
       if (gameCategory) {
@@ -87,7 +98,14 @@ export class GamesService {
 
       return game;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -107,7 +125,7 @@ export class GamesService {
       });
       if (updateGameDto.category_name && !gameCategory) {
         this.gameCategoryService.createGameCategory({
-          description: updateGameDto.category_name, 
+          description: updateGameDto.category_name,
         });
       }
       game.gameCategory = gameCategory;
@@ -115,7 +133,14 @@ export class GamesService {
       await this.gameRepository.save(game);
       return game;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -126,31 +151,45 @@ export class GamesService {
         throw new NotFoundException('Game not found');
       }
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
   async searchGameByName(name: string): Promise<GamesEntity[]> {
     try {
-      var games: GamesEntity[] = [];
-      if ( name == 'all') {
-         games = await this.gameRepository.find({
+      let games: GamesEntity[] = [];
+      if (name == 'all') {
+        games = await this.gameRepository.find({
           relations: ['gameCategory'],
         });
-      }else{
-         games = await this.gameRepository.find({
+      } else {
+        games = await this.gameRepository.find({
           where: { name: Like(`%${name}%`) },
           relations: ['gameCategory'],
         });
       }
-     
+
       if (games.length === 0) {
-        const externalGames = await this.httpService.get('http://rollandreserve.blog:8070/bgg-api/api/v5/search/boardgame', {
-          params: { q: name, showcount: 20 },
-          headers: { accept: 'application/json' },
-        });
+        const externalGames = await this.httpService.get(
+          'http://rollandreserve.blog:8070/bgg-api/api/v5/search/boardgame',
+          {
+            params: { q: name, showcount: 20 },
+            headers: { accept: 'application/json' },
+          },
+        );
         const externalGamesData = externalGames.data as { items: any[] };
-        if (externalGamesData && externalGamesData.items && externalGamesData.items.length > 0) {
-          return externalGamesData.items.map(item => ({
+        if (
+          externalGamesData &&
+          externalGamesData.items &&
+          externalGamesData.items.length > 0
+        ) {
+          return externalGamesData.items.map((item) => ({
             id_game: item.objectid,
             name: item.name,
             image: item.image,
@@ -164,7 +203,14 @@ export class GamesService {
       }
       return games;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

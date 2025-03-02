@@ -14,7 +14,6 @@ import { isEmpty } from 'class-validator';
 import { ShopGamesService } from './shop_games.service';
 import { CreateGameDto } from '../games/games.dto';
 import { GamesEntity } from '../games/games.entitiy';
-import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopsEntity } from '../shops/shops.entity';
@@ -84,10 +83,9 @@ export class ShopGamesController {
       gameDto.map(async (game) => {
         const gameEntity = new GamesEntity();
         gameEntity.name = game.name;
-        gameEntity.gameCategory =
-          await this.gameCategoryRepository.findOneBy({
-            description: game.category_name,
-          });
+        gameEntity.gameCategory = await this.gameCategoryRepository.findOneBy({
+          description: game.category_name,
+        });
         return gameEntity;
       }),
     );

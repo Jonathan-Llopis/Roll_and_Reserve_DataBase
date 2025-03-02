@@ -1,7 +1,6 @@
 import {
   Injectable,
   NotFoundException,
-  BadRequestException,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -35,7 +34,14 @@ export class GameCategoryService {
       }
       return gameCategories;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -49,7 +55,14 @@ export class GameCategoryService {
       }
       return gameCategory;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -63,7 +76,14 @@ export class GameCategoryService {
       await this.gameCategoryRepository.save(gameCategory);
       return gameCategory;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -82,7 +102,14 @@ export class GameCategoryService {
       await this.gameCategoryRepository.save(gameCategory);
       return gameCategory;
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -93,7 +120,14 @@ export class GameCategoryService {
         throw new NotFoundException('Game category not found');
       }
     } catch (err) {
-      this.handleError(err);
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

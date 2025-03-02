@@ -21,7 +21,7 @@ import {
 @ApiTags('ReservesUsers')
 @Controller('users')
 export class UsersReservesController {
-  constructor(private readonly usersReservesService: UsersReservesService) { }
+  constructor(private readonly usersReservesService: UsersReservesService) {}
 
   private validateReserveId(reserveId: string) {
     if (isNaN(Number(reserveId))) {
@@ -55,7 +55,6 @@ export class UsersReservesController {
       reserveId,
       false,
     );
-
   }
 
   @Put(':userId/reserves/:reserveId/confirm')
@@ -90,7 +89,6 @@ export class UsersReservesController {
       userId,
       reserveId,
     );
-
   }
 
   @Get('reserves/:reserveId')
@@ -111,7 +109,6 @@ export class UsersReservesController {
     }
     this.validateReserveId(reserveId);
     return await this.usersReservesService.findReserveById(reserveId);
-
   }
 
   @Get(':userId/reserves/:reserveId')
@@ -145,7 +142,6 @@ export class UsersReservesController {
       userId,
       reserveId,
     );
-
   }
 
   @Get(':userId/reserves')
@@ -203,6 +199,5 @@ export class UsersReservesController {
       userId,
       reserveId,
     );
-
   }
 }
