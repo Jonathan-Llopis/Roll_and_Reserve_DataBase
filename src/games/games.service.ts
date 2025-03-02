@@ -178,13 +178,13 @@ export class GamesService {
       if (games.length === 0) {
         let externalGames;
         try {
-          externalGames = await this.httpService.get(
-            'http://rollandreserve.blog:8070/bgg-api/api/v5/search/boardgame',
+            externalGames = await this.httpService.get(
+            'http://localhost:8070/bgg-api/api/v5/search/boardgame',
             {
               params: { q: name, showcount: 20 },
               headers: { accept: 'application/json' },
             },
-          );
+            );
         } catch (error) {
           if (error.code === 'ECONNREFUSED') {
             console.error('Connection refused to external API');
