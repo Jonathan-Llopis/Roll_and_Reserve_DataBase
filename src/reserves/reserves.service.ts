@@ -162,7 +162,7 @@ export class ReservesService {
       });
       if (createReserveDto.reserve_of_game_id && !reserveOfGame) {
         const externalGames = await this.httpService.get(
-          'http://rollandreserve.blog:8070/bgg-api/api/v4/geekitems',
+            'http://bgg-api:80/bgg-api/api/v4/geekitems',
           {
             params: {
               objectid: createReserveDto.reserve_of_game_id,
@@ -265,7 +265,7 @@ export class ReservesService {
         });
         if (!reserveOfGame) {
           const externalGames = await this.httpService.get(
-            'http://rollandreserve.blog:8070/bgg-api/api/v4/geekitems',
+             'http://bgg-api:80/bgg-api/api/v4/geekitems',
             {
               params: {
                 objectid: updateReserveDto.reserve_of_game_id,
