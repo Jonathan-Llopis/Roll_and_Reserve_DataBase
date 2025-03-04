@@ -192,7 +192,10 @@ export class ReservesService {
       if (createReserveDto.reserve_table_id && !reserveTable) {
         throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
       }
+      console.log('reserveTable', reserveTable);
       reserve.reserve_table = reserveTable;
+
+      
       await this.reserveRepository.save(reserve);
       if (createReserveDto.shop_event == true) {
         const date = new Date(createReserveDto.hour_start);

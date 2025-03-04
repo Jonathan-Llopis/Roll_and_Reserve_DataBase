@@ -66,14 +66,6 @@ export class CreateReserveDto {
   difficulty_id?: number;
 
   @ApiPropertyOptional({
-    description: 'ID of the game category',
-    example: 2,
-  })
-  @IsOptional()
-  @IsNumber()
-  reserve_game_category_id?: number;
-
-  @ApiPropertyOptional({
     description: 'ID of the game',
     example: 3,
   })
@@ -169,13 +161,6 @@ export class UpdateReserveDto {
   @IsNumber()
   difficulty_id?: number;
 
-  @ApiPropertyOptional({
-    description: 'ID of the game category',
-    example: 2,
-  })
-  @IsOptional()
-  @IsNumber()
-  reserve_game_category_id?: number;
 
   @ApiPropertyOptional({
     description: 'ID of the game',
@@ -184,6 +169,7 @@ export class UpdateReserveDto {
   @IsOptional()
   @IsNumber()
   reserve_of_game_id?: number;
+  
   @ApiPropertyOptional({
     description: 'Name of the game',
     example: 'Chess',
