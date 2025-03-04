@@ -19,7 +19,7 @@ export class GamesEntity {
   @Column()
   name: string;
 
-  @Column({ length: 1024 })
+  @Column({ type: 'text' })
   description: string;
 
   @ManyToOne(
