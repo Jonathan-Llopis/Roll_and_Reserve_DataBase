@@ -176,7 +176,7 @@ export class ReservesService {
           const game = externalGamesData.item;
           reserveOfGame = await this.gameService.createGame({
             name: game.name,
-            description: game.description,
+            description: createReserveDto.game_name,
             category_name: game.links.boardgamecategory[0].name,
           });
         }
@@ -286,7 +286,7 @@ export class ReservesService {
             const game = externalGamesData.items[0];
             reserveOfGame = await this.gameService.createGame({
               name: game.name,
-              description: game.description,
+              description: updateReserveDto.game_name,
               category_name: game.links.boardgamesubdomain[0].name,
             });
           } else {
@@ -357,7 +357,7 @@ export class ReservesService {
         .where('reserve.shop_event = :shopEvent', { shopEvent: true })
         .andWhere('shop.id_shop = :shopId', { shopId: shopId })
         .andWhere('reserve.hour_start > :currentDate', { currentDate })
-        .groupBy('reserve.event_id, game.id_game')
+        .groupBy('reserve.event_id')
         .addSelect('game.id_game')
         .orderBy('reserve.hour_start', 'ASC')
         .getMany();
