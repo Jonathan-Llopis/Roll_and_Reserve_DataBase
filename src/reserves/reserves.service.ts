@@ -67,7 +67,7 @@ export class ReservesService {
       console.error('Unexpected error:', err);
       throw new HttpException(
         'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
@@ -96,7 +96,7 @@ export class ReservesService {
       console.error('Unexpected error:', err);
       throw new HttpException(
         'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
@@ -428,25 +428,28 @@ export class ReservesService {
 
   async getLastTenPlayers(userId: string): Promise<any[]> {
     try {
-      console.log(`Fetching last ten players for user ID: ${userId}`);
-      const reserves = await this.reserveRepository
-        .createQueryBuilder('reserve')
-        .innerJoinAndSelect('reserve.userReserves', 'userReserve')
-        .innerJoinAndSelect('userReserve.user', 'user')
-        .where('user.id_google = :userId', { userId: userId.toString() })
-        .orderBy('reserve.hour_start', 'DESC')
-        .limit(10)
-        .getMany();
-        
-      console.log(`Found ${reserves.length} reserves for user ID: ${userId}`);
-      const players = reserves.reduce((acc, reserve) => {
-        const filteredUsers = reserve.userReserves
-          .filter(userReserve => userReserve.user.id_google !== userId.toString())
-          .map(userReserve => userReserve.user);
-        console.log(`Reserve ID: ${reserve.id_reserve} has ${filteredUsers.length} players excluding user ID: ${userId}`);
-        return acc.concat(filteredUsers);
-      }, []);
-
+      const reserves = await this.reserveRepository.find({
+        relations: ['userReserves', 'userReserves.user'],
+        order: {
+          hour_start: 'DESC',
+        },
+      });
+      const reservesFiltered = reserves.filter((reserve) =>
+        reserve.userReserves.some((userReserve) => userReserve.user.id_google === userId),
+      );
+      const lastTenReserves = reservesFiltered.slice(0, 10);
+      const players = Array.from(
+        new Set(
+          lastTenReserves
+            .map((reserve) =>
+              reserve.userReserves
+                .filter((userReserve) => userReserve.user.id_google !== userId)
+                .map((userReserve) => userReserve.user),
+            )
+            .flat(),
+        ),
+      );
+      
       console.log(`Total players found: ${players.length}`);
       return players;
     } catch (err) {
@@ -456,7 +459,7 @@ export class ReservesService {
       console.error('Unexpected error:', err);
       throw new HttpException(
         'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
