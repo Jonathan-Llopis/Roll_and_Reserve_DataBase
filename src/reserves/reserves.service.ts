@@ -436,12 +436,12 @@ export class ReservesService {
         .orderBy('reserve.hour_start', 'DESC')
         .limit(10)
         .getMany();
-
-      const players = reserves.flatMap(reserve =>
-        reserve.userReserves
-          .filter(userReserve => userReserve.user.id_google !== userId.toString())
-          .map(userReserve => userReserve)
-      );
+        const players = reserves.reduce((acc, reserve) => {
+          const filteredUsers = reserve.userReserves
+            .filter(userReserve => userReserve.user.id_google !== userId.toString())
+            .map(userReserve => userReserve.user);
+          return acc.concat(filteredUsers);
+        }, []);
 
       return players;
     } catch (err) {
