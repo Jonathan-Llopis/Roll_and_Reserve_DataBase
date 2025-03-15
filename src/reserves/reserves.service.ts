@@ -379,7 +379,7 @@ export class ReservesService {
       );
     }
   }
-  @Cron('0,15,30,45 8-23 * * *')
+  @Cron('* 8-23 * * *')
   async handleCron() {
     const currentDate = new Date();
     currentDate.setHours(currentDate.getHours() + 1);
