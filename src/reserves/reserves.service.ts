@@ -194,7 +194,6 @@ export class ReservesService {
       if (createReserveDto.reserve_table_id && !reserveTable) {
         throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
       }
-      console.log('reserveTable', reserveTable);
       reserve.reserve_table = reserveTable;
 
       
@@ -405,7 +404,7 @@ export class ReservesService {
         .map((userReserve) => userReserve.user.token_notification),
       ),
       );
-
+      console.log(`Cron sended to : ${registrationTokens}`);
       if (registrationTokens.length > 0) {
       const shopName = reserve.reserve_table.tables_of_shop.name;
       const hour = reserve.hour_start.toLocaleTimeString('es-ES', {
