@@ -11,6 +11,7 @@ import { ReviewsEntity } from './reviews.entity';
 import { CreateReviewDto, UpdateReviewDto } from './reviews.dto';
 import { ShopsEntity } from '../shops/shops.entity';
 import { UserEntity } from '../users/users.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ReviewsService {
@@ -21,6 +22,7 @@ export class ReviewsService {
     private readonly shopRepository: Repository<ShopsEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private readonly usersService: UsersService,
   ) {}
 
   private handleError(err: any) {
@@ -150,23 +152,31 @@ export class ReviewsService {
         throw new HttpException('Writer not found', HttpStatus.NOT_FOUND);
       }
       review.writer = writer;
-      const reviewed = await this.userRepository.findOne({
-        where: { id_google: createReviewsDto.reviewed_id },
-      });
-      if (!reviewed) {
-        throw new HttpException(
-          'Reviewed user not found',
-          HttpStatus.NOT_FOUND,
-        );
+
+      if(createReviewsDto.reviewed_id){
+        const reviewed = await this.userRepository.findOne({
+          where: { id_google: createReviewsDto.reviewed_id },
+        });
+        if (!reviewed) {
+          throw new HttpException(
+            'Reviewed user not found',
+            HttpStatus.NOT_FOUND,
+          );
+        }
+        review.reviewed = reviewed;
+        this.usersService.updateAverageRating(reviewed.id_google);
       }
-      review.reviewed = reviewed;
-      const shop = await this.shopRepository.findOne({
-        where: { id_shop: createReviewsDto.shop_reviews_id },
-      });
-      if (!shop) {
-        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+     
+      if(createReviewsDto.shop_reviews_id){
+        const shop = await this.shopRepository.findOne({
+          where: { id_shop: createReviewsDto.shop_reviews_id },
+        });
+        if (!shop) {
+          throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+        }
+        review.shop_reviews = shop;
       }
-      review.shop_reviews = shop;
+      
       await this.reviewsRepository.save(review);
       return review;
 

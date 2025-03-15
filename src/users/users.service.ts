@@ -36,6 +36,8 @@ export class UsersService {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);
       }
 
+
+
       return users;
     } catch (err) {
       if (err instanceof HttpException) {
@@ -294,6 +296,39 @@ export class UsersService {
 
       const passwordHash = await bcrypt.hash(newPassword, 10);
       user.password = passwordHash;
+      return this.usersRepository.save(user);
+    } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async updateAverageRating(id_user: string): Promise<UserEntity> {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { id_google: id_user },
+        relations: ['receivedReviews'],
+      });
+
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+      const reviews = user.receivedReviews;
+      if (reviews.length === 0) {
+        throw new HttpException('No reviews found for user', HttpStatus.NO_CONTENT);
+      }
+
+      const totalRating = reviews.reduce((sum, review) => sum + review.raiting, 0);
+      const averageRating = totalRating / reviews.length;
+
+      user.average_raiting = averageRating;
       return this.usersRepository.save(user);
     } catch (err) {
       if (err instanceof HttpException) {
