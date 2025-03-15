@@ -23,7 +23,7 @@ export class ReviewsService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly usersService: UsersService,
-  ) {}
+  ) { }
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -145,30 +145,32 @@ export class ReviewsService {
   ): Promise<ReviewsEntity> {
     try {
       const review = this.reviewsRepository.create(createReviewsDto);
-      console.log('review', review);
+      console.log('review', createReviewsDto);
       const writer = await this.userRepository.findOne({
         where: { id_google: createReviewsDto.writter_id },
+        relations: ['reviews'],
       });
       if (!writer) {
         throw new HttpException('Writer not found', HttpStatus.NOT_FOUND);
       }
+      console.log('writer', writer);
       review.writer = writer;
 
-      if(createReviewsDto.reviewed_id){
+      if (createReviewsDto.reviewed_id) {
         const reviewed = await this.userRepository.findOne({
           where: { id_google: createReviewsDto.reviewed_id },
         });
         if (!reviewed) {
           throw new HttpException(
-        'Reviewed user not found',
-        HttpStatus.NOT_FOUND,
+            'Reviewed user not found',
+            HttpStatus.NOT_FOUND,
           );
         }
         review.reviewed = reviewed;
         await this.usersService.updateAverageRating(reviewed.id_google);
       }
-     
-      if(createReviewsDto.shop_reviews_id){
+
+      if (createReviewsDto.shop_reviews_id) {
         const shop = await this.shopRepository.findOne({
           where: { id_shop: createReviewsDto.shop_reviews_id },
         });
@@ -177,7 +179,7 @@ export class ReviewsService {
         }
         review.shop_reviews = shop;
       }
-      
+
       await this.reviewsRepository.save(review);
       return review;
 
