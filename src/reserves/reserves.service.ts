@@ -394,28 +394,31 @@ export class ReservesService {
 
     for (const reserve of upcomingReserves) {
       const registrationTokens = Array.from(
-      new Set(
-        (reserve.userReserves || [])
-        .filter(
-          (userReserve) =>
-          userReserve.user &&
-          userReserve.user.token_notification,
-        )
-        .map((userReserve) => userReserve.user.token_notification),
-      ),
+        new Set(
+          (reserve.userReserves || [])
+            .filter(
+              (userReserve) =>
+                userReserve.user &&
+                userReserve.user.token_notification,
+            )
+            .map((userReserve) => userReserve.user.token_notification),
+        ),
       );
-      console.log(`Cron sended to : ${registrationTokens}`);
+
+      console.log(`Cron sending notifications for reserve ID: ${reserve.id_reserve}`);
+      console.log(`Users receiving notifications: ${reserve.userReserves.map(userReserve => userReserve.user.id_google).join(', ')}`);
+
       if (registrationTokens.length > 0) {
-      const shopName = reserve.reserve_table.tables_of_shop.name;
-      const hour = reserve.hour_start.toLocaleTimeString('es-ES', {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-      this.fcmNotificationService.sendMulticastNotification(
-        registrationTokens,
-        `Reserva próxima en  ${shopName}`,
-        `Tienes una reserva hoy a las ${hour} para jugar a ${reserve.reserve_of_game.name} en la tienda ${shopName}.`,
-      );
+        const shopName = reserve.reserve_table.tables_of_shop.name;
+        const hour = reserve.hour_start.toLocaleTimeString('es-ES', {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+        this.fcmNotificationService.sendMulticastNotification(
+          registrationTokens,
+          `Reserva próxima en  ${shopName}`,
+          `Tienes una reserva hoy a las ${hour} para jugar a ${reserve.reserve_of_game.name} en la tienda ${shopName}.`,
+        );
       }
     }
   }
