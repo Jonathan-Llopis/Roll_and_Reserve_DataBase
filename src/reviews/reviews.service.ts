@@ -145,8 +145,8 @@ export class ReviewsService {
   ): Promise<ReviewsEntity> {
     try {
       const review = this.reviewsRepository.create(createReviewsDto);
-      const writer = await this.userRepository.findOne({
-        where: { id_google: createReviewsDto.writter_id },
+      const writer = await this.userRepository.findOneBy({
+        id_google: createReviewsDto.writter_id,
       });
       if (!writer) {
         throw new HttpException('Writer not found', HttpStatus.NOT_FOUND);
@@ -154,8 +154,8 @@ export class ReviewsService {
       review.writer = writer;
 
       if(createReviewsDto.reviewed_id){
-        const reviewed = await this.userRepository.findOne({
-          where: { id_google: createReviewsDto.reviewed_id },
+        const reviewed = await this.userRepository.findOneBy({
+          id_google: createReviewsDto.reviewed_id,
         });
         if (!reviewed) {
           throw new HttpException(
