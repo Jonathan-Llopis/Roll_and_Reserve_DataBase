@@ -311,23 +311,29 @@ export class UsersService {
 
   async updateAverageRating(id_user: string): Promise<UserEntity> {
     try {
+      console.log(`Fetching user with id_google: ${id_user}`);
       const user = await this.usersRepository.findOne({
         where: { id_google: id_user },
         relations: ['receivedReviews'],
       });
 
       if (!user) {
+        console.error(`User with id_google: ${id_user} not found`);
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
+      console.log(`User with id_google: ${id_user} found`);
       const reviews = user.receivedReviews;
       if (reviews.length === 0) {
+        console.warn(`No reviews found for user with id_google: ${id_user}`);
         throw new HttpException('No reviews found for user', HttpStatus.NO_CONTENT);
       }
 
+      console.log(`Calculating average rating for user with id_google: ${id_user}`);
       const totalRating = reviews.reduce((sum, review) => sum + review.raiting, 0);
       const averageRating = totalRating / reviews.length;
 
+      console.log(`Total rating: ${totalRating}, Number of reviews: ${reviews.length}, Average rating: ${averageRating}`);
       user.average_raiting = averageRating;
       console.log(`Updated average rating for user ${id_user}: ${averageRating}`);
       return this.usersRepository.save(user);
