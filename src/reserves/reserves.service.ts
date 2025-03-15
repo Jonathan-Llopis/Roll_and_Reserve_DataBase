@@ -428,6 +428,7 @@ export class ReservesService {
 
   async getLastTenPlayers(userId: string): Promise<any[]> {
     try {
+      console.log(`Fetching last ten players for user ID: ${userId}`);
       const reserves = await this.reserveRepository
         .createQueryBuilder('reserve')
         .innerJoinAndSelect('reserve.userReserves', 'userReserve')
@@ -436,13 +437,17 @@ export class ReservesService {
         .orderBy('reserve.hour_start', 'DESC')
         .limit(10)
         .getMany();
-        const players = reserves.reduce((acc, reserve) => {
-          const filteredUsers = reserve.userReserves
-            .filter(userReserve => userReserve.user.id_google !== userId.toString())
-            .map(userReserve => userReserve.user);
-          return acc.concat(filteredUsers);
-        }, []);
+        
+      console.log(`Found ${reserves.length} reserves for user ID: ${userId}`);
+      const players = reserves.reduce((acc, reserve) => {
+        const filteredUsers = reserve.userReserves
+          .filter(userReserve => userReserve.user.id_google !== userId.toString())
+          .map(userReserve => userReserve.user);
+        console.log(`Reserve ID: ${reserve.id_reserve} has ${filteredUsers.length} players excluding user ID: ${userId}`);
+        return acc.concat(filteredUsers);
+      }, []);
 
+      console.log(`Total players found: ${players.length}`);
       return players;
     } catch (err) {
       if (err instanceof HttpException) {
