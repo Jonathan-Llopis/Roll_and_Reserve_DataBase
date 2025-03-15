@@ -384,7 +384,7 @@ export class ReservesService {
     const currentDate = new Date();
     currentDate.setHours(currentDate.getHours() + 1);
     const upcomingReserves = await this.reserveRepository.find({
-      relations: ['userReserves', 'userReserves.user'],
+      relations: ['userReserves', 'userReserves.user', 'reserve_table', 'reserve_table.tables_of_shop'],
       where: {
         hour_start: Between(
           new Date(currentDate.getTime() + 30 * 60000),
