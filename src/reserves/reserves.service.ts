@@ -32,7 +32,7 @@ export class ReservesService {
     private readonly gameService: GamesService,
     @Inject('Bgg-Api')
     private readonly httpService: HttpService,
-  ) {}
+  ) { }
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -163,7 +163,7 @@ export class ReservesService {
       });
       if (createReserveDto.reserve_of_game_id && !reserveOfGame) {
         const externalGames = await this.httpService.get(
-            'http://bgg-api:80/bgg-api/api/v4/geekitems',
+          'http://bgg-api:80/bgg-api/api/v4/geekitems',
           {
             params: {
               objectid: createReserveDto.reserve_of_game_id,
@@ -196,7 +196,7 @@ export class ReservesService {
       }
       reserve.reserve_table = reserveTable;
 
-      
+
       await this.reserveRepository.save(reserve);
       if (createReserveDto.shop_event == true) {
         const date = new Date(createReserveDto.hour_start);
@@ -270,7 +270,7 @@ export class ReservesService {
         });
         if (!reserveOfGame) {
           const externalGames = await this.httpService.get(
-             'http://bgg-api:80/bgg-api/api/v4/geekitems',
+            'http://bgg-api:80/bgg-api/api/v4/geekitems',
             {
               params: {
                 objectid: updateReserveDto.reserve_of_game_id,
@@ -385,15 +385,16 @@ export class ReservesService {
     currentDate.setHours(currentDate.getHours() + 1);
     console.log('Cron running every 15 minutes:', currentDate);
     const upcomingReserves = await this.reserveRepository.find({
-      relations: ['userReserves', 'userReserves.user', 'reserve_table', 'reserve_table.tables_of_shop'],
+      relations: ['userReserves', 'userReserves.user', 'reserve_table', 'reserve_table.tables_of_shop', 'reserve_of_game'],
       where: {
         hour_start: Between(
-          new Date(currentDate.getTime() + 30 * 60000),
+          new Date(currentDate.getTime() + 0 * 60000),
           new Date(currentDate.getTime() + 44 * 60000),
         ),
       },
     });
 
+    console.log(`Cron sending notifications for reserves IDs: ${upcomingReserves[0].id_reserve}`);
     for (const reserve of upcomingReserves) {
       const registrationTokens = Array.from(
         new Set(
@@ -406,12 +407,9 @@ export class ReservesService {
             .map((userReserve) => userReserve.user.token_notification),
         ),
       );
-
-      console.log(`Cron sending notifications for reserve ID: ${reserve.id_reserve}`);
       console.log(`Users receiving notifications: ${reserve.userReserves.map(userReserve => userReserve.user.id_google).join(', ')}`);
-
       if (registrationTokens.length > 0) {
-        const shopName = reserve.reserve_table.tables_of_shop.name;
+        const shopName = reserve.reserve_table?.tables_of_shop.name;
         const hour = reserve.hour_start.toLocaleTimeString('es-ES', {
           hour: '2-digit',
           minute: '2-digit',
@@ -454,5 +452,5 @@ export class ReservesService {
       );
     }
   }
-  
+
 }
