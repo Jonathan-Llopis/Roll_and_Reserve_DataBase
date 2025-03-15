@@ -149,7 +149,7 @@ export class ReviewsService {
       if (!writer) {
         throw new HttpException('Writer not found', HttpStatus.NOT_FOUND);
       }
-
+      review.writer = writer;
       const reviewed = await this.userRepository.findOne({
         where: { id_google: createReviewsDto.reviewed_id },
       });
@@ -159,15 +159,17 @@ export class ReviewsService {
           HttpStatus.NOT_FOUND,
         );
       }
-
+      review.reviewed = reviewed;
       const shop = await this.shopRepository.findOne({
         where: { id_shop: createReviewsDto.shop_reviews_id },
       });
       if (!shop) {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
+      review.shop_reviews = shop;
       await this.reviewsRepository.save(review);
       return review;
+
     } catch (err) {
       if (err instanceof HttpException) {
         throw err;
