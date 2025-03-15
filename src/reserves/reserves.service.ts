@@ -438,8 +438,8 @@ export class ReservesService {
         .getMany();
 
       const players = reserves.flatMap(reserve =>
-        reserve.users_in_reserve
-          .filter(userReserve => userReserve.id_google !== userId.toString())
+        reserve.userReserves
+          .filter(userReserve => userReserve.user.id_google !== userId.toString())
           .map(userReserve => userReserve)
       );
 
