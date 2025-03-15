@@ -379,7 +379,7 @@ export class ReservesService {
       );
     }
   }
-  @Cron('* 8-23 * * *')
+  @Cron('0,15,30,45 8-23 * * *')
   async handleCron() {
     const currentDate = new Date();
     currentDate.setHours(currentDate.getHours() + 1);
@@ -393,34 +393,36 @@ export class ReservesService {
         ),
       },
     });
-
-    console.log(`Cron sending notifications for reserves IDs: `);
+    
     for (const reserve of upcomingReserves) {
-    console.log(`Cron sending notifications for reserves IDs: ${reserve.id_reserve}`);
-      const registrationTokens = Array.from(
-        new Set(
-          (reserve.userReserves || [])
-            .filter(
-              (userReserve) =>
-                userReserve.user &&
-                userReserve.user.token_notification,
-            )
-            .map((userReserve) => userReserve.user.token_notification),
-        ),
-      );
-      console.log(`Users receiving notifications: ${reserve.userReserves.map(userReserve => userReserve.user.id_google).join(', ')}`);
-      if (registrationTokens.length > 0) {
-        const shopName = reserve.reserve_table?.tables_of_shop.name;
-        const hour = reserve.hour_start.toLocaleTimeString('es-ES', {
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-        this.fcmNotificationService.sendMulticastNotification(
-          registrationTokens,
-          `Reserva próxima en  ${shopName}`,
-          `Tienes una reserva hoy a las ${hour} para jugar a ${reserve.reserve_of_game.name} en la tienda ${shopName}.`,
-        );
+      if(!reserve.confirmation_notification){
+        console.log(`Cron sending notifications for reserves IDs: ${reserve.id_reserve}`);
+        reserve.confirmation_notification = true;
+          const registrationTokens = Array.from(
+            new Set(
+              (reserve.userReserves || [])
+                .filter(
+                  (userReserve) =>
+                    userReserve.user &&
+                    userReserve.user.token_notification,
+                )
+                .map((userReserve) => userReserve.user.token_notification),
+            ),
+          );
+          if (registrationTokens.length > 0) {
+            const shopName = reserve.reserve_table?.tables_of_shop.name;
+            const hour = reserve.hour_start.toLocaleTimeString('es-ES', {
+              hour: '2-digit',
+              minute: '2-digit',
+            });
+            this.fcmNotificationService.sendMulticastNotification(
+              registrationTokens,
+              `Reserva próxima en  ${shopName}`,
+              `Tienes una reserva hoy a las ${hour} para jugar a ${reserve.reserve_of_game.name} en la tienda ${shopName}.`,
+            );
+          }
       }
+    
     }
   }
 

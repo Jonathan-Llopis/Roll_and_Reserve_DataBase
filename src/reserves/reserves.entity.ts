@@ -40,6 +40,9 @@ export class ReservesEntity {
   @Column({ nullable: true })
   event_id?: string;
 
+  @Column({ default: false })
+  confirmation_notification: boolean;
+
   @ManyToOne(() => DifficultyEntity, (difficulty) => difficulty.info_difficulty)
   @JoinColumn({ name: 'difficulty_id' })
   difficulty: DifficultyEntity;
