@@ -148,7 +148,6 @@ export class ReviewsService {
       console.log('review', createReviewsDto);
       const writer = await this.userRepository.findOne({
         where: { id_google: createReviewsDto.writter_id },
-        relations: ['reviews'],
       });
       if (!writer) {
         throw new HttpException('Writer not found', HttpStatus.NOT_FOUND);
