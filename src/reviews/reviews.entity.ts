@@ -25,11 +25,15 @@ export class ReviewsEntity {
   @JoinColumn({ name: 'writter_id' })
   writer: UserEntity;
 
-  @ManyToOne(() => UserEntity, (user) => user.receivedReviews)
+  @ManyToOne(() => UserEntity, (user) => user.receivedReviews, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'reviwed_id' })
   reviewed: UserEntity;
 
-  @ManyToOne(() => ShopsEntity, (shop) => shop.reviews_shop)
+  @ManyToOne(() => ShopsEntity, (shop) => shop.reviews_shop, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'shop_reviews' })
   shop_reviews: ShopsEntity;
 }
