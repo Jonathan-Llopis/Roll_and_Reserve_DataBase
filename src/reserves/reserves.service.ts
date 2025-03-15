@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, LessThan, Like, Repository } from 'typeorm';
+import { Between, LessThan, Like, Repository, LessThanOrEqual } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
@@ -432,10 +432,10 @@ export class ReservesService {
       const reserves = await this.reserveRepository.find({
         relations: ['userReserves', 'userReserves.user'],
         where: {
-          hour_end: LessThan(currentDate),
+          hour_end: LessThanOrEqual(currentDate),
         },
         order: {
-          hour_start: 'DESC',
+          hour_end: 'DESC',
         },
       });
       const reservesFiltered = reserves.filter((reserve) =>
