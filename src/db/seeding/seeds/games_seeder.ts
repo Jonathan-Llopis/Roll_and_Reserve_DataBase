@@ -14,6 +14,7 @@ export class GamesSeeder implements Seeder {
         const gamesEntry = new GamesEntity();
         gamesEntry.name = item.name;
         gamesEntry.description = item.description;
+        gamesEntry.bgg_id = item.bgg_id;
         gamesEntry.gameCategory = await gameCategoryRepository.findOne({
           where: { id_game_category: item.game_category_id },
         });
