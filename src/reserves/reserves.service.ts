@@ -359,10 +359,10 @@ export class ReservesService {
         .innerJoinAndSelect('reserve.reserve_of_game', 'game')
         .where('reserve.shop_event = :shopEvent', { shopEvent: true })
         .andWhere('shop.id_shop = :shopId', { shopId: shopId })
-        .andWhere('reserve.hour_start > :currentDate', { currentDate })
+        .andWhere('reserve.hour_start < :currentDate', { currentDate })
         .groupBy('reserve.event_id')
         .addSelect('game.id_game')
-        .orderBy('reserve.hour_start', 'ASC')
+        .orderBy('reserve.hour_start', 'DESC')
         .getMany();
       if (reserves.length === 0) {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);
