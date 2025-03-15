@@ -394,8 +394,9 @@ export class ReservesService {
       },
     });
 
-    console.log(`Cron sending notifications for reserves IDs: ${upcomingReserves[0].id_reserve}`);
+    console.log(`Cron sending notifications for reserves IDs: `);
     for (const reserve of upcomingReserves) {
+    console.log(`Cron sending notifications for reserves IDs: ${reserve.id_reserve}`);
       const registrationTokens = Array.from(
         new Set(
           (reserve.userReserves || [])
