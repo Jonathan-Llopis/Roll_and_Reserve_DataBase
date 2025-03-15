@@ -167,7 +167,6 @@ export class ReviewsService {
         }
         review.reviewed = reviewed;
         console.log('reviewed', reviewed);
-        await this.usersService.updateAverageRating(reviewed.id_google);
       }
 
       if (createReviewsDto.shop_reviews_id) {
@@ -181,6 +180,9 @@ export class ReviewsService {
       }
 
       await this.reviewsRepository.save(review);
+      if(review.reviewed){
+        await this.usersService.updateAverageRating(review.reviewed.id_google);
+      }
       return review;
 
     } catch (err) {
