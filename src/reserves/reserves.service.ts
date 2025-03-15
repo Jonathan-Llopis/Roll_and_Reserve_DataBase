@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, LessThan, Like, Repository, LessThanOrEqual } from 'typeorm';
+import { Between, LessThanOrEqual, Like, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
@@ -11,7 +11,7 @@ import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { GamesService } from 'src/games/games.service';
 import { HttpService } from '../http/http.service';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron, } from '@nestjs/schedule';
 
 @Injectable()
 export class ReservesService {
@@ -431,9 +431,6 @@ export class ReservesService {
       const currentDate = new Date();
       const reserves = await this.reserveRepository.find({
         relations: ['userReserves', 'userReserves.user'],
-        where: {
-          hour_end: LessThanOrEqual(currentDate),
-        },
         order: {
           hour_end: 'DESC',
         },
