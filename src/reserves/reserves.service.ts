@@ -435,7 +435,12 @@ export class ReservesService {
           hour_end: 'DESC',
         },
       });
-      const reservesFiltered = reserves.filter((reserve) =>
+
+      const endedReserves = reserves.filter(
+        (reserve) => reserve.hour_end < currentDate,
+      );
+
+      const reservesFiltered = endedReserves.filter((reserve) =>
         reserve.userReserves.some((userReserve) => userReserve.user.id_google === userId),
       );
       const lastTenReserves = reservesFiltered.slice(0, 10);
