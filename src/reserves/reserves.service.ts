@@ -384,7 +384,7 @@ export class ReservesService {
   async handleCron() {
     const currentDate = new Date();
     const upcomingReserves = await this.reserveRepository.find({
-      relations: ['users_in_reserve', 'users_in_reserve.user'],
+      relations: ['userReserves', 'userReserves.user'],
       where: {
         hour_start: Between(
           new Date(currentDate.getTime() + 30 * 60000),
@@ -450,4 +450,5 @@ export class ReservesService {
       );
     }
   }
+  
 }
