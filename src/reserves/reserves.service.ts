@@ -379,9 +379,10 @@ export class ReservesService {
       );
     }
   }
-  @Cron('0,15,30,45 8-23 * * *')
+  @Cron('* * * * *')
   async handleCron() {
     const currentDate = new Date();
+    console.log('Cron running', currentDate);
     const upcomingReserves = await this.reserveRepository.find({
       relations: ['userReserves', 'userReserves.user'],
       where: {
