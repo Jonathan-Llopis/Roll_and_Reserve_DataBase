@@ -35,6 +35,7 @@ import { FilesModule } from './files/files.module';
 import { UserReserveEntity } from './users_reserves/users_reserves.entity';
 import { FcmNotificationModule } from './fcm-notification/fcm-notification.module';
 import { HttpModule } from './http/http.module';
+import { ScheduleModule } from '@nestjs/schedule';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -99,6 +100,7 @@ import { HttpModule } from './http/http.module';
     FilesModule,
     FcmNotificationModule,
     HttpModule,
+    ScheduleModule.forRoot(),
     HttpModule.forFeature({
       serviceName: 'Bgg-Api',
       config: {

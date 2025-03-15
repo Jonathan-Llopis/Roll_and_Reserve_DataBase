@@ -207,6 +207,7 @@ export class GamesService {
             name: item.name,
             image: item.image,
             description: '',
+            bgg_id: item.objectid,
             gameCategory: null,
             shop: null,
             game_reserve: null,

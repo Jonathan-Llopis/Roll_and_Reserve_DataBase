@@ -22,6 +22,9 @@ export class GamesEntity {
   @Column({ type: 'text' })
   description: string;
 
+  @Column()
+  bgg_id: number;
+
   @ManyToOne(
     () => GameCategoryEntity,
     (gameCategory) => gameCategory.game_category,

@@ -177,4 +177,22 @@ export class ReservesController {
     }
     return await this.reservesService.deleteReserve(reserveId);
   }
+
+  @Get('last_ten_players/:idGoogle')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get the last ten players for a user by Google ID' })
+  @ApiParam({ name: 'idGoogle', description: 'Google ID', example: 'abc123' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved the last ten players.',
+  })
+  @ApiResponse({ status: 204, description: 'No content.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 400, description: 'Failed to retrieve players.' })
+  async getLastTenPlayers(@Param('idGoogle') idGoogle: string) {
+    if (!idGoogle) {
+      throw new HttpException('Invalid Google ID', HttpStatus.BAD_REQUEST);
+    }
+    return await this.reservesService.getLastTenPlayers(idGoogle);
+  }
 }

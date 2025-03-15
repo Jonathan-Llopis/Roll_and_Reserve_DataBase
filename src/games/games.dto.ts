@@ -1,4 +1,4 @@
-import { IsString, IsOptional, Length } from 'class-validator';
+import { IsString, IsOptional, Length, IsNumber } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateGameDto {
@@ -29,6 +29,14 @@ export class CreateGameDto {
   })
   @IsString()
   category_name?: string;
+
+  @ApiProperty({
+    description: 'The ID of the board game geek',
+    minimum: 1,
+    example: 1,
+  })
+  @IsNumber()
+  bgg_id: number;
 }
 
 export class UpdateGameDto {
@@ -62,4 +70,13 @@ export class UpdateGameDto {
   @IsOptional()
   @IsString()
   category_name?: string;
+
+  @ApiPropertyOptional({
+    description: 'The ID of the board game geek',
+    minimum: 1,
+    example: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  bgg_id?: number;
 }

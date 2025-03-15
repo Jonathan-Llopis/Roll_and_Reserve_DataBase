@@ -11,6 +11,7 @@ import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { GamesService } from 'src/games/games.service';
 import { HttpService } from '../http/http.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class ReservesService {
@@ -175,9 +176,10 @@ export class ReservesService {
         if (externalGamesData && externalGamesData.item) {
           const game = externalGamesData.item;
           reserveOfGame = await this.gameService.createGame({
-            name: game.name,
-            description: createReserveDto.game_name,
+            name: createReserveDto.game_name,
+            description: game.description,
             category_name: game.links.boardgamecategory[0].name,
+            bgg_id: createReserveDto.reserve_of_game_id,
           });
         }
         if (!reserveOfGame) {
@@ -223,6 +225,7 @@ export class ReservesService {
             idShop.toString(),
             `Nuevo evento en ${shop.name}`,
             `Juego: ${reserveOfGame.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            `${process.env.BASE_URL}/files/${shop.logo}`,
           );
         }
       }
@@ -288,6 +291,7 @@ export class ReservesService {
               name: game.name,
               description: updateReserveDto.game_name,
               category_name: game.links.boardgamesubdomain[0].name,
+              bgg_id: updateReserveDto.reserve_of_game_id,
             });
           } else {
             throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
@@ -365,6 +369,76 @@ export class ReservesService {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);
       }
       return reserves;
+    } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  @Cron('0,15,30,45 8-23 * * *')
+  async handleCron() {
+    const currentDate = new Date();
+    const upcomingReserves = await this.reserveRepository.find({
+      relations: ['users_in_reserve', 'users_in_reserve.user'],
+      where: {
+        hour_start: Between(
+          new Date(currentDate.getTime() + 30 * 60000),
+          new Date(currentDate.getTime() + 44 * 60000),
+        ),
+      },
+    });
+
+    for (const reserve of upcomingReserves) {
+      const registrationTokens = Array.from(
+      new Set(
+        (reserve.userReserves || [])
+        .filter(
+          (userReserve) =>
+          userReserve.user &&
+          userReserve.user.token_notification,
+        )
+        .map((userReserve) => userReserve.user.token_notification),
+      ),
+      );
+
+      if (registrationTokens.length > 0) {
+      const shopName = reserve.reserve_table.tables_of_shop.name;
+      const hour = reserve.hour_start.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      this.fcmNotificationService.sendMulticastNotification(
+        registrationTokens,
+        `Reserva próxima en  ${shopName}`,
+        `Tienes una reserva hoy a las ${hour} para jugar a ${reserve.reserve_of_game.name} en la tienda ${shopName}.`,
+      );
+      }
+    }
+  }
+
+  async getLastTenPlayers(userId: string): Promise<any[]> {
+    try {
+      const reserves = await this.reserveRepository
+        .createQueryBuilder('reserve')
+        .innerJoinAndSelect('reserve.userReserves', 'userReserve')
+        .innerJoinAndSelect('userReserve.user', 'user')
+        .where('user.id_google = :userId', { userId: userId.toString() })
+        .orderBy('reserve.hour_start', 'DESC')
+        .limit(10)
+        .getMany();
+
+      const players = reserves.flatMap(reserve =>
+        reserve.users_in_reserve
+          .filter(userReserve => userReserve.id_google !== userId.toString())
+          .map(userReserve => userReserve)
+      );
+
+      return players;
     } catch (err) {
       if (err instanceof HttpException) {
         throw err;
