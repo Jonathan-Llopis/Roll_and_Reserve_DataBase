@@ -166,6 +166,7 @@ export class ReviewsService {
           );
         }
         review.reviewed = reviewed;
+        console.log('reviewed', reviewed);
         await this.usersService.updateAverageRating(reviewed.id_google);
       }
 

@@ -329,6 +329,7 @@ export class UsersService {
       const averageRating = totalRating / reviews.length;
 
       user.average_raiting = averageRating;
+      console.log(`Updated average rating for user ${id_user}: ${averageRating}`);
       return this.usersRepository.save(user);
     } catch (err) {
       if (err instanceof HttpException) {

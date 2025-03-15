@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Like, Repository } from 'typeorm';
+import { Between, LessThan, Like, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
@@ -359,10 +359,10 @@ export class ReservesService {
         .innerJoinAndSelect('reserve.reserve_of_game', 'game')
         .where('reserve.shop_event = :shopEvent', { shopEvent: true })
         .andWhere('shop.id_shop = :shopId', { shopId: shopId })
-        .andWhere('reserve.hour_start < :currentDate', { currentDate })
+        .andWhere('reserve.hour_start > :currentDate', { currentDate })
         .groupBy('reserve.event_id')
         .addSelect('game.id_game')
-        .orderBy('reserve.hour_start', 'DESC')
+        .orderBy('reserve.hour_start', 'ASC')
         .getMany();
       if (reserves.length === 0) {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);
@@ -428,8 +428,12 @@ export class ReservesService {
 
   async getLastTenPlayers(userId: string): Promise<any[]> {
     try {
+      const currentDate = new Date();
       const reserves = await this.reserveRepository.find({
         relations: ['userReserves', 'userReserves.user'],
+        where: {
+          hour_end: LessThan(currentDate),
+        },
         order: {
           hour_start: 'DESC',
         },
