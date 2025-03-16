@@ -26,7 +26,6 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly authService: AuthService,
-    private readonly mailService: MailService,
   ) {}
 
   @Post()

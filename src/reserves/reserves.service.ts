@@ -384,16 +384,19 @@ export class ReservesService {
     const currentDate = new Date();
     currentDate.setHours(currentDate.getHours() + 1);
     console.log('Cron running every 15 minutes:', currentDate);
-    const upcomingReserves = await this.reserveRepository.find({
-      relations: ['userReserves', 'userReserves.user', 'reserve_table', 'reserve_table.tables_of_shop', 'reserve_of_game'],
-      where: {
-        hour_start: Between(
-          new Date(currentDate.getTime() + 0 * 60000),
-          new Date(currentDate.getTime() + 44 * 60000),
-        ),
-      },
-    });
-    
+    const upcomingReserves = await this.reserveRepository
+      .createQueryBuilder('reserve')
+      .innerJoinAndSelect('reserve.userReserves', 'userReserves')
+      .innerJoinAndSelect('userReserves.user', 'user')
+      .innerJoinAndSelect('reserve.reserve_table', 'reserve_table')
+      .innerJoinAndSelect('reserve_table.tables_of_shop', 'tables_of_shop')
+      .innerJoinAndSelect('reserve.reserve_of_game', 'reserve_of_game')
+      .where('reserve.hour_start BETWEEN :start AND :end', {
+      start: new Date(currentDate.getTime() + 30 * 60000),
+      end: new Date(currentDate.getTime() + 44 * 60000),
+      })
+      .groupBy('reserve.event_id')
+      .getMany();
     for (const reserve of upcomingReserves) {
       if(!reserve.confirmation_notification){
         console.log(`Cron sending notifications for reserves IDs: ${reserve.id_reserve}`);
