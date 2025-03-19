@@ -17,6 +17,13 @@ export class CreateReserveDto {
   total_places: number;
 
   @ApiProperty({
+    description: 'ID of the user who made the reserve',
+    example: 1,
+  })
+  @IsNumber()
+  reserver_id: number;
+
+  @ApiProperty({
     description: 'Start hour of the reserve',
     example: '2023-10-10T10:00:00Z',
   })
@@ -106,6 +113,14 @@ export class UpdateReserveDto {
   @IsOptional()
   @IsNumber()
   total_places?: number;
+
+  @ApiPropertyOptional({
+    description: 'ID of the user who made the reserve',
+    example: 1,
+  })
+  @IsOptional()
+  @IsNumber()
+  reserver_id?: number;
 
   @ApiPropertyOptional({
     description: 'Start hour of the reserve',
