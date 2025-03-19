@@ -20,8 +20,8 @@ export class CreateReserveDto {
     description: 'ID of the user who made the reserve',
     example: 1,
   })
-  @IsNumber()
-  reserver_id: number;
+  @IsString()
+  reserver_id: string;
 
   @ApiProperty({
     description: 'Start hour of the reserve',
@@ -119,8 +119,8 @@ export class UpdateReserveDto {
     example: 1,
   })
   @IsOptional()
-  @IsNumber()
-  reserver_id?: number;
+  @IsString()
+  reserver_id?: string;
 
   @ApiPropertyOptional({
     description: 'Start hour of the reserve',

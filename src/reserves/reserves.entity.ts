@@ -23,7 +23,7 @@ export class ReservesEntity {
   total_places: number;
 
   @Column()
-  reserver_id: number;
+  reserver_id: string;
 
   @Column()
   hour_start: Date;
