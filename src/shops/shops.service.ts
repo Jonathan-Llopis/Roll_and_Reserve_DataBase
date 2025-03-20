@@ -199,7 +199,7 @@ export class ShopsService {
       // Actual query to get most played games
       const mostPlayedGames = await this.shopRepository.query(
         `SELECT g.id_game, g.name, COUNT(r.id_reserve) as play_count 
-         FROM reserves r
+         FROM reserves_entity r
          JOIN games g ON r.game_reserve = g.id_game
          JOIN tables t ON r.reserves_of_table = t.id_table
          WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?
@@ -265,7 +265,7 @@ export class ShopsService {
       // Actual query to get peak reservation hours
       const peakReservationHours = await this.shopRepository.query(
         `SELECT DATE_PART('hour', r.hour_start) as hour, COUNT(*) as reservation_count 
-         FROM reserves r
+         FROM reserves_entity r
          JOIN tables t ON r.reserves_of_table = t.id_table
          WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?
          GROUP BY hour 
