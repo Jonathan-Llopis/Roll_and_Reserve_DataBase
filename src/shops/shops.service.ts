@@ -190,4 +190,91 @@ export class ShopsService {
       );
     }
   }
+  async getMostPlayedGames(idShop: string, startTime: string, endTime: string): Promise<any> {
+    try {
+      const shop = await this.shopRepository.findOne({ where: { id_shop: parseInt(idShop) } });
+      if (!shop) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
+      // Actual query to get most played games
+      const mostPlayedGames = await this.shopRepository.query(
+        `SELECT g.id_game, g.name, COUNT(r.id_reserve) as play_count 
+         FROM reserves r
+         JOIN games g ON r.game_reserve = g.id_game
+         JOIN tables t ON r.reserves_of_table = t.id_table
+         WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?
+         GROUP BY g.id_game, g.name
+         ORDER BY play_count DESC`,
+        [idShop, startTime, endTime]
+      );
+      return mostPlayedGames;
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  async getTotalReservations(idShop: string, startTime: string, endTime: string): Promise<any> {
+    try {
+      const shop = await this.shopRepository.findOne({ where: { id_shop: parseInt(idShop) } });
+      if (!shop) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
+      // Actual query to get total reservations
+      const totalReservations = await this.shopRepository.query(
+        `SELECT COUNT(*) as total_reservations 
+         FROM reserves 
+         WHERE reserves_of_table IN (
+           SELECT id_table 
+           FROM tables 
+           WHERE tables_of_shop = ?
+         ) AND hour_start BETWEEN ? AND ?`,
+        [idShop, startTime, endTime]
+      );
+      return totalReservations;
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  async getPlayerCount(idShop: string, startTime: string, endTime: string): Promise<any> {
+    try {
+      const shop = await this.shopRepository.findOne({ where: { id_shop: parseInt(idShop) } });
+      if (!shop) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
+      // Actual query to get player count
+      const playerCount = await this.shopRepository.query(
+        `SELECT COUNT(DISTINCT ur.user_id) as player_count 
+         FROM user_reserve ur
+         JOIN reserves r ON ur.reserve_id = r.id_reserve
+         JOIN tables t ON r.reserves_of_table = t.id_table
+         WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?`,
+        [idShop, startTime, endTime]
+      );
+      return playerCount;
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+  async getPeakReservationHours(idShop: string, startTime: string, endTime: string): Promise<any> {
+    try {
+      const shop = await this.shopRepository.findOne({ where: { id_shop: parseInt(idShop) } });
+      if (!shop) {
+        throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
+      }
+      // Actual query to get peak reservation hours
+      const peakReservationHours = await this.shopRepository.query(
+        `SELECT DATE_PART('hour', r.hour_start) as hour, COUNT(*) as reservation_count 
+         FROM reserves r
+         JOIN tables t ON r.reserves_of_table = t.id_table
+         WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?
+         GROUP BY hour 
+         ORDER BY reservation_count DESC`,
+        [idShop, startTime, endTime]
+      );
+      return peakReservationHours;
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
 }

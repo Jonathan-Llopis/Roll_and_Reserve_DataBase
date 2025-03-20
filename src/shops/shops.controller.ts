@@ -191,4 +191,180 @@ export class ShopsController {
       );
     }
   }
+  
+  @Get('/shop/:idShop/stats/most-played-games')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get most played games by shop ID within a time range' })
+  @ApiParam({
+    name: 'idShop',
+    description: 'ID of the shop',
+    type: String,
+    example: '1',
+  })
+  @ApiParam({
+    name: 'startTime',
+    description: 'Start time of the range',
+    type: String,
+    example: '2023-01-01T00:00:00Z',
+  })
+  @ApiParam({
+    name: 'endTime',
+    description: 'End time of the range',
+    type: String,
+    example: '2023-12-31T23:59:59Z',
+  })
+  @ApiResponse({ status: 200, description: 'Statistics retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Shop not found.' })
+  getMostPlayedGames(
+    @Param('idShop') idShop: string,
+    @Param('startTime') startTime: string,
+    @Param('endTime') endTime: string,
+  ) {
+    try {
+      return this.shopsService.getMostPlayedGames(idShop, startTime, endTime);
+    } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/shop/:idShop/stats/total-reservations')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get total reservations by shop ID within a time range' })
+  @ApiParam({
+    name: 'idShop',
+    description: 'ID of the shop',
+    type: String,
+    example: '1',
+  })
+  @ApiParam({
+    name: 'startTime',
+    description: 'Start time of the range',
+    type: String,
+    example: '2023-01-01T00:00:00Z',
+  })
+  @ApiParam({
+    name: 'endTime',
+    description: 'End time of the range',
+    type: String,
+    example: '2023-12-31T23:59:59Z',
+  })
+  @ApiResponse({ status: 200, description: 'Statistics retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Shop not found.' })
+  getTotalReservations(
+    @Param('idShop') idShop: string,
+    @Param('startTime') startTime: string,
+    @Param('endTime') endTime: string,
+  ) {
+    try {
+      return this.shopsService.getTotalReservations(idShop, startTime, endTime);
+    } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/shop/:idShop/stats/player-count')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get player count by shop ID within a time range' })
+  @ApiParam({
+    name: 'idShop',
+    description: 'ID of the shop',
+    type: String,
+    example: '1',
+  })
+  @ApiParam({
+    name: 'startTime',
+    description: 'Start time of the range',
+    type: String,
+    example: '2023-01-01T00:00:00Z',
+  })
+  @ApiParam({
+    name: 'endTime',
+    description: 'End time of the range',
+    type: String,
+    example: '2023-12-31T23:59:59Z',
+  })
+  @ApiResponse({ status: 200, description: 'Statistics retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Shop not found.' })
+  getPlayerCount(
+    @Param('idShop') idShop: string,
+    @Param('startTime') startTime: string,
+    @Param('endTime') endTime: string,
+  ) {
+    try {
+      return this.shopsService.getPlayerCount(idShop, startTime, endTime);
+    } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Get('/shop/:idShop/stats/peak-reservation-hours')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get peak reservation hours by shop ID within a time range' })
+  @ApiParam({
+    name: 'idShop',
+    description: 'ID of the shop',
+    type: String,
+    example: '1',
+  })
+  @ApiParam({
+    name: 'startTime',
+    description: 'Start time of the range',
+    type: String,
+    example: '2023-01-01T00:00:00Z',
+  })
+  @ApiParam({
+    name: 'endTime',
+    description: 'End time of the range',
+    type: String,
+    example: '2023-12-31T23:59:59Z',
+  })
+  @ApiResponse({ status: 200, description: 'Statistics retrieved successfully.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'Shop not found.' })
+  getPeakReservationHours(
+    @Param('idShop') idShop: string,
+    @Param('startTime') startTime: string,
+    @Param('endTime') endTime: string,
+  ) {
+    try {
+      return this.shopsService.getPeakReservationHours(idShop, startTime, endTime);
+    } catch (err) {
+      if (err instanceof HttpException) {
+        throw err;
+      }
+      console.error('Unexpected error:', err);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
