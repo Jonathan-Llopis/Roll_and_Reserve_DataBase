@@ -199,9 +199,9 @@ export class ShopsService {
       // Actual query to get most played games
       const mostPlayedGames = await this.shopRepository.query(
         `SELECT g.id_game, g.name, COUNT(r.id_reserve) as play_count 
-         FROM reserves_entity r
-         JOIN games g ON r.game_reserve = g.id_game
-         JOIN tables t ON r.reserves_of_table = t.id_table
+         FROM reserves_entity_entity r
+         JOIN games_entity g ON r.game_reserve = g.id_game
+         JOIN tables_entity t ON r.reserves_of_table = t.id_table
          WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?
          GROUP BY g.id_game, g.name
          ORDER BY play_count DESC`,
@@ -222,10 +222,10 @@ export class ShopsService {
       // Actual query to get total reservations
       const totalReservations = await this.shopRepository.query(
         `SELECT COUNT(*) as total_reservations 
-         FROM reserves 
+         FROM reserves_entity 
          WHERE reserves_of_table IN (
            SELECT id_table 
-           FROM tables 
+           FROM tables_entity 
            WHERE tables_of_shop = ?
          ) AND hour_start BETWEEN ? AND ?`,
         [idShop, startTime, endTime]
@@ -245,9 +245,9 @@ export class ShopsService {
       // Actual query to get player count
       const playerCount = await this.shopRepository.query(
         `SELECT COUNT(DISTINCT ur.user_id) as player_count 
-         FROM user_reserve ur
-         JOIN reserves r ON ur.reserve_id = r.id_reserve
-         JOIN tables t ON r.reserves_of_table = t.id_table
+         FROM user_reserve_entity ur
+         JOIN reserves_entity r ON ur.reserve_id = r.id_reserve
+         JOIN tables_entity t ON r.reserves_of_table = t.id_table
          WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?`,
         [idShop, startTime, endTime]
       );
@@ -266,8 +266,8 @@ export class ShopsService {
       const peakReservationHours = await this.shopRepository.query(
         `SELECT DATE_PART('hour', r.hour_start) as hour, COUNT(*) as reservation_count 
          FROM reserves_entity r
-         JOIN tables t ON r.reserves_of_table = t.id_table
-         WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?
+         JOIN tables_entity t ON r.reserves_of_table = t.id_table
+         WHERE t.tables_of_shop = $1 AND r.hour_start BETWEEN $2 AND $3
          GROUP BY hour 
          ORDER BY reservation_count DESC`,
         [idShop, startTime, endTime]
