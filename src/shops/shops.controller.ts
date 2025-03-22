@@ -191,8 +191,7 @@ export class ShopsController {
       );
     }
   }
-
-  @Get('/shop/:idShop/stats/most-played-games')
+  @Post('/shop/:idShop/stats/most-played-games')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get most played games by shop ID within a time range' })
   @ApiParam({
@@ -224,7 +223,7 @@ export class ShopsController {
     }
   }
 
-  @Get('/shop/:idShop/stats/total-reservations')
+  @Post('/shop/:idShop/stats/total-reservations')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get total reservations by shop ID within a time range' })
   @ApiParam({
@@ -256,7 +255,7 @@ export class ShopsController {
     }
   }
 
-  @Get('/shop/:idShop/stats/player-count')
+  @Post('/shop/:idShop/stats/player-count')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get player count by shop ID within a time range' })
   @ApiParam({
@@ -288,7 +287,7 @@ export class ShopsController {
     }
   }
 
-  @Get('/shop/:idShop/stats/peak-reservation-hours')
+  @Post('/shop/:idShop/stats/peak-reservation-hours')
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get peak reservation hours by shop ID within a time range' })
   @ApiParam({
