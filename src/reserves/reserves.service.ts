@@ -379,7 +379,7 @@ export class ReservesService {
       );
     }
   }
-  @Cron('* * 8-23 * * *', {
+  @Cron('0 */15 8-23 * * *', {
     timeZone: 'Europe/Madrid',
   })
   async handleCron() {
