@@ -379,24 +379,28 @@ export class ReservesService {
       );
     }
   }
-  @Cron('0 */15 8-23 * * *')
+  @Cron('* * 8-23 * * *', {
+    timeZone: 'Europe/Madrid',
+  })
   async handleCron() {
     try {
       const currentDate = new Date();
       console.log('Cron running every 15 minutes:', currentDate);
-      const upcomingReserves = await this.reserveRepository
-        .createQueryBuilder('reserve')
-        .innerJoinAndSelect('reserve.userReserves', 'userReserves')
-        .innerJoinAndSelect('userReserves.user', 'user')
-        .innerJoinAndSelect('reserve.reserve_table', 'reserve_table')
-        .innerJoinAndSelect('reserve_table.tables_of_shop', 'tables_of_shop')
-        .innerJoinAndSelect('reserve.reserve_of_game', 'reserve_of_game')
-        .where('reserve.hour_start BETWEEN :start AND :end', {
-          start: new Date(currentDate.getTime() + 30 * 60000),
-          end: new Date(currentDate.getTime() + 45 * 60000),
-        })
-        .groupBy('reserve.id_reserve')
-        .getMany();
+      const upcomingReserves = await this.reserveRepository.find({
+        relations: [
+          'userReserves',
+          'userReserves.user',
+          'reserve_table',
+          'reserve_table.tables_of_shop',
+          'reserve_of_game',
+        ],
+        where: {
+          hour_start: Between(
+            new Date(currentDate.getTime() + 30 * 60000),
+            new Date(currentDate.getTime() + 45 * 60000),
+          ),
+        },
+      });
       console.log('Upcoming reserves:', upcomingReserves);
       for (const reserve of upcomingReserves) {
         console.log(`Cron sending notifications for reserve ID: ${reserve.id_reserve}`);
@@ -416,7 +420,7 @@ export class ReservesService {
         console.log('Registration tokens:', registrationTokens);
         if (registrationTokens.length > 0) {
           const shopName = reserve.reserve_table?.tables_of_shop.name;
-          const hour = reserve.hour_start.toLocaleTimeString('es-ES', {
+          const hour = new Date(reserve.hour_start).toLocaleTimeString('es-ES', {
             hour: '2-digit',
             minute: '2-digit',
           });
