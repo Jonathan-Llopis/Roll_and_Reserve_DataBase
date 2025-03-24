@@ -379,13 +379,12 @@ export class ReservesService {
       );
     }
   }
-  @Cron('* * 8-23 * * *', {
+  @Cron('0 */15 8-23 * * *', {
     timeZone: 'Europe/Madrid',
   })
   async handleCron() {
     try {
       const currentDate = new Date();
-      currentDate.setHours(currentDate.getHours() + 1);
       console.log('Cron running every 15 minutes:', currentDate);
       const upcomingReserves = await this.reserveRepository.find({
         relations: [
@@ -397,8 +396,8 @@ export class ReservesService {
         ],
         where: {
           hour_start: Between(
-            new Date(currentDate.getTime() + 0 * 60000),
-            new Date(currentDate.getTime() + 45 * 60000),
+            new Date(currentDate.getTime() + 90 * 60000),
+            new Date(currentDate.getTime() + 105 * 60000),
           ),
         },
       });
