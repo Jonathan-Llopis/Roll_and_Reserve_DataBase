@@ -383,7 +383,6 @@ export class ReservesService {
   async handleCron() {
     try {
       const currentDate = new Date();
-      currentDate.setHours(currentDate.getHours() + 1);
       console.log('Cron running every 15 minutes:', currentDate);
       const upcomingReserves = await this.reserveRepository
         .createQueryBuilder('reserve')
@@ -394,13 +393,13 @@ export class ReservesService {
         .innerJoinAndSelect('reserve.reserve_of_game', 'reserve_of_game')
         .where('reserve.hour_start BETWEEN :start AND :end', {
           start: new Date(currentDate.getTime() + 30 * 60000),
-          end: new Date(currentDate.getTime() + 44 * 60000),
+          end: new Date(currentDate.getTime() + 45 * 60000),
         })
-        .groupBy('reserve.event_id')
+        .groupBy('reserve.id_reserve')
         .getMany();
       console.log('Upcoming reserves:', upcomingReserves);
       for (const reserve of upcomingReserves) {
-        console.log(`Cron sending notifications for reserves IDs: ${reserve.id_reserve}`);
+        console.log(`Cron sending notifications for reserve ID: ${reserve.id_reserve}`);
         reserve.confirmation_notification = true;
         const registrationTokens = Array.from(
           new Set(
@@ -409,7 +408,7 @@ export class ReservesService {
                 (userReserve) =>
                   userReserve.user &&
                   userReserve.user.token_notification &&
-                  userReserve.user.token_notification.trim() !== ' ',
+                  userReserve.user.token_notification.trim() !== '',
               )
               .map((userReserve) => userReserve.user.token_notification),
           ),
