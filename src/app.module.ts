@@ -117,9 +117,9 @@ export class AppModule implements NestModule {
     consumer
       .apply(AuthorizationMiddleware)
       .exclude(
-        { path: 'users/login', method: RequestMethod.POST },
-        { path: 'users', method: RequestMethod.POST },
-        {path: 'files' , method: RequestMethod.GET},
+      { path: 'users/login', method: RequestMethod.POST },
+      { path: 'users', method: RequestMethod.POST },
+      { path: 'files/(.*)', method: RequestMethod.GET },
       )
       .forRoutes('*');
   }
