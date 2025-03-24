@@ -385,6 +385,7 @@ export class ReservesService {
   async handleCron() {
     try {
       const currentDate = new Date();
+      currentDate.setHours(currentDate.getHours() + 1);
       console.log('Cron running every 15 minutes:', currentDate);
       const upcomingReserves = await this.reserveRepository.find({
         relations: [
