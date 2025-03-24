@@ -397,7 +397,7 @@ export class ReservesService {
         ],
         where: {
           hour_start: Between(
-            new Date(currentDate.getTime() + 30 * 60000),
+            new Date(currentDate.getTime() + 0 * 60000),
             new Date(currentDate.getTime() + 45 * 60000),
           ),
         },
