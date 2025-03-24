@@ -379,7 +379,7 @@ export class ReservesService {
       );
     }
   }
-  @Cron('0 */15 8-23 * * *', {
+  @Cron('* * 8-23 * * *', {
     timeZone: 'Europe/Madrid',
   })
   async handleCron() {
@@ -396,7 +396,7 @@ export class ReservesService {
         ],
         where: {
           hour_start: Between(
-            new Date(currentDate.getTime() + 90 * 60000),
+            new Date(currentDate.getTime() + 0 * 60000),
             new Date(currentDate.getTime() + 105 * 60000),
           ),
         },
@@ -428,7 +428,7 @@ export class ReservesService {
             registrationTokens,
             `Reserva próxima en ${shopName}`,
             `Tienes una reserva hoy a las ${hour} para jugar a ${reserve.reserve_of_game.name} en la tienda ${shopName}.`,
-            `http://rollandreserve.com/files/${reserve.reserve_table?.tables_of_shop.logo}`,
+            `http://rollandreserve.blog:8000/files/${reserve.reserve_table?.tables_of_shop.logo}`,
           );
 
           await this.reserveRepository.save(reserve);
