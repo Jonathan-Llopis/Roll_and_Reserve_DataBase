@@ -381,51 +381,58 @@ export class ReservesService {
   }
   @Cron('0 */15 8-23 * * *')
   async handleCron() {
-    const currentDate = new Date();
-    currentDate.setHours(currentDate.getHours() + 1);
-    console.log('Cron running every 15 minutes:', currentDate);
-    const upcomingReserves = await this.reserveRepository
-      .createQueryBuilder('reserve')
-      .innerJoinAndSelect('reserve.userReserves', 'userReserves')
-      .innerJoinAndSelect('userReserves.user', 'user')
-      .innerJoinAndSelect('reserve.reserve_table', 'reserve_table')
-      .innerJoinAndSelect('reserve_table.tables_of_shop', 'tables_of_shop')
-      .innerJoinAndSelect('reserve.reserve_of_game', 'reserve_of_game')
-      .where('reserve.hour_start BETWEEN :start AND :end', {
-      start: new Date(currentDate.getTime() + 30 * 60000),
-      end: new Date(currentDate.getTime() + 44 * 60000),
-      })
-      .groupBy('reserve.event_id')
-      .getMany();
-    for (const reserve of upcomingReserves) {
-      if (!reserve.confirmation_notification) {
-      console.log(`Cron sending notifications for reserves IDs: ${reserve.id_reserve}`);
-      reserve.confirmation_notification = true;
-      const registrationTokens = Array.from(
-        new Set(
-        (reserve.userReserves || [])
-          .filter(
-          (userReserve) =>
-            userReserve.user &&
-            userReserve.user.token_notification &&
-            userReserve.user.token_notification.trim() !== ' ',
-          )
-          .map((userReserve) => userReserve.user.token_notification),
-        ),
-      );
-      if (registrationTokens.length > 0) {
-        const shopName = reserve.reserve_table?.tables_of_shop.name;
-        const hour = reserve.hour_start.toLocaleTimeString('es-ES', {
-        hour: '2-digit',
-        minute: '2-digit',
-        });
-        this.fcmNotificationService.sendMulticastNotification(
-        registrationTokens,
-        `Reserva próxima en  ${shopName}`,
-        `Tienes una reserva hoy a las ${hour} para jugar a ${reserve.reserve_of_game.name} en la tienda ${shopName}.`,
+    try {
+      const currentDate = new Date();
+      currentDate.setHours(currentDate.getHours() + 1);
+      console.log('Cron running every 15 minutes:', currentDate);
+      const upcomingReserves = await this.reserveRepository
+        .createQueryBuilder('reserve')
+        .innerJoinAndSelect('reserve.userReserves', 'userReserves')
+        .innerJoinAndSelect('userReserves.user', 'user')
+        .innerJoinAndSelect('reserve.reserve_table', 'reserve_table')
+        .innerJoinAndSelect('reserve_table.tables_of_shop', 'tables_of_shop')
+        .innerJoinAndSelect('reserve.reserve_of_game', 'reserve_of_game')
+        .where('reserve.hour_start BETWEEN :start AND :end', {
+          start: new Date(currentDate.getTime() + 30 * 60000),
+          end: new Date(currentDate.getTime() + 44 * 60000),
+        })
+        .groupBy('reserve.event_id')
+        .getMany();
+      console.log('Upcoming reserves:', upcomingReserves);
+      for (const reserve of upcomingReserves) {
+        console.log(`Cron sending notifications for reserves IDs: ${reserve.id_reserve}`);
+        reserve.confirmation_notification = true;
+        const registrationTokens = Array.from(
+          new Set(
+            (reserve.userReserves || [])
+              .filter(
+                (userReserve) =>
+                  userReserve.user &&
+                  userReserve.user.token_notification &&
+                  userReserve.user.token_notification.trim() !== ' ',
+              )
+              .map((userReserve) => userReserve.user.token_notification),
+          ),
         );
+        console.log('Registration tokens:', registrationTokens);
+        if (registrationTokens.length > 0) {
+          const shopName = reserve.reserve_table?.tables_of_shop.name;
+          const hour = reserve.hour_start.toLocaleTimeString('es-ES', {
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+          this.fcmNotificationService.sendMulticastNotification(
+            registrationTokens,
+            `Reserva próxima en ${shopName}`,
+            `Tienes una reserva hoy a las ${hour} para jugar a ${reserve.reserve_of_game.name} en la tienda ${shopName}.`,
+            `http://rollandreserve.com/files/${reserve.reserve_table?.tables_of_shop.logo}`,
+          );
+
+          await this.reserveRepository.save(reserve);
+        }
       }
-      }
+    } catch (err) {
+      console.error('Error in handleCron:', err);
     }
   }
 
@@ -458,7 +465,7 @@ export class ReservesService {
             .flat(),
         ),
       );
-      
+
       console.log(`Total players found: ${players.length}`);
       return players;
     } catch (err) {
