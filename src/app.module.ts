@@ -6,8 +6,9 @@ import {
 } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { UtilsModule } from './utils/utils.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Between, Repository } from 'typeorm';
 import { UserEntity } from './users/users.entity';
 import { AuthorizationMiddleware } from './authorization.middleware';
 import { AuthService } from './Autentication/auth.service';
@@ -35,7 +36,8 @@ import { FilesModule } from './files/files.module';
 import { UserReserveEntity } from './users_reserves/users_reserves.entity';
 import { FcmNotificationModule } from './fcm-notification/fcm-notification.module';
 import { HttpModule } from './http/http.module';
-import { ScheduleModule } from '@nestjs/schedule';
+import { Cron, CronExpression, ScheduleModule } from '@nestjs/schedule';
+import { FcmNotificationService } from './fcm-notification/fcm-notification.service';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -110,17 +112,82 @@ import { ScheduleModule } from '@nestjs/schedule';
     }),
   ],
   controllers: [],
-  providers: [AuthorizationMiddleware, AuthService, ReservesService],
+  providers: [AuthorizationMiddleware, AuthService, ReservesService, FcmNotificationModule],
 })
 export class AppModule implements NestModule {
+  constructor(private readonly fcmNotificationService: FcmNotificationService,
+    @InjectRepository(ReservesEntity)
+    private readonly reserveRepository: Repository<ReservesEntity>,
+  ) { }
+
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthorizationMiddleware)
       .exclude(
-      { path: 'users/login', method: RequestMethod.POST },
-      { path: 'users', method: RequestMethod.POST },
-      { path: 'files/(.*)', method: RequestMethod.GET },
+        { path: 'users/login', method: RequestMethod.POST },
+        { path: 'users', method: RequestMethod.POST },
+        { path: 'files/(.*)', method: RequestMethod.GET },
       )
       .forRoutes('*');
   }
+  @Cron(CronExpression.EVERY_30_SECONDS, {
+    timeZone: 'Europe/Madrid',
+  })
+  async handleCron() {
+    try {
+      const currentDate = new Date();
+      console.log('Cron running every 30 seconds:', currentDate);
+      const upcomingReserves = await this.reserveRepository.find({
+        relations: [
+          'userReserves',
+          'userReserves.user',
+          'reserve_table',
+          'reserve_table.tables_of_shop',
+          'reserve_of_game',
+        ],
+        where: {
+          hour_start: Between(
+            new Date(currentDate.getTime() + 90 * 60000),
+            new Date(currentDate.getTime() + 105 * 60000),
+          ),
+        },
+      });
+      console.log('Upcoming reserves:', upcomingReserves);
+      for (const reserve of upcomingReserves) {
+        console.log(`Cron sending notifications for reserve ID: ${reserve.id_reserve}`);
+        reserve.confirmation_notification = true;
+        const registrationTokens = Array.from(
+          new Set(
+            (reserve.userReserves || [])
+              .filter(
+                (userReserve) =>
+                  userReserve.user &&
+                  userReserve.user.token_notification &&
+                  userReserve.user.token_notification.trim() !== '',
+              )
+              .map((userReserve) => userReserve.user.token_notification),
+          ),
+        );
+        console.log('Registration tokens:', registrationTokens);
+        if (registrationTokens.length > 0) {
+          const shopName = reserve.reserve_table?.tables_of_shop.name;
+          const hour = new Date(reserve.hour_start).toLocaleTimeString('es-ES', {
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+          this.fcmNotificationService.sendMulticastNotification(
+            registrationTokens,
+            `Reserva próxima en ${shopName}`,
+            `Tienes una reserva hoy a las ${hour} para jugar a ${reserve.reserve_of_game.name} en la tienda ${shopName}.`,
+            `http://rollandreserve.blog:8000/files/${reserve.reserve_table?.tables_of_shop.logo}`,
+          );
+
+          await this.reserveRepository.save(reserve);
+        }
+      }
+    } catch (err) {
+      console.error('Error in handleCron:', err);
+    }
+  }
 }
+

@@ -11,7 +11,7 @@ import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { GamesService } from 'src/games/games.service';
 import { HttpService } from '../http/http.service';
-import { Cron, } from '@nestjs/schedule';
+import { Cron, CronExpression, } from '@nestjs/schedule';
 
 @Injectable()
 export class ReservesService {
@@ -379,65 +379,7 @@ export class ReservesService {
       );
     }
   }
-  @Cron('0 */15 8-23 * * *', {
-    timeZone: 'Europe/Madrid',
-  })
-  async handleCron() {
-    try {
-      const currentDate = new Date();
-      console.log('Cron running every 15 minutes:', currentDate);
-      const upcomingReserves = await this.reserveRepository.find({
-        relations: [
-          'userReserves',
-          'userReserves.user',
-          'reserve_table',
-          'reserve_table.tables_of_shop',
-          'reserve_of_game',
-        ],
-        where: {
-          hour_start: Between(
-            new Date(currentDate.getTime() + 90 * 60000),
-            new Date(currentDate.getTime() + 105 * 60000),
-          ),
-        },
-      });
-      console.log('Upcoming reserves:', upcomingReserves);
-      for (const reserve of upcomingReserves) {
-        console.log(`Cron sending notifications for reserve ID: ${reserve.id_reserve}`);
-        reserve.confirmation_notification = true;
-        const registrationTokens = Array.from(
-          new Set(
-            (reserve.userReserves || [])
-              .filter(
-                (userReserve) =>
-                  userReserve.user &&
-                  userReserve.user.token_notification &&
-                  userReserve.user.token_notification.trim() !== '',
-              )
-              .map((userReserve) => userReserve.user.token_notification),
-          ),
-        );
-        console.log('Registration tokens:', registrationTokens);
-        if (registrationTokens.length > 0) {
-          const shopName = reserve.reserve_table?.tables_of_shop.name;
-          const hour = new Date(reserve.hour_start).toLocaleTimeString('es-ES', {
-            hour: '2-digit',
-            minute: '2-digit',
-          });
-          this.fcmNotificationService.sendMulticastNotification(
-            registrationTokens,
-            `Reserva próxima en ${shopName}`,
-            `Tienes una reserva hoy a las ${hour} para jugar a ${reserve.reserve_of_game.name} en la tienda ${shopName}.`,
-            `http://rollandreserve.blog:8000/files/${reserve.reserve_table?.tables_of_shop.logo}`,
-          );
-
-          await this.reserveRepository.save(reserve);
-        }
-      }
-    } catch (err) {
-      console.error('Error in handleCron:', err);
-    }
-  }
+ 
 
   async getLastTenPlayers(userId: string): Promise<any[]> {
     try {
