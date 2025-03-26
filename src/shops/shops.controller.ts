@@ -193,14 +193,19 @@ export class ShopsController {
   }
   @Post('/shop/:idShop/stats/most-played-games')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get most played games by shop ID within a time range' })
+  @ApiOperation({
+    summary: 'Get most played games by shop ID within a time range',
+  })
   @ApiParam({
     name: 'idShop',
     description: 'ID of the shop',
     type: String,
     example: '1',
   })
-  @ApiResponse({ status: 200, description: 'Statistics retrieved successfully.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Statistics retrieved successfully.',
+  })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
@@ -225,14 +230,19 @@ export class ShopsController {
 
   @Post('/shop/:idShop/stats/total-reservations')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get total reservations by shop ID within a time range' })
+  @ApiOperation({
+    summary: 'Get total reservations by shop ID within a time range',
+  })
   @ApiParam({
     name: 'idShop',
     description: 'ID of the shop',
     type: String,
     example: '1',
   })
-  @ApiResponse({ status: 200, description: 'Statistics retrieved successfully.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Statistics retrieved successfully.',
+  })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
@@ -264,7 +274,10 @@ export class ShopsController {
     type: String,
     example: '1',
   })
-  @ApiResponse({ status: 200, description: 'Statistics retrieved successfully.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Statistics retrieved successfully.',
+  })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
@@ -289,14 +302,19 @@ export class ShopsController {
 
   @Post('/shop/:idShop/stats/peak-reservation-hours')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get peak reservation hours by shop ID within a time range' })
+  @ApiOperation({
+    summary: 'Get peak reservation hours by shop ID within a time range',
+  })
   @ApiParam({
     name: 'idShop',
     description: 'ID of the shop',
     type: String,
     example: '1',
   })
-  @ApiResponse({ status: 200, description: 'Statistics retrieved successfully.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Statistics retrieved successfully.',
+  })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
@@ -306,7 +324,11 @@ export class ShopsController {
     @Body('endTime') endTime: string,
   ) {
     try {
-      return this.shopsService.getPeakReservationHours(idShop, startTime, endTime);
+      return this.shopsService.getPeakReservationHours(
+        idShop,
+        startTime,
+        endTime,
+      );
     } catch (err) {
       if (err instanceof HttpException) {
         throw err;

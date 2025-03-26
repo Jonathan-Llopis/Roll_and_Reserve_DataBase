@@ -8,7 +8,6 @@ import {
   Body,
   HttpException,
   HttpStatus,
-  Query,
 } from '@nestjs/common';
 
 import { isEmpty } from 'class-validator';
@@ -155,5 +154,4 @@ export class ShopGamesController {
     this.validateId(gameId, 'game');
     return await this.shopGamesService.deleteGameFromShop(shopId, gameId);
   }
-  
 }

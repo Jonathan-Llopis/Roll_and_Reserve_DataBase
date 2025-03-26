@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, LessThanOrEqual, Like, Repository } from 'typeorm';
+import { Between, Like, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
@@ -11,7 +11,6 @@ import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { GamesService } from 'src/games/games.service';
 import { HttpService } from '../http/http.service';
-import { Cron, CronExpression, } from '@nestjs/schedule';
 
 @Injectable()
 export class ReservesService {
@@ -32,7 +31,7 @@ export class ReservesService {
     private readonly gameService: GamesService,
     @Inject('Bgg-Api')
     private readonly httpService: HttpService,
-  ) { }
+  ) {}
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -65,10 +64,7 @@ export class ReservesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Internal Server Error', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -94,10 +90,7 @@ export class ReservesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Internal Server Error', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -195,7 +188,6 @@ export class ReservesService {
         throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
       }
       reserve.reserve_table = reserveTable;
-
 
       await this.reserveRepository.save(reserve);
       if (createReserveDto.shop_event == true) {
@@ -379,7 +371,6 @@ export class ReservesService {
       );
     }
   }
- 
 
   async getLastTenPlayers(userId: string): Promise<any[]> {
     try {
@@ -396,7 +387,9 @@ export class ReservesService {
       );
 
       const reservesFiltered = endedReserves.filter((reserve) =>
-        reserve.userReserves.some((userReserve) => userReserve.user.id_google === userId),
+        reserve.userReserves.some(
+          (userReserve) => userReserve.user.id_google === userId,
+        ),
       );
       const lastTenReserves = reservesFiltered.slice(0, 10);
       const players = Array.from(
@@ -418,11 +411,7 @@ export class ReservesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Internal Server Error', HttpStatus.BAD_REQUEST);
     }
   }
-
 }

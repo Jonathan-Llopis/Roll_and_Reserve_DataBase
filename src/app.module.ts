@@ -112,13 +112,19 @@ import { FcmNotificationService } from './fcm-notification/fcm-notification.serv
     }),
   ],
   controllers: [],
-  providers: [AuthorizationMiddleware, AuthService, ReservesService, FcmNotificationModule],
+  providers: [
+    AuthorizationMiddleware,
+    AuthService,
+    ReservesService,
+    FcmNotificationModule,
+  ],
 })
 export class AppModule implements NestModule {
-  constructor(private readonly fcmNotificationService: FcmNotificationService,
+  constructor(
+    private readonly fcmNotificationService: FcmNotificationService,
     @InjectRepository(ReservesEntity)
     private readonly reserveRepository: Repository<ReservesEntity>,
-  ) { }
+  ) {}
 
   configure(consumer: MiddlewareConsumer) {
     consumer
@@ -154,7 +160,9 @@ export class AppModule implements NestModule {
       });
       console.log('Upcoming reserves:', upcomingReserves);
       for (const reserve of upcomingReserves) {
-        console.log(`Cron sending notifications for reserve ID: ${reserve.id_reserve}`);
+        console.log(
+          `Cron sending notifications for reserve ID: ${reserve.id_reserve}`,
+        );
         reserve.confirmation_notification = true;
         const registrationTokens = Array.from(
           new Set(
@@ -171,10 +179,13 @@ export class AppModule implements NestModule {
         console.log('Registration tokens:', registrationTokens);
         if (registrationTokens.length > 0) {
           const shopName = reserve.reserve_table?.tables_of_shop.name;
-          const hour = new Date(reserve.hour_start).toLocaleTimeString('es-ES', {
-            hour: '2-digit',
-            minute: '2-digit',
-          });
+          const hour = new Date(reserve.hour_start).toLocaleTimeString(
+            'es-ES',
+            {
+              hour: '2-digit',
+              minute: '2-digit',
+            },
+          );
           this.fcmNotificationService.sendMulticastNotification(
             registrationTokens,
             `Reserva próxima en ${shopName}`,
@@ -190,4 +201,3 @@ export class AppModule implements NestModule {
     }
   }
 }
-

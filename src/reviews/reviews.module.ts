@@ -8,7 +8,10 @@ import { ShopsEntity } from '../shops/shops.entity';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ReviewsEntity, UserEntity, ShopsEntity]), UsersModule],
+  imports: [
+    TypeOrmModule.forFeature([ReviewsEntity, UserEntity, ShopsEntity]),
+    UsersModule,
+  ],
   controllers: [ReviewsController],
   providers: [ReviewsService],
   exports: [ReviewsService],

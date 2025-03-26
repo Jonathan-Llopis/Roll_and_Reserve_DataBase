@@ -36,8 +36,6 @@ export class UsersService {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);
       }
 
-
-
       return users;
     } catch (err) {
       if (err instanceof HttpException) {
@@ -326,16 +324,28 @@ export class UsersService {
       const reviews = user.receivedReviews;
       if (reviews.length === 0) {
         console.warn(`No reviews found for user with id_google: ${id_user}`);
-        throw new HttpException('No reviews found for user', HttpStatus.NO_CONTENT);
+        throw new HttpException(
+          'No reviews found for user',
+          HttpStatus.NO_CONTENT,
+        );
       }
 
-      console.log(`Calculating average rating for user with id_google: ${id_user}`);
-      const totalRating = reviews.reduce((sum, review) => sum + review.raiting, 0);
+      console.log(
+        `Calculating average rating for user with id_google: ${id_user}`,
+      );
+      const totalRating = reviews.reduce(
+        (sum, review) => sum + review.raiting,
+        0,
+      );
       const averageRating = totalRating / reviews.length;
 
-      console.log(`Total rating: ${totalRating}, Number of reviews: ${reviews.length}, Average rating: ${averageRating}`);
+      console.log(
+        `Total rating: ${totalRating}, Number of reviews: ${reviews.length}, Average rating: ${averageRating}`,
+      );
       user.average_raiting = averageRating;
-      console.log(`Updated average rating for user ${id_user}: ${averageRating}`);
+      console.log(
+        `Updated average rating for user ${id_user}: ${averageRating}`,
+      );
       return this.usersRepository.save(user);
     } catch (err) {
       if (err instanceof HttpException) {

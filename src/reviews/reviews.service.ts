@@ -23,7 +23,7 @@ export class ReviewsService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly usersService: UsersService,
-  ) { }
+  ) {}
 
   private handleError(err: any) {
     if (err instanceof HttpException) {
@@ -180,11 +180,10 @@ export class ReviewsService {
       }
 
       await this.reviewsRepository.save(review);
-      if(review.reviewed){
+      if (review.reviewed) {
         await this.usersService.updateAverageRating(review.reviewed.id_google);
       }
       return review;
-
     } catch (err) {
       if (err instanceof HttpException) {
         throw err;

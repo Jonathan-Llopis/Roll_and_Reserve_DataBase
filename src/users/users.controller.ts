@@ -17,7 +17,6 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AuthService } from '../Autentication/auth.service';
-import { MailService } from '../mail/mail.service';
 import { CreateUserDto, UpdateUserDto } from './users.dto';
 import { UsersService } from './users.service';
 

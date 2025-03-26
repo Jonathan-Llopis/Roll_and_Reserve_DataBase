@@ -190,9 +190,15 @@ export class ShopsService {
       );
     }
   }
-  async getMostPlayedGames(idShop: string, startTime: string, endTime: string): Promise<any> {
+  async getMostPlayedGames(
+    idShop: string,
+    startTime: string,
+    endTime: string,
+  ): Promise<any> {
     try {
-      const shop = await this.shopRepository.findOne({ where: { id_shop: parseInt(idShop) } });
+      const shop = await this.shopRepository.findOne({
+        where: { id_shop: parseInt(idShop) },
+      });
       if (!shop) {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
@@ -205,7 +211,7 @@ export class ShopsService {
          WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?
          GROUP BY g.id_game, g.name
          ORDER BY play_count DESC`,
-        [idShop, startTime, endTime]
+        [idShop, startTime, endTime],
       );
       return mostPlayedGames;
     } catch (err) {
@@ -213,9 +219,15 @@ export class ShopsService {
     }
   }
 
-  async getTotalReservations(idShop: string, startTime: string, endTime: string): Promise<any> {
+  async getTotalReservations(
+    idShop: string,
+    startTime: string,
+    endTime: string,
+  ): Promise<any> {
     try {
-      const shop = await this.shopRepository.findOne({ where: { id_shop: parseInt(idShop) } });
+      const shop = await this.shopRepository.findOne({
+        where: { id_shop: parseInt(idShop) },
+      });
       if (!shop) {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
@@ -228,7 +240,7 @@ export class ShopsService {
            FROM tables_entity 
            WHERE tables_of_shop = ?
          ) AND hour_start BETWEEN ? AND ?`,
-        [idShop, startTime, endTime]
+        [idShop, startTime, endTime],
       );
       return totalReservations;
     } catch (err) {
@@ -236,9 +248,15 @@ export class ShopsService {
     }
   }
 
-  async getPlayerCount(idShop: string, startTime: string, endTime: string): Promise<any> {
+  async getPlayerCount(
+    idShop: string,
+    startTime: string,
+    endTime: string,
+  ): Promise<any> {
     try {
-      const shop = await this.shopRepository.findOne({ where: { id_shop: parseInt(idShop) } });
+      const shop = await this.shopRepository.findOne({
+        where: { id_shop: parseInt(idShop) },
+      });
       if (!shop) {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
@@ -249,16 +267,22 @@ export class ShopsService {
          JOIN reserves_entity r ON ur.reserveIdReserve = r.id_reserve
          JOIN tables_entity t ON r.reserves_of_table = t.id_table
          WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?`,
-        [idShop, startTime, endTime]
+        [idShop, startTime, endTime],
       );
       return playerCount;
     } catch (err) {
       this.handleError(err);
     }
   }
-  async getPeakReservationHours(idShop: string, startTime: string, endTime: string): Promise<any> {
+  async getPeakReservationHours(
+    idShop: string,
+    startTime: string,
+    endTime: string,
+  ): Promise<any> {
     try {
-      const shop = await this.shopRepository.findOne({ where: { id_shop: parseInt(idShop) } });
+      const shop = await this.shopRepository.findOne({
+        where: { id_shop: parseInt(idShop) },
+      });
       if (!shop) {
         throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
       }
@@ -270,7 +294,7 @@ export class ShopsService {
          WHERE t.tables_of_shop = ? AND r.hour_start BETWEEN ? AND ?
          GROUP BY hour 
          ORDER BY reservation_count DESC`,
-        [idShop, startTime, endTime]
+        [idShop, startTime, endTime],
       );
       return peakReservationHours;
     } catch (err) {
