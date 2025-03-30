@@ -12,7 +12,7 @@ import { CreateGameDto, UpdateGameDto } from './games.dto';
 import { GamesEntity } from './games.entitiy';
 import { HttpService } from '../http/http.service';
 import { GameCategoryEntity } from '../game_category/game_category.entity';
-import { GameCategoryService } from 'src/game_category/game_category.service';
+import { GameCategoryService } from '../game_category/game_category.service';
 
 @Injectable()
 export class GamesService {

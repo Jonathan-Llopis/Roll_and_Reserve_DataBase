@@ -11,7 +11,7 @@ import { ReviewsEntity } from './reviews.entity';
 import { CreateReviewDto, UpdateReviewDto } from './reviews.dto';
 import { ShopsEntity } from '../shops/shops.entity';
 import { UserEntity } from '../users/users.entity';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ReviewsService {

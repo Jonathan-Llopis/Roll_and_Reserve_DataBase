@@ -211,8 +211,8 @@ export class ShopGamesService {
 
       if (!shopGame) {
         throw new HttpException(
-          'The game with the given id is not associated to the shop',
-          HttpStatus.PRECONDITION_FAILED,
+          'The shop with the given id is not associated to the shop',
+          HttpStatus.NOT_FOUND,
         );
       }
 

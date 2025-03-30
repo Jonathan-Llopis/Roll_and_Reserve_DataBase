@@ -9,7 +9,7 @@ import { GamesEntity } from '../games/games.entitiy';
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { TablesEntity } from '../tables/tables.entity';
-import { GamesService } from 'src/games/games.service';
+import { GamesService } from '../games/games.service';
 import { HttpService } from '../http/http.service';
 
 @Injectable()
@@ -226,7 +226,6 @@ export class ReservesService {
       if (err instanceof HttpException) {
         throw err;
       }
-      console.error('Unexpected error:', err);
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,

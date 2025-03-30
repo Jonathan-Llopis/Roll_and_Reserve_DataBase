@@ -12,7 +12,6 @@ import { Between, Repository } from 'typeorm';
 import { UserEntity } from './users/users.entity';
 import { AuthorizationMiddleware } from './authorization.middleware';
 import { AuthService } from './Autentication/auth.service';
-import { MailModule } from './mail/mail.module';
 import { LabelsModule } from './utils/labels/labels.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ShopsModule } from './shops/shops.module';
@@ -50,7 +49,6 @@ import { FcmNotificationService } from './fcm-notification/fcm-notification.serv
     }),
     UsersModule,
     UtilsModule,
-    MailModule,
     LabelsModule,
     ConfigModule.forRoot({
       isGlobal: true,
