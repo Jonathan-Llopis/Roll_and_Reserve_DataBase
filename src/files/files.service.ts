@@ -8,10 +8,22 @@ import { FileInfoVm } from './view-models/file-info-vm.model';
 export class FilesService {
   private bucket: GridFSBucket;
 
+  /**
+   * Initialize the GridFSBucket for the given connection.
+   *
+   * @param {Connection} connection - The MongoDB connection.
+   */
   constructor(@InjectConnection() private readonly connection: Connection) {
     this.bucket = new GridFSBucket(this.connection.db, { bucketName: 'fs' });
   }
 
+  /**
+   * Throws an HttpException for the given error, or a default BAD_REQUEST
+   * error if the given error is not an HttpException.
+   *
+   * @param err - The error to throw.
+   * @param status - The HTTP status code to use, defaults to BAD_REQUEST.
+   */
   private handleError(
     err: any,
     status: HttpStatus = HttpStatus.BAD_REQUEST,
@@ -22,6 +34,18 @@ export class FilesService {
     throw new HttpException(err.message || 'Request failed', status);
   }
 
+  /**
+   * Streams a file from GridFS.
+   *
+   * Method: GET /files/:id/stream
+   * Description: Streams a file from GridFS.
+   * Input Parameters:
+   * - `id` (string, required): The ID of the file to stream.
+   * Example Request (JSON format): N/A
+   * HTTP Responses:
+   * - `200 OK`: The file is streamed back to the client.
+   * - `404 NOT FOUND`: The file is not found.
+   */
   async readStream(id: string): Promise<GridFSBucketReadStream> {
     try {
       const objectId = new ObjectId(id);
@@ -35,6 +59,17 @@ export class FilesService {
     }
   }
 
+  /**
+   * Retrieves the file metadata by its ID.
+   *
+   * Method: GET /files/info/:id
+   * Description: Retrieves the file metadata by its ID.
+   * Input Parameters:
+   * - `id` (string, required): The ID of the file to retrieve.
+   * HTTP Responses:
+   * - `200 OK`: Successfully retrieved file info.
+   * - `404 NOT FOUND`: The file is not found.
+   */
   async findInfo(id: string): Promise<FileInfoVm> {
     try {
       const objectId = new ObjectId(id);
@@ -57,6 +92,17 @@ export class FilesService {
     }
   }
 
+  /**
+   * Deletes a file from GridFS.
+   *
+   * Method: DELETE /files/:id
+   * Description: Deletes a file from GridFS.
+   * Input Parameters:
+   * - `id` (string, required): The ID of the file to delete.
+   * HTTP Responses:
+   * - `200 OK`: The file is deleted.
+   * - `404 NOT FOUND`: The file is not found.
+   */
   async deleteFile(id: string): Promise<boolean> {
     try {
       const objectId = new ObjectId(id);
@@ -67,6 +113,16 @@ export class FilesService {
     }
   }
 
+  /**
+   * Retrieves all files from GridFS.
+   *
+   * Method: GET /files
+   * Description: Retrieves all files from GridFS.
+   * HTTP Responses:
+   * - `200 OK`: Successfully retrieved all files.
+   * - `204 NO CONTENT`: No files found.
+   * - `400 BAD REQUEST`: An unexpected error occurred.
+   */
   async findAll(): Promise<{ id: string; file: FileInfoVm }[]> {
     try {
       const files = await this.connection.db
@@ -93,8 +149,8 @@ export class FilesService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }

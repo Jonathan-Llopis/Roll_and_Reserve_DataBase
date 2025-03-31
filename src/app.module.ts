@@ -42,6 +42,17 @@ import { FcmNotificationService } from './fcm-notification/fcm-notification.serv
     ConfigModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
+      /**
+       * This function is used by TypeORM to get the connection options for the
+       * MongoDB database. It is called automatically by Nest when the application
+       * starts.
+       *
+       * @param {ConfigService} configService - The configuration service that
+       * provides the MongoDB connection string.
+       *
+       * @return {Promise<MongoDbModuleOptions>} - A promise that resolves to the
+       * MongoDB connection options.
+       */
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
       }),
@@ -55,6 +66,16 @@ import { FcmNotificationService } from './fcm-notification/fcm-notification.serv
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
+      /**
+       * A factory function that returns the configuration options for the
+       * TypeORM connection to the MySQL database.
+       *
+       * @param {ConfigService} configService - The configuration service that
+       * provides the database connection details.
+       *
+       * @return {Promise<TypeOrmModuleOptions>} - A promise that resolves to the
+       * database connection options.
+       */
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
         host: 'database',
@@ -118,12 +139,25 @@ import { FcmNotificationService } from './fcm-notification/fcm-notification.serv
   ],
 })
 export class AppModule implements NestModule {
+  /**
+   * The constructor for the App Module.
+   *
+   * @param {FcmNotificationService} fcmNotificationService - The service for sending notifications.
+   * @param {Repository<ReservesEntity>} reserveRepository - The repository for the ReservesEntity.
+   */
   constructor(
     private readonly fcmNotificationService: FcmNotificationService,
     @InjectRepository(ReservesEntity)
     private readonly reserveRepository: Repository<ReservesEntity>,
   ) {}
 
+  /**
+   * This method is used by Nest to configure the middleware that will be used by
+   * the application. In this case, it is used to configure the AuthorizationMiddleware
+   * to be used for all routes except the ones that are excluded below.
+   * @param consumer - The middleware consumer that is used to add the middleware
+   * to the application.
+   */
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthorizationMiddleware)
@@ -134,7 +168,18 @@ export class AppModule implements NestModule {
       )
       .forRoutes('*');
   }
-  @Cron(CronExpression.EVERY_30_SECONDS, {
+    /**
+   * Executes a cron job every 30 seconds to find upcoming reserves and send notifications.
+   * 
+   * This function retrieves reserves that are scheduled to start in the next 90 to 105 minutes.
+   * It logs the current date and time, and the upcoming reserves. For each reserve found, it
+   * checks for users with valid notification tokens and sends a notification about the upcoming
+   * reserve. It marks the reserve as having sent a confirmation notification and saves the updated
+   * reserve entity.
+   * 
+   * If an error occurs during the process, it is logged to the console.
+   */
+  @Cron('0 */15 8-23 * * *', {
     timeZone: 'Europe/Madrid',
   })
   async handleCron() {

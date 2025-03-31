@@ -27,12 +27,23 @@ import { GameCategoryEntity } from '../game_category/game_category.entity';
 
 @Controller('shops')
 export class ShopGamesController {
+  /**
+   * Service constructor.
+   * @param shopGamesService The service for managing shop and game relations.
+   * @param gameCategoryRepository The repository for the GameCategoryEntity.
+   */
   constructor(
     private readonly shopGamesService: ShopGamesService,
     @InjectRepository(ShopsEntity)
     private readonly gameCategoryRepository: Repository<GameCategoryEntity>,
   ) {}
 
+  /**
+   * Throws an HttpException with a BAD_REQUEST status if the given ID is invalid.
+   * Checks if the ID is empty or if it is not a number.
+   * @param id The ID to validate.
+   * @param name The name of the ID to use in the error message.
+   */
   private validateId(id: string, name: string) {
     if (isEmpty(id) || isNaN(Number(id))) {
       throw new HttpException(`Invalid ${name} ID`, HttpStatus.BAD_REQUEST);
@@ -51,6 +62,25 @@ export class ShopGamesController {
   })
   @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
   @ApiParam({ name: 'gamesId', description: 'ID of the game', example: '1' })
+  /**
+   * Add a game to a shop.
+   * Method: POST /shops/:shopsId/games/:gamesId
+   * Description: Adds a game to a shop.
+   * Input Parameters:
+   * - `shopsId` (string, required): The ID of the shop.
+   * - `gamesId` (string, required): The ID of the game.
+   * Example Request (JSON format):
+   * N/A
+   * HTTP Responses:
+   * - `201 Created`: Game successfully added to shop. Example:
+   *   {
+   *     "id_shop": 1,
+   *     "id_game": 1
+   *   }
+   * - `400 Bad Request`: Invalid shop or game ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: The shop or game with the given ID was not found.
+   */
   async addGameToShop(
     @Param('shopsId') shopId: string,
     @Param('gamesId') gameId: string,
@@ -74,6 +104,47 @@ export class ShopGamesController {
     description: 'The shop or game with the given ID was not found.',
   })
   @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
+  /**
+   * Method: PUT /shops/:shopsId/games
+   * Description: Updates a list of games associated to a shop.
+   * Input Parameters:
+   * - `shopsId` (string, required): The ID of the shop.
+   * - `gameDto` (array, required): An array of game objects with the following properties:
+   *   - `name` (string, required): The name of the game.
+   *   - `category_name` (string, required): The name of the category of the game.
+   * Example Request (JSON format):
+   * [
+   *   {
+   *     "name": "Chess",
+   *     "category_name": "Strategy"
+   *   },
+   *   {
+   *     "name": "Poker",
+   *     "category_name": "Card"
+   *   }
+   * ]
+   * HTTP Responses:
+   * - `200 OK`: Games successfully associated to shop. Example:
+   *   [
+   *     {
+   *       "id_game": 1,
+   *       "name": "Chess",
+   *       "description": "A strategic board game",
+   *       "category": "Strategy",
+   *       "bgg_id": 123
+   *     },
+   *     {
+   *       "id_game": 2,
+   *       "name": "Poker",
+   *       "description": "A card game",
+   *       "category": "Card",
+   *       "bgg_id": 456
+   *     }
+   *   ]
+   * - `400 Bad Request`: Invalid shop or game ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: The shop or game with the given ID was not found.
+   */
   async associateGameToShop(
     @Body() gameDto: CreateGameDto[],
     @Param('shopsId') shopId: string,
@@ -105,6 +176,20 @@ export class ShopGamesController {
   })
   @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
   @ApiParam({ name: 'gamesId', description: 'ID of the game', example: '1' })
+  /**
+   * Find a specific game by its shop ID and game ID.
+   * Method: GET /shops/:shopsId/games/:gamesId
+   * Input Parameters:
+   * - `shopsId` (string, required): The ID of the shop.
+   * - `gamesId` (string, required): The ID of the game.
+   * HTTP Responses:
+   * - `200 OK`: Game successfully found.
+   * - `204 No Content`: No game found for the given IDs.
+   * - `400 Bad Request`: Invalid shop or game ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: The shop or game with the given ID was not found.
+   */
+
   async findGameByShopIdGameId(
     @Param('shopsId') shopId: string,
     @Param('gamesId') gameId: string,
@@ -126,6 +211,18 @@ export class ShopGamesController {
     description: 'The shop with the given ID was not found.',
   })
   @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
+  /**
+   * Finds all games associated with a shop.
+   * Method: GET /shops/:shopsId/games
+   * Input Parameters:
+   * - `shopsId` (string, required): The ID of the shop.
+   * HTTP Responses:
+   * - `200 OK`: Games successfully found.
+   * - `204 No Content`: No games found for the given shop ID.
+   * - `400 Bad Request`: Invalid shop ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: The shop with the given ID was not found.
+   */
   async findGamesByShopId(@Param('shopsId') shopId: string) {
     this.validateId(shopId, 'shop');
     return await this.shopGamesService.findGamesFromShop(shopId);
@@ -146,6 +243,19 @@ export class ShopGamesController {
   })
   @ApiParam({ name: 'shopsId', description: 'ID of the shop', example: '1' })
   @ApiParam({ name: 'gamesId', description: 'ID of the game', example: '1' })
+  /**
+   * Deletes a specific game from a shop.
+   * Method: DELETE /shops/:shopsId/games/:gamesId
+   * Input Parameters:
+   * - `shopsId` (string, required): The ID of the shop.
+   * - `gamesId` (string, required): The ID of the game.
+   * HTTP Responses:
+   * - `200 OK`: Game successfully deleted from the shop.
+   * - `400 Bad Request`: Invalid shop or game ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: The shop or game with the given ID was not found.
+   */
+
   async deleteGameFromShop(
     @Param('shopsId') shopId: string,
     @Param('gamesId') gameId: string,

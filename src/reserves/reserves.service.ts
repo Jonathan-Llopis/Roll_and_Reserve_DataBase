@@ -14,6 +14,18 @@ import { HttpService } from '../http/http.service';
 
 @Injectable()
 export class ReservesService {
+  /**
+   * Constructor of the Reserve Service.
+   * @param reserveRepository The repository for the ReservesEntity.
+   * @param shopRepository The repository for the ShopsEntity.
+   * @param gameRepository The repository for the GamesEntity.
+   * @param difficultyRepository The repository for the DifficultyEntity.
+   * @param reserveGameCategoryRepository The repository for the GameCategoryEntity.
+   * @param tableRepository The repository for the TablesEntity.
+   * @param fcmNotificationService The service for sending notifications.
+   * @param gameService The service for managing games.
+   * @param httpService The HTTP client for BGG API.
+   */
   constructor(
     @InjectRepository(ReservesEntity)
     private readonly reserveRepository: Repository<ReservesEntity>,
@@ -33,12 +45,41 @@ export class ReservesService {
     private readonly httpService: HttpService,
   ) {}
 
+  /**
+   * Handles any error by throwing an HttpException.
+   * If the error is an HttpException, it is thrown as is.
+   * Otherwise, a new HttpException is thrown with status code 400 and the message 'Request failed'.
+   * @param err The error to handle.
+   * @throws HttpException
+   */
   private handleError(err: any) {
     if (err instanceof HttpException) {
       throw err;
     }
     throw new HttpException('Request failed', HttpStatus.BAD_REQUEST);
   }
+
+
+/**
+ * DOC: Get All Reserves
+ * Method: GET /reserves
+ * Description: Retrieves all reserves from the database, including related entities and orders them by start time.
+ * HTTP Responses:
+ * - `200 OK`: Successfully retrieves all reserves, example structure: 
+ *   [
+ *     {
+ *       "id_reserve": 1,
+ *       "total_places": 10,
+ *       "hour_start": "2023-10-10T10:00:00Z",
+ *       "hour_end": "2023-10-10T12:00:00Z",
+ *       ...
+ *     },
+ *     ...
+ *   ]
+ * - `204 No Content`: No reserves found.
+ * - `400 Bad Request`: Unexpected error occurred during the retrieval.
+ * - `500 Internal Server Error`: Failed to retrieve reserves due to server error.
+ */
 
   async getAllReserves(): Promise<ReservesEntity[]> {
     try {
@@ -68,6 +109,37 @@ export class ReservesService {
     }
   }
 
+
+
+  /**
+   * Retrieve a reserve by its ID.
+   * Method: GET /reserves/:id
+   * Description: Retrieve a reserve with the given ID.
+   * Input Parameters:
+   * - `id` (number, required): Reserve ID.
+   * HTTP Responses:
+   * - `200 OK`: Successfully retrieved the reserve.
+   *   Example response:
+   *   {
+   *     id_reserve: 1,
+   *     total_places: 10,
+   *     reserver_id: '1',
+   *     hour_start: '2023-10-10T09:00:00Z',
+   *     hour_end: '2023-10-10T12:00:00Z',
+   *     description: 'Test description',
+   *     required_material: 'Test material',
+   *     shop_event: false,
+   *     event_id: null,
+   *     confirmation_notification: false,
+   *     difficulty: {...},
+   *     reserve_of_game: {...},
+   *     reserve_table: {...},
+   *     users_in_reserve: [...],
+   *     userReserves: [...],
+   *   }
+   * - `404 Not Found`: Reserve not found.
+   * - `500 Internal Server Error`: Failed to retrieve reserve due to server error.
+   */
   async getReserve(id: number): Promise<ReservesEntity> {
     try {
       const reserve = await this.reserveRepository.findOne({
@@ -93,6 +165,34 @@ export class ReservesService {
       throw new HttpException('Internal Server Error', HttpStatus.BAD_REQUEST);
     }
   }
+
+/**
+ * DOC: Retrieve Reserves by Date and Table
+ * Method: GET /reserves/date/:date/:idTable
+ * Description: Fetches all reserves for a specific date and table ID, including related entities.
+ * Input Parameters:
+ * - `date` (string, required): The date for which to fetch reserves, in YYYY-MM-DD format.
+ * - `idTable` (number, required): The ID of the table for which to fetch reserves.
+ * Example Request (JSON format):
+ * {
+ *   "date": "2023-01-01",
+ *   "idTable": 1
+ * }
+ * HTTP Responses:
+ * - `200 OK`: Successfully retrieved reserves. Example JSON structure:
+ *   [
+ *     {
+ *       "id_reserve": 1,
+ *       "total_places": 10,
+ *       "hour_start": "2023-01-01T10:00:00Z",
+ *       ...
+ *     },
+ *     ...
+ *   ]
+ * - `204 No Content`: No reserves found for the given date and table.
+ * - `400 Bad Request`: Invalid date format or table ID.
+ * - `500 Internal Server Error`: Unexpected error during retrieval.
+ */
 
   async getAllReservesByDate(
     date: string,
@@ -130,12 +230,34 @@ export class ReservesService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
+  /**
+   * DOC: Create a new reserve.
+   * Method: POST /reserves/:idShop
+   * Description: Create a new reserve for a given shop.
+   * Input Parameters:
+   * - `idShop` (number, required): Shop ID.
+   * - `createReserveDto` (CreateReserveDto, required): Reserve data.
+   * Example Request (JSON format):
+   * {
+   *   "total_places": 10,
+   *   "reserver_id": "1",
+   *   "hour_start": "2023-10-10T10:00:00Z",
+   *   "hour_end": "2023-10-10T12:00:00Z",
+   *   "description": "A fun board game event",
+   *   "shop_event": true,
+   *   "required_material": "Board game, dice, cards"
+   * }
+   * HTTP Responses:
+   * - `201 Created`: Reserve successfully created.
+   * - `400 Bad Request`: Failed to create reserve.
+   * - `401 Unauthorized`: Unauthorized.
+   */
   async createReserve(
     createReserveDto: CreateReserveDto,
     idShop: number,
@@ -227,12 +349,36 @@ export class ReservesService {
         throw err;
       }
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
+  /**
+   * Update a reserve by ID.
+   * Method: PUT /reserves/:id
+   * Description: Update a reserve with the given ID.
+   * Input Parameters:
+   * - `id` (number, required): Reserve ID.
+   * - `updateReserveDto` (UpdateReserveDto, required): Reserve data.
+   * Example Request (JSON format):
+   * {
+   *   "number_players": 4,
+   *   "description": "Reserva para 4 jugadores",
+   *   "required_material": "Material de juego",
+   *   "shop_event": true,
+   *   "event_id": "event_1",
+   *   "reserve_of_game_id": 1,
+   *   "reserve_table_id": 1,
+   *   "difficulty_id": 1,
+   * }
+   * HTTP Responses:
+   * - `200 OK`: Reserve successfully updated.
+   * - `400 Bad Request`: Failed to update reserve.
+   * - `401 Unauthorized`: Unauthorized.
+   * - `404 Not Found`: Reserve not found.
+   */
   async updateReserve(
     updateReserveDto: UpdateReserveDto,
     id: number,
@@ -309,12 +455,24 @@ export class ReservesService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
+  /**
+   * Delete a reserve by ID.
+   * Method: DELETE /reserves/:id
+   * Description: Delete a reserve with the given ID.
+   * Input Parameters:
+   * - `id` (number, required): Reserve ID.
+   * HTTP Responses:
+   * - `200 OK`: Reserve successfully deleted.
+   * - `400 Bad Request`: Failed to delete reserve.
+   * - `401 Unauthorized`: Unauthorized.
+   * - `404 Not Found`: Reserve not found.
+   */
   async deleteReserve(id: number): Promise<void> {
     try {
       const result = await this.reserveRepository.delete(id);
@@ -327,12 +485,46 @@ export class ReservesService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
+  /**
+   * Retrieve all unique shop events by shop ID.
+   * Method: GET /reserves/shop_events/:idShop
+   * Description: Get all unique shop events by shop ID.
+   * Input Parameters:
+   * - `idShop` (number, required): Shop ID.
+   * HTTP Responses:
+   * - `200 OK`: Successfully retrieved all unique shop events.
+   *   Example response:
+   *   [
+   *     {
+   *       id_reserve: 1,
+   *       total_places: 10,
+   *       reserver_id: '1',
+   *       hour_start: '2023-10-10T10:00:00Z',
+   *       hour_end: '2023-10-10T12:00:00Z',
+   *       description: 'Test description',
+   *       required_material: 'Board game, dice, cards',
+   *       shop_event: true,
+   *       event_id: 'event-1',
+   *       confirmation_notification: false,
+   *       difficulty: null,
+   *       reserve_of_game: null,
+   *       reserve_table: { id_table: 1 },
+   *       users_in_reserve: [],
+   *       userReserves: [],
+   *     },
+   *     ...
+   *   ]
+   * - `400 Bad Request`: Failed to retrieve unique shop events.
+   * - `401 Unauthorized`: Unauthorized.
+   * - `404 Not Found`: Shop not found.
+   * - `204 No Content`: No shop events found.
+   */
   async findAllUniqueShopEvents(shopId: number): Promise<ReservesEntity[]> {
     try {
       const currentDate = new Date();
@@ -365,12 +557,35 @@ export class ReservesService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
+  /**
+   * Retrieve the last ten players for a user by Google ID.
+   * Method: GET /reserves/last_ten_players/:idGoogle
+   * Description: Retrieve the last ten players for a user given by their Google ID.
+   * Input Parameters:
+   * - `idGoogle` (string, required): Google ID of the user.
+   * HTTP Responses:
+   * - `200 OK`: Successfully retrieved the last ten players.
+   *   Example response:
+   *   [
+   *     {
+   *       id_google: 'user1',
+   *       email: 'user1@gmail.com',
+   *       name: 'User 1',
+   *       picture: 'https://example.com/user1.jpg',
+   *     },
+   *     ...
+   *   ]
+   * - `400 Bad Request`: Failed to retrieve players.
+   * - `401 Unauthorized`: Unauthorized.
+   * - `404 Not Found`: User not found.
+   * - `500 Internal Server Error`: Unexpected error.
+   */
   async getLastTenPlayers(userId: string): Promise<any[]> {
     try {
       const currentDate = new Date();

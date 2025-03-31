@@ -8,6 +8,11 @@ import { GridFSBucketReadStream } from 'typeorm';
 import * as fileType from 'file-type';
 
 class PositionObj {
+  /**
+   * Construct a Position object.
+   * @param x The x coordinate.
+   * @param y The y coordinate.
+   */
   constructor(
     public x: number,
     public y: number,
@@ -15,6 +20,16 @@ class PositionObj {
 }
 
 class SchemaObj {
+  /**
+   * Construct a Schema object.
+   * @param name The name of the label.
+   * @param type The type of the label.
+   * @param position The position of the label.
+   * @param width The width of the label.
+   * @param height The height of the label.
+   * @param fontSize The font size of the label.
+   * @throws {Error} If the type, position, width, height or fontSize is invalid.
+   */
   constructor(
     public name: string,
     public type: string,
@@ -61,6 +76,32 @@ const labelModelName = '11783';
 @Injectable()
 export class LabelsService {
   constructor(private readonly fileService: FilesService) {}
+/**
+ * DOC: Generate PDF Labels
+ * Method: POST /labels/generate
+ * Description: Generates and returns a PDF containing labels for specified table items. Each label includes a QR code, table number, shop name, and shop logo.
+ * Input Parameters:
+ * - `tables_items` (array of objects, required): Array of table items to generate labels for. Each item should contain `id_table`, `number_table`, and `tables_of_shop` with `name` and `logo`.
+ * - `res` (response object, required): Express response object for streaming the generated PDF.
+ * Example Request (JSON format):
+ * {
+ *   "table_items": [
+ *     {
+ *       "id_table": 1,
+ *       "number_table": 5,
+ *       "tables_of_shop": {
+ *         "name": "Shop Name",
+ *         "logo": "logo_id"
+ *       }
+ *     }
+ *   ]
+ * }
+ * HTTP Responses:
+ * - `200 OK`: PDF generated successfully and streamed as response.
+ * - `400 Bad Request`: Invalid input data.
+ * - `500 Internal Server Error`: Error during PDF generation.
+ */
+
   async generateLabels(tables_items, @Res() res: any) {
     const colHorizontalIncrement =
       labelModel[labelModelName].colHorizontalIncrement;
@@ -230,6 +271,13 @@ export class LabelsService {
         Logger.error('Error al generar el PDF:', error);
       });
   }
+  /**
+   * Takes a GridFSBucketReadStream and returns a Promise that resolves to a Buffer.
+   * It is used to convert a MongoDB GridFSBucketReadStream to a Buffer, which is
+   * necessary to generate a PDF with the pdfme library.
+   * @param {GridFSBucketReadStream} stream - The GridFSBucketReadStream to convert.
+   * @returns {Promise<Buffer>} - A Promise that resolves to a Buffer.
+   */
   private streamToBuffer(stream: GridFSBucketReadStream): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       const chunks = [];

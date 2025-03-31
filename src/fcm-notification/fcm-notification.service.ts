@@ -3,6 +3,12 @@ import * as admin from 'firebase-admin';
 
 @Injectable()
 export class FcmNotificationService {
+
+
+  /**
+   * Initialize the Firebase Admin SDK with the credentials stored
+   * in environment variables.
+   */
   constructor() {
     admin.initializeApp({
       credential: admin.credential.cert({
@@ -12,6 +18,31 @@ export class FcmNotificationService {
       }),
     });
   }
+
+
+
+
+
+/**
+ * DOC: Send Multicast Notification
+ * Method: POST /send-multicast-notification
+ * Description: Sends a notification to multiple devices identified by their FCM tokens.
+ * Input Parameters:
+ * - `notificationTokens` (string[], required): An array of FCM tokens to which the notification will be sent.
+ * - `title` (string, required): The title of the notification.
+ * - `body` (string, required): The body content of the notification.
+ * - `imageUrl` (string, optional): URL of the image to be included in the notification.
+ * Example Request (JSON format):
+ * {
+ *   "notificationTokens": ["token1", "token2"],
+ *   "title": "New Offer!",
+ *   "body": "Check out our new deals.",
+ *   "imageUrl": "http://example.com/image.png"
+ * }
+ * HTTP Responses:
+ * - `200 OK`: Notification sent successfully. { "successCount": 2, "failureCount": 0 }
+ * - `4XX/5XX`: Error sending notification due to invalid tokens or server issues.
+ */
 
   async sendMulticastNotification(
     notificationTokens: string[],
@@ -41,6 +72,28 @@ export class FcmNotificationService {
       });
   }
 
+
+
+  /**
+   * Send Topic Notification
+   * Method: POST /send-topic-notification
+   * Description: Sends a notification to all devices subscribed to a topic identified by the shop's ID.
+   * Input Parameters:
+   * - `idShop` (string, required): The ID of the shop.
+   * - `title` (string, required): The title of the notification.
+   * - `body` (string, required): The body content of the notification.
+   * - `imageUrl` (string, optional): URL of the image to be included in the notification.
+   * Example Request (JSON format):
+   * {
+   *   "idShop": "12345",
+   *   "title": "New Offer!",
+   *   "body": "Check out our new deals.",
+   *   "imageUrl": "http://example.com/image.png"
+   * }
+   * HTTP Responses:
+   * - `200 OK`: Notification sent successfully. { "successCount": 1, "failureCount": 0 }
+   * - `4XX/5XX`: Error sending notification due to invalid tokens or server issues.
+   */
   async sendTopicNotification(
     idShop: string,
     title: string,

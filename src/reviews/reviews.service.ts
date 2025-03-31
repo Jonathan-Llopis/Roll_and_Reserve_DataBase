@@ -15,6 +15,13 @@ import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ReviewsService {
+  /**
+   * Constructor of the ReviewsService.
+   * @param reviewsRepository The repository for the ReviewsEntity.
+   * @param shopRepository The repository for the ShopsEntity.
+   * @param userRepository The repository for the UserEntity.
+   * @param usersService The service for managing users.
+   */
   constructor(
     @InjectRepository(ReviewsEntity)
     private readonly reviewsRepository: Repository<ReviewsEntity>,
@@ -25,6 +32,12 @@ export class ReviewsService {
     private readonly usersService: UsersService,
   ) {}
 
+  /**
+   * Throws an HttpException for the given error, or a default BAD_REQUEST
+   * error if the given error is not an HttpException.
+   *
+   * @param err - The error to throw.
+   */
   private handleError(err: any) {
     if (err instanceof HttpException) {
       throw err;
@@ -32,6 +45,17 @@ export class ReviewsService {
     throw new BadRequestException('An unexpected error occurred');
   }
 
+  /**
+   * DOC: Get all reviews
+   * Method: GET /reviews
+   * Description: Retrieves all reviews.
+   * HTTP Responses:
+   * - `200 OK`: Reviews retrieved successfully. Example: [ { "id_review": 1, "raiting": 5, "review": "Great product!", ... }, ... ]
+   * - `400 Bad Request`: Invalid request.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Reviews not found.
+   * - `204 No Content`: No reviews found.
+   */
   async getAllReviews(): Promise<ReviewsEntity[]> {
     try {
       const reviews = await this.reviewsRepository.find({
@@ -47,12 +71,25 @@ export class ReviewsService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
+  /**
+   * DOC: Get a review by ID
+   * Method: GET /reviews/:id
+   * Description: Retrieves a review by its ID.
+   * Input Parameters:
+   * - `id` (number, required): The ID of the review.
+   * Example Request (JSON format): None
+   * HTTP Responses:
+   * - `200 OK`: Review retrieved successfully. Example: { "id_review": 1, "raiting": 5, "review": "Great product!", ... }
+   * - `400 Bad Request`: Invalid Reviews ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Review not found.
+   */
   async getReviews(id: number): Promise<ReviewsEntity> {
     try {
       const review = await this.reviewsRepository.findOne({
@@ -68,12 +105,28 @@ export class ReviewsService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
+
+
+/**
+ * DOC: Get all reviews by shop ID
+ * Method: GET /reviews/shop/:idShop
+ * Description: Retrieves all reviews for a specific shop by its ID.
+ * Input Parameters:
+ * - `idShop` (number, required): The ID of the shop.
+ * Example Request (JSON format): None
+ * HTTP Responses:
+ * - `200 OK`: Reviews retrieved successfully. Example: [ { "id_review": 1, "raiting": 5, "review": "Great product!", ... }, ... ]
+ * - `400 Bad Request`: Invalid Shop ID.
+ * - `401 Unauthorized`: Unauthorized access.
+ * - `404 Not Found`: Shop not found.
+ * - `204 No Content`: No reviews found for the shop.
+ */
   async getAllReviewsByShop(idShop: number): Promise<ReviewsEntity[]> {
     try {
       const reviews = await this.reviewsRepository.find({
@@ -90,11 +143,26 @@ export class ReviewsService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
+
+/**
+ * DOC: Get all reviews by writer ID
+ * Method: GET /reviews/writer/:id_google
+ * Description: Retrieves all reviews written by a specific writer using their Google ID.
+ * Input Parameters:
+ * - `id_google` (string, required): The Google ID of the writer.
+ * Example Request (JSON format): None
+ * HTTP Responses:
+ * - `200 OK`: Reviews retrieved successfully. Example: [ { "id_review": 1, "raiting": 5, "review": "Great product!", ... }, ... ]
+ * - `400 Bad Request`: Invalid request.
+ * - `401 Unauthorized`: Unauthorized access.
+ * - `404 Not Found`: Writer not found.
+ * - `204 No Content`: No reviews found for the writer.
+ */
 
   async getAllReviewsByWritter(id_google: string): Promise<ReviewsEntity[]> {
     try {
@@ -112,11 +180,26 @@ export class ReviewsService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
+
+/**
+ * DOC: Get all reviews by user ID
+ * Method: GET /reviews/user/:id_google
+ * Description: Retrieves all reviews received by a specific user using their Google ID.
+ * Input Parameters:
+ * - `id_google` (string, required): The Google ID of the user.
+ * Example Request (JSON format): None
+ * HTTP Responses:
+ * - `200 OK`: Reviews retrieved successfully. Example: [ { "id_review": 1, "raiting": 5, "review": "Great product!", ... }, ... ]
+ * - `400 Bad Request`: Invalid request.
+ * - `401 Unauthorized`: Unauthorized access.
+ * - `404 Not Found`: User not found.
+ * - `204 No Content`: No reviews found for the user.
+ */
 
   async getAllReviewsByUser(id_google: string): Promise<ReviewsEntity[]> {
     try {
@@ -134,12 +217,37 @@ export class ReviewsService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
+  /**
+   * DOC: Create a new review.
+   * Method: POST /reviews
+   * Description: Create a new review in the database.
+   * Input Parameters:
+   * - `raiting` (number, required): The rating of the review.
+   * - `review` (string, required): The content of the review.
+   * - `writter_id` (string, required): The Google ID of the writer.
+   * - `reviewed_id` (string, optional): The Google ID of the reviewed entity.
+   * - `shop_reviews_id` (number, optional): The ID of the shop review.
+   * Example Request (JSON format):
+   * {
+   *   "raiting": 5,
+   *   "review": "Great product!",
+   *   "writter_id": "1",
+   *   "reviewed_id": "2",
+   *   "shop_reviews_id": 3
+   * }
+   * HTTP Responses:
+   * - `201 Created`: The review was created successfully.
+   * - `400 Bad Request`: Invalid request.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Writer not found.
+   * - `204 No Content`: No content.
+   */
   async createReview(
     createReviewsDto: CreateReviewDto,
   ): Promise<ReviewsEntity> {
@@ -190,12 +298,38 @@ export class ReviewsService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
+  /**
+   * DOC: Update a review.
+   * Method: PATCH /reviews/:id
+   * Description: Updates a review in the database.
+   * Input Parameters:
+   * - `id` (number, required): The ID of the review.
+   * - `raiting` (number, optional): The rating of the review.
+   * - `review` (string, optional): The content of the review.
+   * - `writter_id` (string, optional): The Google ID of the writer.
+   * - `reviewed_id` (string, optional): The Google ID of the reviewed entity.
+   * - `shop_reviews_id` (number, optional): The ID of the shop review.
+   * Example Request (JSON format):
+   * {
+   *   "id": 1,
+   *   "raiting": 5,
+   *   "review": "Great product!",
+   *   "writter_id": "1",
+   *   "reviewed_id": "2",
+   *   "shop_reviews_id": 3
+   * }
+   * HTTP Responses:
+   * - `200 OK`: The review was updated successfully. Example: { "id_review": 1, "raiting": 5, "review": "Great product!", ... }
+   * - `400 Bad Request`: Invalid request.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Review not found.
+   */
   async updateReviews(
     updateReviewsDto: UpdateReviewDto,
     id: number,
@@ -248,12 +382,22 @@ export class ReviewsService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
+  /**
+   * DOC: Delete a review.
+   * Method: DELETE /reviews/:id
+   * Description: Deletes a review from the database.
+   * Input Parameters:
+   * - `id` (number, required): The ID of the review.
+   * HTTP Responses:
+   * - `204 No Content`: The review was deleted successfully.
+   * - `404 Not Found`: Review not found.
+   */
   async deleteReview(id: number): Promise<void> {
     try {
       const result = await this.reviewsRepository.delete(id);
@@ -266,8 +410,8 @@ export class ReviewsService {
       }
       console.error('Unexpected error:', err);
       throw new HttpException(
-        'Internal Server Error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+       'Bad Request',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }

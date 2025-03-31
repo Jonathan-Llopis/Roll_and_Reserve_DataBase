@@ -7,6 +7,14 @@ import { AuthService } from './Autentication/auth.service';
 export class AuthorizationMiddleware implements NestMiddleware {
   constructor(private readonly authService: AuthService) {}
 
+  /**
+   * Validates the token sent in the Authorization header of the request.
+   * If the token is invalid or expired, throws an UnauthorizedException.
+   * If the token is valid, calls next().
+   * @param req The request object from Express.
+   * @param res The response object from Express.
+   * @param next The next function in the middleware chain.
+   */
   async use(req: Request, res: Response, next: NextFunction) {
     if (process.env.ENABLE_TOKEN_VALIDATION === 'true') {
       const token = req.headers['authorization'];
