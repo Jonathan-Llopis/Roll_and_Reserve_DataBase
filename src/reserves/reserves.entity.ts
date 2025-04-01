@@ -46,7 +46,7 @@ export class ReservesEntity {
   @Column({ default: false })
   confirmation_notification: boolean;
 
-  @ManyToOne(() => DifficultyEntity, (difficulty) => difficulty.info_difficulty)
+  @ManyToOne(() => DifficultyEntity, (difficulty) => difficulty.info_difficulty, { onDelete: 'CASCADE',})
   @JoinColumn({ name: 'difficulty_id' })
   difficulty: DifficultyEntity;
 
@@ -68,6 +68,6 @@ export class ReservesEntity {
   @JoinTable()
   users_in_reserve: UserEntity[];
 
-  @OneToMany(() => UserReserveEntity, (userReserve) => userReserve.reserve)
+  @OneToMany(() => UserReserveEntity, (userReserve) => userReserve.reserve, { onDelete: 'CASCADE',})
   userReserves: UserReserveEntity[];
 }
