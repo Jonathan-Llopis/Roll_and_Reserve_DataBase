@@ -591,7 +591,7 @@ export class ReservesService {
 
       const players = Array.from(playersMap.values());
       console.log(`Total players found: ${players.length}`);
-      return players;
+      return players.slice(0, 10);
     } catch (err) {
       if (err instanceof HttpException) throw err;
       
