@@ -25,10 +25,10 @@ export class ReservesEntity {
   @Column()
   reserver_id: string;
 
-  @Column({ type: 'timestamp' })
+  @Column()
   hour_start: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column()
   hour_end: Date;
 
   @Column()
