@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ShopsEntity } from '../shops/shops.entity';
 import { GamesEntity } from '../games/games.entitiy';
-import { HttpException, NotFoundException } from '@nestjs/common'; 
+import { HttpException, NotFoundException } from '@nestjs/common';
 
 describe('ShopGamesService', () => {
   let service: ShopGamesService;

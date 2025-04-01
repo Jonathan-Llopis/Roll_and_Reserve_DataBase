@@ -59,27 +59,26 @@ export class ReservesService {
     throw new HttpException('Request failed', HttpStatus.BAD_REQUEST);
   }
 
-
-/**
- * DOC: Get All Reserves
- * Method: GET /reserves
- * Description: Retrieves all reserves from the database, including related entities and orders them by start time.
- * HTTP Responses:
- * - `200 OK`: Successfully retrieves all reserves, example structure: 
- *   [
- *     {
- *       "id_reserve": 1,
- *       "total_places": 10,
- *       "hour_start": "2023-10-10T10:00:00Z",
- *       "hour_end": "2023-10-10T12:00:00Z",
- *       ...
- *     },
- *     ...
- *   ]
- * - `204 No Content`: No reserves found.
- * - `400 Bad Request`: Unexpected error occurred during the retrieval.
- * - `500 Internal Server Error`: Failed to retrieve reserves due to server error.
- */
+  /**
+   * DOC: Get All Reserves
+   * Method: GET /reserves
+   * Description: Retrieves all reserves from the database, including related entities and orders them by start time.
+   * HTTP Responses:
+   * - `200 OK`: Successfully retrieves all reserves, example structure:
+   *   [
+   *     {
+   *       "id_reserve": 1,
+   *       "total_places": 10,
+   *       "hour_start": "2023-10-10T10:00:00Z",
+   *       "hour_end": "2023-10-10T12:00:00Z",
+   *       ...
+   *     },
+   *     ...
+   *   ]
+   * - `204 No Content`: No reserves found.
+   * - `400 Bad Request`: Unexpected error occurred during the retrieval.
+   * - `500 Internal Server Error`: Failed to retrieve reserves due to server error.
+   */
 
   async getAllReserves(): Promise<ReservesEntity[]> {
     try {
@@ -108,8 +107,6 @@ export class ReservesService {
       throw new HttpException('Internal Server Error', HttpStatus.BAD_REQUEST);
     }
   }
-
-
 
   /**
    * Retrieve a reserve by its ID.
@@ -166,33 +163,33 @@ export class ReservesService {
     }
   }
 
-/**
- * DOC: Retrieve Reserves by Date and Table
- * Method: GET /reserves/date/:date/:idTable
- * Description: Fetches all reserves for a specific date and table ID, including related entities.
- * Input Parameters:
- * - `date` (string, required): The date for which to fetch reserves, in YYYY-MM-DD format.
- * - `idTable` (number, required): The ID of the table for which to fetch reserves.
- * Example Request (JSON format):
- * {
- *   "date": "2023-01-01",
- *   "idTable": 1
- * }
- * HTTP Responses:
- * - `200 OK`: Successfully retrieved reserves. Example JSON structure:
- *   [
- *     {
- *       "id_reserve": 1,
- *       "total_places": 10,
- *       "hour_start": "2023-01-01T10:00:00Z",
- *       ...
- *     },
- *     ...
- *   ]
- * - `204 No Content`: No reserves found for the given date and table.
- * - `400 Bad Request`: Invalid date format or table ID.
- * - `500 Internal Server Error`: Unexpected error during retrieval.
- */
+  /**
+   * DOC: Retrieve Reserves by Date and Table
+   * Method: GET /reserves/date/:date/:idTable
+   * Description: Fetches all reserves for a specific date and table ID, including related entities.
+   * Input Parameters:
+   * - `date` (string, required): The date for which to fetch reserves, in YYYY-MM-DD format.
+   * - `idTable` (number, required): The ID of the table for which to fetch reserves.
+   * Example Request (JSON format):
+   * {
+   *   "date": "2023-01-01",
+   *   "idTable": 1
+   * }
+   * HTTP Responses:
+   * - `200 OK`: Successfully retrieved reserves. Example JSON structure:
+   *   [
+   *     {
+   *       "id_reserve": 1,
+   *       "total_places": 10,
+   *       "hour_start": "2023-01-01T10:00:00Z",
+   *       ...
+   *     },
+   *     ...
+   *   ]
+   * - `204 No Content`: No reserves found for the given date and table.
+   * - `400 Bad Request`: Invalid date format or table ID.
+   * - `500 Internal Server Error`: Unexpected error during retrieval.
+   */
 
   async getAllReservesByDate(
     date: string,
@@ -229,10 +226,7 @@ export class ReservesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -348,10 +342,7 @@ export class ReservesService {
       if (err instanceof HttpException) {
         throw err;
       }
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -454,10 +445,7 @@ export class ReservesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -484,10 +472,7 @@ export class ReservesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -556,10 +541,7 @@ export class ReservesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 

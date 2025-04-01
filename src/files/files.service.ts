@@ -148,10 +148,7 @@ export class FilesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 }

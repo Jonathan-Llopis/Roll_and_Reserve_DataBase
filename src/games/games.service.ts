@@ -47,26 +47,26 @@ export class GamesService {
     throw new BadRequestException('An unexpected error occurred');
   }
 
-/**
- * DOC: Retrieve All Games
- * Method: GET /games
- * Description: Fetches all games from the database including their associated game categories.
- * Input Parameters: None
- * Example Request (JSON format): None
- * HTTP Responses:
- * - `200 OK`: The list of all games with their categories. Example:
- *   [
- *     {
- *       "id_game": 1,
- *       "name": "Chess",
- *       "description": "A strategic board game",
- *       "bgg_id": 123,
- *       "gameCategory": { "id_game_category": 1, "description": "Strategy" }
- *     }
- *   ]
- * - `204 No Content`: No games found in the database.
- * - `400 Bad Request`: An unexpected error occurred.
- */
+  /**
+   * DOC: Retrieve All Games
+   * Method: GET /games
+   * Description: Fetches all games from the database including their associated game categories.
+   * Input Parameters: None
+   * Example Request (JSON format): None
+   * HTTP Responses:
+   * - `200 OK`: The list of all games with their categories. Example:
+   *   [
+   *     {
+   *       "id_game": 1,
+   *       "name": "Chess",
+   *       "description": "A strategic board game",
+   *       "bgg_id": 123,
+   *       "gameCategory": { "id_game_category": 1, "description": "Strategy" }
+   *     }
+   *   ]
+   * - `204 No Content`: No games found in the database.
+   * - `400 Bad Request`: An unexpected error occurred.
+   */
 
   async getAllGames(): Promise<GamesEntity[]> {
     try {
@@ -82,32 +82,29 @@ export class GamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
-/**
- * Retrieves a game by its ID.
- * Method: GET /games/:id
- * Description: Fetches a game from the database using the provided game ID, 
- * including its associated game category information.
- * Input Parameters:
- * - `gameId` (number, required): The ID of the game to retrieve.
- * HTTP Responses:
- * - `200 OK`: The game details. Example:
- *   {
- *     "id_game": 1,
- *     "name": "Chess",
- *     "description": "A strategic board game",
- *     "bgg_id": 123,
- *     "gameCategory": { "id_game_category": 1, "description": "Strategy" }
- *   }
- * - `404 Not Found`: Game not found.
- * - `400 Bad Request`: An unexpected error occurred.
- */
+  /**
+   * Retrieves a game by its ID.
+   * Method: GET /games/:id
+   * Description: Fetches a game from the database using the provided game ID,
+   * including its associated game category information.
+   * Input Parameters:
+   * - `gameId` (number, required): The ID of the game to retrieve.
+   * HTTP Responses:
+   * - `200 OK`: The game details. Example:
+   *   {
+   *     "id_game": 1,
+   *     "name": "Chess",
+   *     "description": "A strategic board game",
+   *     "bgg_id": 123,
+   *     "gameCategory": { "id_game_category": 1, "description": "Strategy" }
+   *   }
+   * - `404 Not Found`: Game not found.
+   * - `400 Bad Request`: An unexpected error occurred.
+   */
 
   async getGame(gameId: number): Promise<GamesEntity> {
     try {
@@ -124,10 +121,7 @@ export class GamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -156,10 +150,7 @@ export class GamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -221,10 +212,7 @@ export class GamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -251,40 +239,37 @@ export class GamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
-/**
- * DOC: Search games by name
- * Method: GET /games/search
- * Description: Searches for games by name. If no local games are found, it queries an external API.
- * Input Parameters:
- * - `name` (string, required): The name of the game to search for. Use 'all' to retrieve all games.
- * Example Request (JSON format):
- * {
- *   "name": "Chess"
- * }
- * HTTP Responses:
- * - `200 OK`: Games retrieved successfully. Example:
- *   [
- *     {
- *       "id_game": 1,
- *       "name": "Chess",
- *       "image": "image_url",
- *       "description": "",
- *       "bgg_id": 1,
- *       "gameCategory": null,
- *       "shop": null,
- *       "game_reserve": null
- *     }
- *   ]
- * - `404 Not Found`: No games found with the given name.
- * - `503 Service Unavailable`: External API is not reachable.
- * - `400 Bad Request`: Unexpected error occurred.
- */
+  /**
+   * DOC: Search games by name
+   * Method: GET /games/search
+   * Description: Searches for games by name. If no local games are found, it queries an external API.
+   * Input Parameters:
+   * - `name` (string, required): The name of the game to search for. Use 'all' to retrieve all games.
+   * Example Request (JSON format):
+   * {
+   *   "name": "Chess"
+   * }
+   * HTTP Responses:
+   * - `200 OK`: Games retrieved successfully. Example:
+   *   [
+   *     {
+   *       "id_game": 1,
+   *       "name": "Chess",
+   *       "image": "image_url",
+   *       "description": "",
+   *       "bgg_id": 1,
+   *       "gameCategory": null,
+   *       "shop": null,
+   *       "game_reserve": null
+   *     }
+   *   ]
+   * - `404 Not Found`: No games found with the given name.
+   * - `503 Service Unavailable`: External API is not reachable.
+   * - `400 Bad Request`: Unexpected error occurred.
+   */
 
   async searchGameByName(name: string): Promise<GamesEntity[]> {
     try {
@@ -346,10 +331,7 @@ export class GamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 }

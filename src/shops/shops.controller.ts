@@ -85,10 +85,7 @@ export class ShopsController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -138,10 +135,7 @@ export class ShopsController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -189,10 +183,7 @@ export class ShopsController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -249,10 +240,7 @@ export class ShopsController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -292,10 +280,7 @@ export class ShopsController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -312,18 +297,17 @@ export class ShopsController {
   @ApiResponse({ status: 400, description: 'Invalid shop ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
-/**
- * Method: DELETE /shops/:id
- * Description: Deletes a shop by ID.
- * Input Parameters:
- * - `id` (string, required): The ID of the shop.
- * HTTP Responses:
- * - `200 OK`: Shop deleted successfully.
- * - `400 Bad Request`: Invalid shop ID.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: The shop with the given ID was not found.
- */
-
+  /**
+   * Method: DELETE /shops/:id
+   * Description: Deletes a shop by ID.
+   * Input Parameters:
+   * - `id` (string, required): The ID of the shop.
+   * HTTP Responses:
+   * - `200 OK`: Shop deleted successfully.
+   * - `400 Bad Request`: Invalid shop ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: The shop with the given ID was not found.
+   */
   deleteShop(@Param('id') id: string) {
     const shopId = parseInt(id);
     if (isNaN(shopId)) {
@@ -336,10 +320,7 @@ export class ShopsController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
   @Post('/shop/:idShop/stats/most-played-games')
@@ -360,31 +341,31 @@ export class ShopsController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
-/**
- * Method: POST /shops/:idShop/stats/most-played-games
- * Description: Retrieves most played games by shop ID within a time range.
- * Input Parameters:
- * - `idShop` (string, required): The ID of the shop.
- * - `startTime` (string, required): The start time of the range in ISO 8601.
- * - `endTime` (string, required): The end time of the range in ISO 8601.
- * HTTP Responses:
- * - `200 OK`: Statistics retrieved successfully. Example:
- *   [
- *     {
- *       "id_game": 1,
- *       "name": "Chess",
- *       "play_count": 5
- *     },
- *     {
- *       "id_game": 2,
- *       "name": "Poker",
- *       "play_count": 3
- *     }
- *   ]
- * - `400 Bad Request`: Invalid shop ID, or invalid time range.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: The shop with the given ID was not found.
- */
+  /**
+   * Method: POST /shops/:idShop/stats/most-played-games
+   * Description: Retrieves most played games by shop ID within a time range.
+   * Input Parameters:
+   * - `idShop` (string, required): The ID of the shop.
+   * - `startTime` (string, required): The start time of the range in ISO 8601.
+   * - `endTime` (string, required): The end time of the range in ISO 8601.
+   * HTTP Responses:
+   * - `200 OK`: Statistics retrieved successfully. Example:
+   *   [
+   *     {
+   *       "id_game": 1,
+   *       "name": "Chess",
+   *       "play_count": 5
+   *     },
+   *     {
+   *       "id_game": 2,
+   *       "name": "Poker",
+   *       "play_count": 3
+   *     }
+   *   ]
+   * - `400 Bad Request`: Invalid shop ID, or invalid time range.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: The shop with the given ID was not found.
+   */
   getMostPlayedGames(
     @Param('idShop') idShop: string,
     @Body('startTime') startTime: string,
@@ -397,10 +378,7 @@ export class ShopsController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -422,22 +400,21 @@ export class ShopsController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
-/**
- * Get total reservations by shop ID within a time range.
- * Method: POST /shop/:idShop/stats/total-reservations
- * Description: Retrieves the total number of reservations made for a specific shop
- * within the provided start and end time.
- * Input Parameters:
- * - `idShop` (string, required): The ID of the shop.
- * - `startTime` (string, required): The start time of the period.
- * - `endTime` (string, required): The end time of the period.
- * HTTP Responses:
- * - `200 OK`: Total reservations retrieved successfully.
- * - `400 Bad Request`: Invalid request data.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: Shop not found.
- */
-
+  /**
+   * Get total reservations by shop ID within a time range.
+   * Method: POST /shop/:idShop/stats/total-reservations
+   * Description: Retrieves the total number of reservations made for a specific shop
+   * within the provided start and end time.
+   * Input Parameters:
+   * - `idShop` (string, required): The ID of the shop.
+   * - `startTime` (string, required): The start time of the period.
+   * - `endTime` (string, required): The end time of the period.
+   * HTTP Responses:
+   * - `200 OK`: Total reservations retrieved successfully.
+   * - `400 Bad Request`: Invalid request data.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Shop not found.
+   */
   getTotalReservations(
     @Param('idShop') idShop: string,
     @Body('startTime') startTime: string,
@@ -450,10 +427,7 @@ export class ShopsController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -473,22 +447,22 @@ export class ShopsController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
-/**
- * Get the total number of distinct players who have made a reservation
- * for a specific shop within the provided start and end time.
- * Method: POST /shop/:idShop/stats/player-count
- * Description: Retrieves the total number of distinct players who have made a
- * reservation for a specific shop within the provided start and end time.
- * Input Parameters:
- * - `idShop` (string, required): The ID of the shop.
- * - `startTime` (string, required): The start time of the period.
- * - `endTime` (string, required): The end time of the period.
- * HTTP Responses:
- * - `200 OK`: Player count retrieved successfully.
- * - `400 Bad Request`: Invalid request data.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: Shop not found.
- */
+  /**
+   * Get the total number of distinct players who have made a reservation
+   * for a specific shop within the provided start and end time.
+   * Method: POST /shop/:idShop/stats/player-count
+   * Description: Retrieves the total number of distinct players who have made a
+   * reservation for a specific shop within the provided start and end time.
+   * Input Parameters:
+   * - `idShop` (string, required): The ID of the shop.
+   * - `startTime` (string, required): The start time of the period.
+   * - `endTime` (string, required): The end time of the period.
+   * HTTP Responses:
+   * - `200 OK`: Player count retrieved successfully.
+   * - `400 Bad Request`: Invalid request data.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Shop not found.
+   */
   getPlayerCount(
     @Param('idShop') idShop: string,
     @Body('startTime') startTime: string,
@@ -501,10 +475,7 @@ export class ShopsController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -526,22 +497,22 @@ export class ShopsController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Shop not found.' })
-/**
- * Get the peak reservation hours for a specific shop within the provided
- * start and end time.
- * Method: POST /shop/:idShop/stats/peak-reservation-hours
- * Description: Retrieves the peak reservation hours for a specific shop
- * within the provided start and end time.
- * Input Parameters:
- * - `idShop` (string, required): The ID of the shop.
- * - `startTime` (string, required): The start time of the period.
- * - `endTime` (string, required): The end time of the period.
- * HTTP Responses:
- * - `200 OK`: Statistics retrieved successfully.
- * - `400 Bad Request`: Invalid request data.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: Shop not found.
- */
+  /**
+   * Get the peak reservation hours for a specific shop within the provided
+   * start and end time.
+   * Method: POST /shop/:idShop/stats/peak-reservation-hours
+   * Description: Retrieves the peak reservation hours for a specific shop
+   * within the provided start and end time.
+   * Input Parameters:
+   * - `idShop` (string, required): The ID of the shop.
+   * - `startTime` (string, required): The start time of the period.
+   * - `endTime` (string, required): The end time of the period.
+   * HTTP Responses:
+   * - `200 OK`: Statistics retrieved successfully.
+   * - `400 Bad Request`: Invalid request data.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Shop not found.
+   */
   getPeakReservationHours(
     @Param('idShop') idShop: string,
     @Body('startTime') startTime: string,
@@ -558,10 +529,7 @@ export class ShopsController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 }

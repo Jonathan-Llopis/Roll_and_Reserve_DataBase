@@ -30,15 +30,15 @@ import { UserEntity } from '../users/users.entity';
 
 @Controller('/files')
 export class FilesController {
-/**
- * Initializes the FilesController with necessary services and repositories.
- *
- * @param filesService - Handles file-related operations.
- * @param usersRepository - Repository for accessing UserEntity data.
- * @param userService - Provides user-related services.
- * @param shopRepository - Repository for accessing ShopsEntity data.
- * @param shopService - Provides shop-related services.
- */
+  /**
+   * Initializes the FilesController with necessary services and repositories.
+   *
+   * @param filesService - Handles file-related operations.
+   * @param usersRepository - Repository for accessing UserEntity data.
+   * @param userService - Provides user-related services.
+   * @param shopRepository - Repository for accessing ShopsEntity data.
+   * @param shopService - Provides shop-related services.
+   */
 
   constructor(
     private filesService: FilesService,
@@ -260,30 +260,30 @@ export class FilesController {
   @ApiBearerAuth()
   @UseInterceptors(
     FilesInterceptor('file', 10, {
-  /**
-   * Only image files are allowed.
-   *
-   * Method: POST /files/logo/:id
-   *
-   * Description: Uploads a logo image for a given shop.
-   *
-   * Input Parameters:
-   * - `file` (object, required): File to upload.
-   *   - `mimetype` (string, required): MIME type.
-   *   - `size` (number, required): File size in bytes.
-   * Example Request (JSON format):
-   * {
-   *   "file": {
-   *     "mimetype": "image/jpeg",
-   *     "size": 12345
-   *   }
-   * }
-   * HTTP Responses:
-   * - `201 Created`: Logo image successfully uploaded.
-   * - `400 Bad Request`: An error occurred while uploading logo image.
-   * - `401 Unauthorized`: Unauthorized.
-   * - `404 Not Found`: Shop not found.
-   */
+      /**
+       * Only image files are allowed.
+       *
+       * Method: POST /files/logo/:id
+       *
+       * Description: Uploads a logo image for a given shop.
+       *
+       * Input Parameters:
+       * - `file` (object, required): File to upload.
+       *   - `mimetype` (string, required): MIME type.
+       *   - `size` (number, required): File size in bytes.
+       * Example Request (JSON format):
+       * {
+       *   "file": {
+       *     "mimetype": "image/jpeg",
+       *     "size": 12345
+       *   }
+       * }
+       * HTTP Responses:
+       * - `201 Created`: Logo image successfully uploaded.
+       * - `400 Bad Request`: An error occurred while uploading logo image.
+       * - `401 Unauthorized`: Unauthorized.
+       * - `404 Not Found`: Shop not found.
+       */
       fileFilter: (req, file, callback) => {
         if (!file.mimetype.startsWith('image/')) {
           return callback(
@@ -321,50 +321,49 @@ export class FilesController {
     description: 'ID of the shop',
     example: '12345',
   })
-/**
- * Uploads a logo image for a specified shop.
- *
- * Method: POST /files/shop-logo/:id
- *
- * Description: Uploads a logo image for the shop with the given ID. The image
- *              is linked to the shop and stored in the database.
- *
- * Input Parameters:
- * - `id` (string, required): ID of the shop.
- * - `files` (array of file objects, required): Files to upload.
- *   - `file` (object, required): File to upload.
- *     - `originalname` (string, required): Original filename.
- *     - `encoding` (string, required): Encoding type.
- *     - `mimetype` (string, required): MIME type.
- *     - `id` (string, required): Unique ID assigned by GridFS.
- *     - `filename` (string, required): Filename after upload.
- *     - `metadata` (object, optional): Metadata associated with file.
- *     - `bucketName` (string, required): Name of GridFS bucket.
- *     - `chunkSize` (number, required): File chunk size.
- *     - `size` (number, required): File size in bytes.
- *     - `md5` (string, required): MD5 hash of file.
- *     - `uploadDate` (Date, required): Timestamp of upload.
- *     - `contentType` (string, required): MIME type of file.
- *
- * Example Request (JSON format):
- * {
- *   "files": [
- *     {
- *       "originalname": "logo.png",
- *       "encoding": "7bit",
- *       "mimetype": "image/png"
- *     }
- *   ]
- * }
- *
- * HTTP Responses:
- * - `200 OK`: Logo successfully uploaded and linked to the shop.
- *   - Response body: Array of file objects with metadata.
- * - `400 Bad Request`: Invalid shop ID or file type.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: Shop not found.
- */
-
+  /**
+   * Uploads a logo image for a specified shop.
+   *
+   * Method: POST /files/shop-logo/:id
+   *
+   * Description: Uploads a logo image for the shop with the given ID. The image
+   *              is linked to the shop and stored in the database.
+   *
+   * Input Parameters:
+   * - `id` (string, required): ID of the shop.
+   * - `files` (array of file objects, required): Files to upload.
+   *   - `file` (object, required): File to upload.
+   *     - `originalname` (string, required): Original filename.
+   *     - `encoding` (string, required): Encoding type.
+   *     - `mimetype` (string, required): MIME type.
+   *     - `id` (string, required): Unique ID assigned by GridFS.
+   *     - `filename` (string, required): Filename after upload.
+   *     - `metadata` (object, optional): Metadata associated with file.
+   *     - `bucketName` (string, required): Name of GridFS bucket.
+   *     - `chunkSize` (number, required): File chunk size.
+   *     - `size` (number, required): File size in bytes.
+   *     - `md5` (string, required): MD5 hash of file.
+   *     - `uploadDate` (Date, required): Timestamp of upload.
+   *     - `contentType` (string, required): MIME type of file.
+   *
+   * Example Request (JSON format):
+   * {
+   *   "files": [
+   *     {
+   *       "originalname": "logo.png",
+   *       "encoding": "7bit",
+   *       "mimetype": "image/png"
+   *     }
+   *   ]
+   * }
+   *
+   * HTTP Responses:
+   * - `200 OK`: Logo successfully uploaded and linked to the shop.
+   *   - Response body: Array of file objects with metadata.
+   * - `400 Bad Request`: Invalid shop ID or file type.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Shop not found.
+   */
   async uploadShopLogo(@UploadedFiles() files, @Param('id') idShop: string) {
     if (isNaN(Number(idShop))) {
       throw new HttpException(
@@ -414,29 +413,28 @@ export class FilesController {
     description: 'An error occurred while retrieving files.',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-/**
- * DOC: Get All Files
- * Method: GET /files
- * Description: Retrieves a list of all files stored in the system, along with their metadata.
- * Input Parameters: None
- * Example Request (JSON format): N/A
- * HTTP Responses:
- * - `200 OK`: Successfully retrieved all files. Example response:
- *   [
- *     {
- *       "id": "5e9f8f8f8f8f8f8f",
- *       "file": {
- *         "filename": "example.txt",
- *         "length": 12345,
- *         "chunkSize": 261120,
- *         "contentType": "text/plain"
- *       }
- *     }
- *   ]
- * - `204 No Content`: No files found.
- * - `400 Bad Request`: An error occurred while retrieving files.
- */
-
+  /**
+   * DOC: Get All Files
+   * Method: GET /files
+   * Description: Retrieves a list of all files stored in the system, along with their metadata.
+   * Input Parameters: None
+   * Example Request (JSON format): N/A
+   * HTTP Responses:
+   * - `200 OK`: Successfully retrieved all files. Example response:
+   *   [
+   *     {
+   *       "id": "5e9f8f8f8f8f8f8f",
+   *       "file": {
+   *         "filename": "example.txt",
+   *         "length": 12345,
+   *         "chunkSize": 261120,
+   *         "contentType": "text/plain"
+   *       }
+   *     }
+   *   ]
+   * - `204 No Content`: No files found.
+   * - `400 Bad Request`: An error occurred while retrieving files.
+   */
   async getAllFiles(): Promise<{ id: string; file: FileInfoVm }[]> {
     const files = await this.filesService.findAll();
     return files;

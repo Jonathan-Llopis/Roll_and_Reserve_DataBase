@@ -5,7 +5,6 @@ import { UtilsModule } from '../utils/utils.module';
 import { UserEntity } from './users.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthService } from '../Autentication/auth.service';
-import { MailModule } from '../mail/mail.module';
 import { ReservesEntity } from '../reserves/reserves.entity';
 import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
 
@@ -13,7 +12,7 @@ import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
   imports: [
     UtilsModule,
     TypeOrmModule.forFeature([UserEntity, ReservesEntity, UserReserveEntity]),
-    MailModule,
+  ,
   ],
   exports: [TypeOrmModule, UsersService],
   controllers: [UsersController],

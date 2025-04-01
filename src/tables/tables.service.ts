@@ -8,12 +8,12 @@ import { ShopsEntity } from '../shops/shops.entity';
 
 @Injectable()
 export class TablesService {
-/**
- * Constructor of the TablesService.
- * @param tableRepository The repository for the TablesEntity.
- * @param shopRepository The repository for the ShopsEntity.
- * @param labelsService The service for generating labels.
- */
+  /**
+   * Constructor of the TablesService.
+   * @param tableRepository The repository for the TablesEntity.
+   * @param shopRepository The repository for the ShopsEntity.
+   * @param labelsService The service for generating labels.
+   */
 
   constructor(
     @InjectRepository(TablesEntity)
@@ -84,10 +84,7 @@ export class TablesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -128,10 +125,7 @@ export class TablesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -174,10 +168,7 @@ export class TablesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -219,10 +210,7 @@ export class TablesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -280,10 +268,7 @@ export class TablesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -310,10 +295,7 @@ export class TablesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 

@@ -70,10 +70,7 @@ export class ReviewsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -104,29 +101,24 @@ export class ReviewsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
-
-
-/**
- * DOC: Get all reviews by shop ID
- * Method: GET /reviews/shop/:idShop
- * Description: Retrieves all reviews for a specific shop by its ID.
- * Input Parameters:
- * - `idShop` (number, required): The ID of the shop.
- * Example Request (JSON format): None
- * HTTP Responses:
- * - `200 OK`: Reviews retrieved successfully. Example: [ { "id_review": 1, "raiting": 5, "review": "Great product!", ... }, ... ]
- * - `400 Bad Request`: Invalid Shop ID.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: Shop not found.
- * - `204 No Content`: No reviews found for the shop.
- */
+  /**
+   * DOC: Get all reviews by shop ID
+   * Method: GET /reviews/shop/:idShop
+   * Description: Retrieves all reviews for a specific shop by its ID.
+   * Input Parameters:
+   * - `idShop` (number, required): The ID of the shop.
+   * Example Request (JSON format): None
+   * HTTP Responses:
+   * - `200 OK`: Reviews retrieved successfully. Example: [ { "id_review": 1, "raiting": 5, "review": "Great product!", ... }, ... ]
+   * - `400 Bad Request`: Invalid Shop ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Shop not found.
+   * - `204 No Content`: No reviews found for the shop.
+   */
   async getAllReviewsByShop(idShop: number): Promise<ReviewsEntity[]> {
     try {
       const reviews = await this.reviewsRepository.find({
@@ -142,27 +134,24 @@ export class ReviewsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
-/**
- * DOC: Get all reviews by writer ID
- * Method: GET /reviews/writer/:id_google
- * Description: Retrieves all reviews written by a specific writer using their Google ID.
- * Input Parameters:
- * - `id_google` (string, required): The Google ID of the writer.
- * Example Request (JSON format): None
- * HTTP Responses:
- * - `200 OK`: Reviews retrieved successfully. Example: [ { "id_review": 1, "raiting": 5, "review": "Great product!", ... }, ... ]
- * - `400 Bad Request`: Invalid request.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: Writer not found.
- * - `204 No Content`: No reviews found for the writer.
- */
+  /**
+   * DOC: Get all reviews by writer ID
+   * Method: GET /reviews/writer/:id_google
+   * Description: Retrieves all reviews written by a specific writer using their Google ID.
+   * Input Parameters:
+   * - `id_google` (string, required): The Google ID of the writer.
+   * Example Request (JSON format): None
+   * HTTP Responses:
+   * - `200 OK`: Reviews retrieved successfully. Example: [ { "id_review": 1, "raiting": 5, "review": "Great product!", ... }, ... ]
+   * - `400 Bad Request`: Invalid request.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Writer not found.
+   * - `204 No Content`: No reviews found for the writer.
+   */
 
   async getAllReviewsByWritter(id_google: string): Promise<ReviewsEntity[]> {
     try {
@@ -179,27 +168,24 @@ export class ReviewsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
-/**
- * DOC: Get all reviews by user ID
- * Method: GET /reviews/user/:id_google
- * Description: Retrieves all reviews received by a specific user using their Google ID.
- * Input Parameters:
- * - `id_google` (string, required): The Google ID of the user.
- * Example Request (JSON format): None
- * HTTP Responses:
- * - `200 OK`: Reviews retrieved successfully. Example: [ { "id_review": 1, "raiting": 5, "review": "Great product!", ... }, ... ]
- * - `400 Bad Request`: Invalid request.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: User not found.
- * - `204 No Content`: No reviews found for the user.
- */
+  /**
+   * DOC: Get all reviews by user ID
+   * Method: GET /reviews/user/:id_google
+   * Description: Retrieves all reviews received by a specific user using their Google ID.
+   * Input Parameters:
+   * - `id_google` (string, required): The Google ID of the user.
+   * Example Request (JSON format): None
+   * HTTP Responses:
+   * - `200 OK`: Reviews retrieved successfully. Example: [ { "id_review": 1, "raiting": 5, "review": "Great product!", ... }, ... ]
+   * - `400 Bad Request`: Invalid request.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: User not found.
+   * - `204 No Content`: No reviews found for the user.
+   */
 
   async getAllReviewsByUser(id_google: string): Promise<ReviewsEntity[]> {
     try {
@@ -216,10 +202,7 @@ export class ReviewsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -297,10 +280,7 @@ export class ReviewsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -381,10 +361,7 @@ export class ReviewsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -409,10 +386,7 @@ export class ReviewsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 }

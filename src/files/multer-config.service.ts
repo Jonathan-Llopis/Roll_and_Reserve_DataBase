@@ -18,16 +18,16 @@ export class GridFsMulterConfigService implements MulterOptionsFactory {
   constructor() {
     this.gridFsStorage = new GridFsStorage({
       url: url,
-    /**
-     * File naming function for GridFS storage.
-     * @param {any} _req - The request object.
-     * @param {any} file - The file object.
-     * @returns {Promise<any>}
-     * @description
-     * This function takes a request and a file object, trims the original name
-     * of the file, and resolves a promise with an object containing the
-     * trimmed filename.
-     */
+      /**
+       * File naming function for GridFS storage.
+       * @param {any} _req - The request object.
+       * @param {any} file - The file object.
+       * @returns {Promise<any>}
+       * @description
+       * This function takes a request and a file object, trims the original name
+       * of the file, and resolves a promise with an object containing the
+       * trimmed filename.
+       */
       file: (_req, file) => {
         return new Promise((resolve, _reject) => {
           const filename = file.originalname.trim();

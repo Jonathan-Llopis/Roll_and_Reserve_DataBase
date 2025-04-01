@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 /**
  * Initializes and starts the NestJS application.
- * 
+ *
  * - Creates an instance of the application using AppModule.
  * - Enables CORS with specified settings.
  * - Configures Swagger for API documentation with bearer authentication.

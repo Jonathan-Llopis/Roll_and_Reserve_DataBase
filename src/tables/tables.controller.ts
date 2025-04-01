@@ -201,19 +201,18 @@ export class TablesController {
   @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Invalid shop ID' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-/**
- * Retrieve all tables by shop ID.
- * Method: GET /tables/shop/:idShop
- * Description: Retrieves all tables associated with the specified shop ID.
- * Input Parameters:
- * - `idShop` (string, required): The ID of the shop.
- * HTTP Responses:
- * - `200 OK`: Tables retrieved successfully.
- * - `204 No Content`: No tables found for the given shop ID.
- * - `400 Bad Request`: Invalid shop ID.
- * - `401 Unauthorized`: Unauthorized access.
- */
-
+  /**
+   * Retrieve all tables by shop ID.
+   * Method: GET /tables/shop/:idShop
+   * Description: Retrieves all tables associated with the specified shop ID.
+   * Input Parameters:
+   * - `idShop` (string, required): The ID of the shop.
+   * HTTP Responses:
+   * - `200 OK`: Tables retrieved successfully.
+   * - `204 No Content`: No tables found for the given shop ID.
+   * - `400 Bad Request`: Invalid shop ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   */
   getAllTablesByShop(@Param('idShop') idShop: string) {
     const shopId = parseInt(idShop);
     if (isNaN(shopId)) {
@@ -230,18 +229,18 @@ export class TablesController {
   @ApiResponse({ status: 400, description: 'Invalid table ID.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Table not found.' })
-/**
- * Delete table by ID.
- * Method: DELETE /tables/:id
- * Description: Delete table by ID.
- * Input Parameters:
- * - `id` (string, required): The ID of the table to delete.
- * HTTP Responses:
- * - `200 OK`: Table deleted successfully.
- * - `400 Bad Request`: Invalid table ID.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: Table not found.
- */
+  /**
+   * Delete table by ID.
+   * Method: DELETE /tables/:id
+   * Description: Delete table by ID.
+   * Input Parameters:
+   * - `id` (string, required): The ID of the table to delete.
+   * HTTP Responses:
+   * - `200 OK`: Table deleted successfully.
+   * - `400 Bad Request`: Invalid table ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Table not found.
+   */
   deleteTable(@Param('id') id: string) {
     const tableId = parseInt(id);
     if (isNaN(tableId)) {

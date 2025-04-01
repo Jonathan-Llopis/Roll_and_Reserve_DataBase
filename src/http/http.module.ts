@@ -69,16 +69,16 @@ export class HttpModule {
   /**
    * Configures the HttpModule for the root module of the application.
    * This method sets up the HttpService with the specified Axios configuration.
-   * 
+   *
    * Input Parameters:
    * - `config` (CustomAxiosRequestConfig, required): Configuration options for Axios instance.
-   * 
+   *
    * Example Request (JSON format):
    * {
    *   "baseURL": "https://api.example.com",
    *   "timeout": 5000
    * }
-   * 
+   *
    * HTTP Responses:
    * - `200 OK`: Successfully sets up the HttpService with the provided configuration.
    * - `4XX/5XX`: Fails to configure the HttpService due to invalid configuration.
@@ -103,12 +103,12 @@ export class HttpModule {
    * @description
    * Configures the HttpModule for a feature module of the application.
    * This method sets up the HttpService with the specified Axios configuration.
-   * 
+   *
    * Input Parameters:
    * - `options` (object, required): Configuration options.
    *   - `serviceName` (string, required): Name to assign to the HttpService provider.
    *   - `config` (CustomAxiosRequestConfig, required): Configuration options for Axios instance.
-   * 
+   *
    * Example Request (JSON format):
    * {
    *   "serviceName": "MyHttpService",
@@ -117,7 +117,7 @@ export class HttpModule {
    *     "timeout": 5000
    *   }
    * }
-   * 
+   *
    * HTTP Responses:
    * - `200 OK`: Successfully sets up the HttpService with the provided configuration.
    * - `4XX/5XX`: Fails to configure the HttpService due to invalid configuration.

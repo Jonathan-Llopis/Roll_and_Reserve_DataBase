@@ -35,7 +35,7 @@ import { FilesModule } from './files/files.module';
 import { UserReserveEntity } from './users_reserves/users_reserves.entity';
 import { FcmNotificationModule } from './fcm-notification/fcm-notification.module';
 import { HttpModule } from './http/http.module';
-import { Cron, CronExpression, ScheduleModule } from '@nestjs/schedule';
+import { Cron, ScheduleModule } from '@nestjs/schedule';
 import { FcmNotificationService } from './fcm-notification/fcm-notification.service';
 @Module({
   imports: [
@@ -168,15 +168,15 @@ export class AppModule implements NestModule {
       )
       .forRoutes('*');
   }
-    /**
+  /**
    * Executes a cron job every 30 seconds to find upcoming reserves and send notifications.
-   * 
+   *
    * This function retrieves reserves that are scheduled to start in the next 90 to 105 minutes.
    * It logs the current date and time, and the upcoming reserves. For each reserve found, it
    * checks for users with valid notification tokens and sends a notification about the upcoming
    * reserve. It marks the reserve as having sent a confirmation notification and saves the updated
    * reserve entity.
-   * 
+   *
    * If an error occurs during the process, it is logged to the console.
    */
   @Cron('0 */15 8-23 * * *', {
