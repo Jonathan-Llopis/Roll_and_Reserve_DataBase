@@ -12,7 +12,6 @@ import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
   imports: [
     UtilsModule,
     TypeOrmModule.forFeature([UserEntity, ReservesEntity, UserReserveEntity]),
-  ,
   ],
   exports: [TypeOrmModule, UsersService],
   controllers: [UsersController],
