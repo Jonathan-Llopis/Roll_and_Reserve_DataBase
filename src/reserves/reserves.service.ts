@@ -11,7 +11,6 @@ import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { GamesService } from '../games/games.service';
 import { HttpService } from '../http/http.service';
-import { UserReserveEntity } from 'src/users_reserves/users_reserves.entity';
 
 @Injectable()
 export class ReservesService {
@@ -44,7 +43,7 @@ export class ReservesService {
     private readonly gameService: GamesService,
     @Inject('Bgg-Api')
     private readonly httpService: HttpService,
-  ) { }
+  ) {}
 
   /**
    * Handles any error by throwing an HttpException.
@@ -573,33 +572,29 @@ export class ReservesService {
     try {
       const reserves = await this.reserveRepository.find({
         where: {
-          hour_end: LessThan(new Date()),
-          userReserves: {
-            user: { id_google: userId },
-          },
+          hour_end: LessThan(new Date())
         },
         relations: ['userReserves', 'userReserves.user'],
-        order: { hour_end: 'DESC' },
-        take: 10
+        order: { hour_end: 'DESC' }
       });
-
+  
       const playersMap = new Map<string, any>();
-
-      reserves.forEach((reserve: ReservesEntity) => {
-        reserve.userReserves.forEach((userReserve: UserReserveEntity) => {
-          const player = userReserve.user;
+      
+      reserves.forEach(reserve => {
+        reserve.userReserves?.forEach(userReserve => {
+          const player = userReserve?.user;
           if (player && player.id_google !== userId && !playersMap.has(player.id_google)) {
             playersMap.set(player.id_google, player);
           }
         });
       });
 
-      const players = Array.from(playersMap.values()).slice(0, 10);
-
-      console.debug(`Total players found: ${players.length}`);
+      const players = Array.from(playersMap.values());
+      console.log(`Total players found: ${players.length}`);
       return players;
     } catch (err) {
       if (err instanceof HttpException) throw err;
+      
       throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
