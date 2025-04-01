@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Like, Repository } from 'typeorm';
+import { Between, LessThan, Like, Repository } from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
@@ -43,7 +43,7 @@ export class ReservesService {
     private readonly gameService: GamesService,
     @Inject('Bgg-Api')
     private readonly httpService: HttpService,
-  ) {}
+  ) { }
 
   /**
    * Handles any error by throwing an HttpException.
@@ -570,44 +570,36 @@ export class ReservesService {
    */
   async getLastTenPlayers(userId: string): Promise<any[]> {
     try {
-      const currentDate = new Date();
       const reserves = await this.reserveRepository.find({
-        relations: ['userReserves', 'userReserves.user'],
-        order: {
-          hour_end: 'DESC',
+        where: {
+          hour_end: LessThan(new Date()),
+          userReserves: {
+            user: { id_google: userId }
+          }
         },
+        relations: ['userReserves', 'userReserves.user'],
+        order: { hour_end: 'DESC' },
+        take: 10
       });
 
-      const endedReserves = reserves.filter(
-        (reserve) => reserve.hour_end < currentDate,
-      );
+      const playersMap = new Map<string, any>();
 
-      const reservesFiltered = endedReserves.filter((reserve) =>
-        reserve.userReserves.some(
-          (userReserve) => userReserve.user.id_google === userId,
-        ),
-      );
-      const lastTenReserves = reservesFiltered.slice(0, 10);
-      const players = Array.from(
-        new Set(
-          lastTenReserves
-            .map((reserve) =>
-              reserve.userReserves
-                .filter((userReserve) => userReserve.user.id_google !== userId)
-                .map((userReserve) => userReserve.user),
-            )
-            .flat(),
-        ),
-      );
+      reserves.forEach(reserve => {
+        reserve.userReserves.forEach(userReserve => {
+          const player = userReserve.user;
+          if (player.id_google !== userId && !playersMap.has(player.id_google)) {
+            playersMap.set(player.id_google, player);
+          }
+        });
+      });
+
+      const players = Array.from(playersMap.values()).slice(0, 10);
 
       console.log(`Total players found: ${players.length}`);
       return players;
     } catch (err) {
-      if (err instanceof HttpException) {
-        throw err;
-      }
-      console.error('Unexpected error:', err);
-      throw new HttpException('Internal Server Error', HttpStatus.BAD_REQUEST);
+      if (err instanceof HttpException) throw err;
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 }

@@ -140,7 +140,16 @@ describe('ReservesService', () => {
         userReserves: [],
       },
     ];
-    jest.spyOn(reserveRepository, 'find').mockResolvedValue(mockReserves);
+    jest.spyOn(reserveRepository, 'find').mockResolvedValue(mockReserves.map(reserve => ({
+      ...reserve,
+      userReserves: reserve.userReserves.map(userReserve => ({
+        ...userReserve,
+        user: {
+          ...userReserve.user,
+          userReserves: [],
+        },
+      })),
+    })));
 
     const result = await service.getAllReserves();
     expect(result).toEqual(mockReserves);
@@ -359,11 +368,203 @@ describe('ReservesService', () => {
     expect(result).toEqual(mockReserves);
   });
 
+
+
   it('should throw NotFoundException when shop is not found for unique shop events', async () => {
     jest.spyOn(shopRepository, 'findOne').mockResolvedValue(null);
 
     await expect(service.findAllUniqueShopEvents(999)).rejects.toThrow(
       new NotFoundException('Shop not found'),
+    );
+  }); 7
+  it('should return the last ten players for a user by Google ID', async () => {
+    const mockReserves: ReservesEntity[] = [
+      {
+        id_reserve: 1,
+        total_places: 10,
+        reserver_id: '1',
+        hour_start: new Date(),
+        hour_end: new Date(),
+        description: 'Test description',
+        required_material: 'Test material',
+        shop_event: false,
+        event_id: null,
+        confirmation_notification: false,
+        difficulty: null,
+        reserve_of_game: null,
+        reserve_table: null,
+        users_in_reserve: [],
+        userReserves: [
+          {
+            user: {
+              id_google: 'user2',
+              email: 'user2@gmail.com',
+              name: 'User 2',
+              avatar: 'https://example.com/user2.jpg',
+              average_raiting: 4.5,
+              id_user: 0,
+              username: '',
+              password: '',
+              role: 0,
+              tokenExpiration: undefined,
+              token: '',
+              token_notification: '',
+              writtenReviews: [],
+              receivedReviews: [],
+              shop_owned: [],
+              users_reserve: [],
+              userReserves: []
+            },
+            id: 0,
+            reserva_confirmada: false,
+            reserve: new ReservesEntity
+          },
+          {
+            user: {
+              id_google: 'user3',
+              email: 'user3@gmail.com',
+              name: 'User 3',
+              id_user: 0,
+              username: '',
+              password: '',
+              role: 0,
+              tokenExpiration: undefined,
+              token: '',
+              avatar: '',
+              average_raiting: 0,
+              token_notification: '',
+              writtenReviews: [],
+              receivedReviews: [],
+              shop_owned: [],
+              users_reserve: [],
+              userReserves: []
+            },
+            id: 0,
+            reserva_confirmada: false,
+            reserve: new ReservesEntity
+          },
+        ],
+      },
+      {
+        id_reserve: 2,
+        total_places: 10,
+        reserver_id: '1',
+        hour_start: new Date(),
+        hour_end: new Date(),
+        description: 'Test description',
+        required_material: 'Test material',
+        shop_event: false,
+        event_id: null,
+        confirmation_notification: false,
+        difficulty: null,
+        reserve_of_game: null,
+        reserve_table: null,
+        users_in_reserve: [],
+        userReserves: [
+          {
+            user: {
+              id_google: 'user4',
+              email: 'user4@gmail.com',
+              name: 'User 4',
+              id_user: 0,
+              username: '',
+              password: '',
+              role: 0,
+              tokenExpiration: undefined,
+              token: '',
+              avatar: '',
+              average_raiting: 0,
+              token_notification: '',
+              writtenReviews: [],
+              receivedReviews: [],
+              shop_owned: [],
+              users_reserve: [],
+              userReserves: []
+            },
+            id: 0,
+            reserva_confirmada: false,
+            reserve: new ReservesEntity
+          },
+        ],
+      },
+    ];
+
+    jest.spyOn(reserveRepository, 'find').mockResolvedValue(mockReserves);
+
+    const result = await service.getLastTenPlayers('user1');
+    expect(result).toEqual([
+      {
+        id_google: 'user2',
+        email: 'user2@gmail.com',
+        name: 'User 2',
+        avatar: 'https://example.com/user2.jpg',
+        average_raiting: 4.5,
+        id_user: 0,
+        username: '',
+        password: '',
+        role: 0,
+        tokenExpiration: undefined,
+        token: '',
+        token_notification: '',
+        writtenReviews: [],
+        receivedReviews: [],
+        shop_owned: [],
+        users_reserve: [],
+        userReserves: []
+      },
+      {
+        id_google: 'user3',
+        email: 'user3@gmail.com',
+        name: 'User 3',
+        id_user: 0,
+        username: '',
+        password: '',
+        role: 0,
+        tokenExpiration: undefined,
+        token: '',
+        avatar: '',
+        average_raiting: 0,
+        token_notification: '',
+        writtenReviews: [],
+        receivedReviews: [],
+        shop_owned: [],
+        users_reserve: [],
+        userReserves: []
+      },
+      {
+        id_google: 'user4',
+        email: 'user4@gmail.com',
+        name: 'User 4',
+        id_user: 0,
+        username: '',
+        password: '',
+        role: 0,
+        tokenExpiration: undefined,
+        token: '',
+        avatar: '',
+        average_raiting: 0,
+        token_notification: '',
+        writtenReviews: [],
+        receivedReviews: [],
+        shop_owned: [],
+        users_reserve: [],
+        userReserves: []
+      },
+    ]);
+  });
+
+  it('should return an empty array when no players are found for a user', async () => {
+    jest.spyOn(reserveRepository, 'find').mockResolvedValue([]);
+
+    const result = await service.getLastTenPlayers('user1');
+    expect(result).toEqual([]);
+  });
+
+  it('should throw an HttpException when an unexpected error occurs', async () => {
+    jest.spyOn(reserveRepository, 'find').mockRejectedValue(new Error('Unexpected error'));
+
+    await expect(service.getLastTenPlayers('user1')).rejects.toThrow(
+      new HttpException('Bad Request', 400),
     );
   });
 
