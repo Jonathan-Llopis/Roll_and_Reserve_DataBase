@@ -222,7 +222,8 @@ export class UsersService {
    */
   async deleteUser(id_google: string): Promise<void> {
     try {
-      const result = await this.usersRepository.delete({ id_google });
+      const id = parseInt(id_google);
+      const result = await this.usersRepository.delete({ id_user: id });
       if (result.affected === 0) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
