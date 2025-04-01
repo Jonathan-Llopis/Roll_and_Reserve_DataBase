@@ -575,8 +575,8 @@ export class ReservesService {
         where: {
           hour_end: LessThan(new Date()),
           userReserves: {
-            user: { id_google: userId }
-          }
+            user: { id_google: userId },
+          },
         },
         relations: ['userReserves', 'userReserves.user'],
         order: { hour_end: 'DESC' },
@@ -596,7 +596,7 @@ export class ReservesService {
 
       const players = Array.from(playersMap.values()).slice(0, 10);
 
-      console.log(`Total players found: ${players.length}`);
+      console.debug(`Total players found: ${players.length}`);
       return players;
     } catch (err) {
       if (err instanceof HttpException) throw err;
