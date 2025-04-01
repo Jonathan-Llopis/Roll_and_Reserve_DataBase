@@ -76,31 +76,31 @@ const labelModelName = '11783';
 @Injectable()
 export class LabelsService {
   constructor(private readonly fileService: FilesService) {}
-/**
- * DOC: Generate PDF Labels
- * Method: POST /labels/generate
- * Description: Generates and returns a PDF containing labels for specified table items. Each label includes a QR code, table number, shop name, and shop logo.
- * Input Parameters:
- * - `tables_items` (array of objects, required): Array of table items to generate labels for. Each item should contain `id_table`, `number_table`, and `tables_of_shop` with `name` and `logo`.
- * - `res` (response object, required): Express response object for streaming the generated PDF.
- * Example Request (JSON format):
- * {
- *   "table_items": [
- *     {
- *       "id_table": 1,
- *       "number_table": 5,
- *       "tables_of_shop": {
- *         "name": "Shop Name",
- *         "logo": "logo_id"
- *       }
- *     }
- *   ]
- * }
- * HTTP Responses:
- * - `200 OK`: PDF generated successfully and streamed as response.
- * - `400 Bad Request`: Invalid input data.
- * - `500 Internal Server Error`: Error during PDF generation.
- */
+  /**
+   * DOC: Generate PDF Labels
+   * Method: POST /labels/generate
+   * Description: Generates and returns a PDF containing labels for specified table items. Each label includes a QR code, table number, shop name, and shop logo.
+   * Input Parameters:
+   * - `tables_items` (array of objects, required): Array of table items to generate labels for. Each item should contain `id_table`, `number_table`, and `tables_of_shop` with `name` and `logo`.
+   * - `res` (response object, required): Express response object for streaming the generated PDF.
+   * Example Request (JSON format):
+   * {
+   *   "table_items": [
+   *     {
+   *       "id_table": 1,
+   *       "number_table": 5,
+   *       "tables_of_shop": {
+   *         "name": "Shop Name",
+   *         "logo": "logo_id"
+   *       }
+   *     }
+   *   ]
+   * }
+   * HTTP Responses:
+   * - `200 OK`: PDF generated successfully and streamed as response.
+   * - `400 Bad Request`: Invalid input data.
+   * - `500 Internal Server Error`: Error during PDF generation.
+   */
 
   async generateLabels(tables_items, @Res() res: any) {
     const colHorizontalIncrement =

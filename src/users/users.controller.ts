@@ -219,21 +219,20 @@ export class UsersController {
       required: ['token_notificacion'],
     },
   })
-/**
- * Updates the notification token for a user.
- * Method: PUT /users/:id/token
- * Description: Updates the notification token of the user with the given ID.
- * Input Parameters:
- * - `id` (string, required): The ID of the user whose notification token is to be updated.
- * - `token_notificacion` (string, required): The new notification token of the user.
- * HTTP Responses:
- * - `200 OK`: The notification token was updated successfully.
- * - `400 Bad Request`: The user ID or notification token is missing.
- * - `404 Not Found`: The user with the given ID does not exist.
- * - `401 Unauthorized`: The user is not authorized to update the notification token.
- * - `5XX Internal Server Error`: Something went wrong on our side.
- */
-
+  /**
+   * Updates the notification token for a user.
+   * Method: PUT /users/:id/token
+   * Description: Updates the notification token of the user with the given ID.
+   * Input Parameters:
+   * - `id` (string, required): The ID of the user whose notification token is to be updated.
+   * - `token_notificacion` (string, required): The new notification token of the user.
+   * HTTP Responses:
+   * - `200 OK`: The notification token was updated successfully.
+   * - `400 Bad Request`: The user ID or notification token is missing.
+   * - `404 Not Found`: The user with the given ID does not exist.
+   * - `401 Unauthorized`: The user is not authorized to update the notification token.
+   * - `5XX Internal Server Error`: Something went wrong on our side.
+   */
   async updateTokenNotification(
     @Param('id') id: string,
     @Body('token_notificacion') tokenNotificacion: string,
@@ -336,18 +335,17 @@ export class UsersController {
   @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-/**
- * Retrieves all users.
- * Method: GET /users
- * Description: Fetches a list of all users from the database.
- * Input Parameters: None
- * HTTP Responses:
- * - `200 OK`: Users retrieved successfully.
- * - `204 No Content`: No users found.
- * - `400 Bad Request`: If an error occurs during the process.
- * - `401 Unauthorized`: Unauthorized access.
- */
-
+  /**
+   * Retrieves all users.
+   * Method: GET /users
+   * Description: Fetches a list of all users from the database.
+   * Input Parameters: None
+   * HTTP Responses:
+   * - `200 OK`: Users retrieved successfully.
+   * - `204 No Content`: No users found.
+   * - `400 Bad Request`: If an error occurs during the process.
+   * - `401 Unauthorized`: Unauthorized access.
+   */
   async getAllUser() {
     try {
       return await this.usersService.getAllUser();

@@ -37,27 +37,27 @@ export class ShopGamesService {
     );
   }
 
-/**
- * DOC: Add a Game to a Shop
- * Method: POST /shops/:shopsId/games/:gamesId
- * Description: Adds a specified game to the shop's list of games.
- * Input Parameters:
- * - `shopId` (string, required): The ID of the shop.
- * - `gameId` (string, required): The ID of the game.
- * Example Request (JSON format):
- * N/A
- * HTTP Responses:
- * - `200 OK`: Game successfully added to the shop. Example:
- *   {
- *     "id_shop": 1,
- *     "games": [
- *       { "id_game": 1, "name": "Chess" },
- *       { "id_game": 2, "name": "Poker" }
- *     ]
- *   }
- * - `404 Not Found`: The shop or game with the given ID was not found.
- * - `400 Bad Request`: General request error.
- */
+  /**
+   * DOC: Add a Game to a Shop
+   * Method: POST /shops/:shopsId/games/:gamesId
+   * Description: Adds a specified game to the shop's list of games.
+   * Input Parameters:
+   * - `shopId` (string, required): The ID of the shop.
+   * - `gameId` (string, required): The ID of the game.
+   * Example Request (JSON format):
+   * N/A
+   * HTTP Responses:
+   * - `200 OK`: Game successfully added to the shop. Example:
+   *   {
+   *     "id_shop": 1,
+   *     "games": [
+   *       { "id_game": 1, "name": "Chess" },
+   *       { "id_game": 2, "name": "Poker" }
+   *     ]
+   *   }
+   * - `404 Not Found`: The shop or game with the given ID was not found.
+   * - `400 Bad Request`: General request error.
+   */
 
   async addGameToShop(shopId: string, gameId: string): Promise<ShopsEntity> {
     try {
@@ -87,10 +87,7 @@ export class ShopGamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -154,13 +151,9 @@ export class ShopGamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
-
 
   /**
    * Finds all games associated with a shop.
@@ -208,10 +201,7 @@ export class ShopGamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -305,10 +295,7 @@ export class ShopGamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -369,10 +356,7 @@ export class ShopGamesService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 }

@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class AuthService {
   /**
    * Creates an instance of AuthService.
-   * 
+   *
    * @param userRepository - The repository for managing UserEntity instances.
    */
 

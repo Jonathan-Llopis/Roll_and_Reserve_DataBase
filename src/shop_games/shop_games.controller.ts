@@ -189,7 +189,6 @@ export class ShopGamesController {
    * - `401 Unauthorized`: Unauthorized access.
    * - `404 Not Found`: The shop or game with the given ID was not found.
    */
-
   async findGameByShopIdGameId(
     @Param('shopsId') shopId: string,
     @Param('gamesId') gameId: string,
@@ -255,7 +254,6 @@ export class ShopGamesController {
    * - `401 Unauthorized`: Unauthorized access.
    * - `404 Not Found`: The shop or game with the given ID was not found.
    */
-
   async deleteGameFromShop(
     @Param('shopsId') shopId: string,
     @Param('gamesId') gameId: string,

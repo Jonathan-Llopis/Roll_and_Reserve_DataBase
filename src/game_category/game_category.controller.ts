@@ -73,10 +73,7 @@ export class GameCategoryController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -115,7 +112,6 @@ export class GameCategoryController {
    * - `401 Unauthorized`: Unauthorized.
    * - `404 Not Found`: Game category not found.
    */
-
   async updateGameCategory(
     @Param('id') id: string,
     @Body() updateGameCategoryDto: UpdateGameCategoryDto,
@@ -165,28 +161,27 @@ export class GameCategoryController {
     description: 'Failed to retrieve game categories.',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-/**
- * DOC: Retrieve All Game Categories
- * Method: GET /game-category
- * Description: Fetches all game categories from the database and returns them. If no categories exist, a 'No Content' status is returned.
- * Input Parameters: None
- * Example Request (JSON format): None
- * HTTP Responses:
- * - `200 OK`: Successfully retrieved all game categories. Example:
- *   [
- *     {
- *       "id_game_category": 1,
- *       "description": "Action"
- *     },
- *     {
- *       "id_game_category": 2,
- *       "description": "Adventure"
- *     }
- *   ]
- * - `204 No Content`: No game categories available.
- * - `400 Bad Request`: Failed to retrieve game categories due to a server error.
- */
-
+  /**
+   * DOC: Retrieve All Game Categories
+   * Method: GET /game-category
+   * Description: Fetches all game categories from the database and returns them. If no categories exist, a 'No Content' status is returned.
+   * Input Parameters: None
+   * Example Request (JSON format): None
+   * HTTP Responses:
+   * - `200 OK`: Successfully retrieved all game categories. Example:
+   *   [
+   *     {
+   *       "id_game_category": 1,
+   *       "description": "Action"
+   *     },
+   *     {
+   *       "id_game_category": 2,
+   *       "description": "Adventure"
+   *     }
+   *   ]
+   * - `204 No Content`: No game categories available.
+   * - `400 Bad Request`: Failed to retrieve game categories due to a server error.
+   */
   async getAllGameCategories() {
     try {
       return await this.gameCategoryService.getAllGameCategories();
@@ -195,10 +190,7 @@ export class GameCategoryController {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -213,23 +205,23 @@ export class GameCategoryController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Game category not found.' })
   @ApiParam({ name: 'id', description: 'ID of the game category', example: 1 })
-/**
- * DOC: Retrieve a Game Category by ID
- * Method: GET /game-category/:id
- * Description: Retrieves a game category by its ID.
- * Input Parameters:
- * - `id` (number, required): The ID of the game category.
- * Example Request (JSON format): None
- * HTTP Responses:
- * - `200 OK`: Successfully retrieved the game category. Example:
- *   {
- *     "id_game_category": 1,
- *     "description": "Action"
- *   }
- * - `400 Bad Request`: Invalid game category ID.
- * - `401 Unauthorized`: Unauthorized.
- * - `404 Not Found`: Game category not found.
- */
+  /**
+   * DOC: Retrieve a Game Category by ID
+   * Method: GET /game-category/:id
+   * Description: Retrieves a game category by its ID.
+   * Input Parameters:
+   * - `id` (number, required): The ID of the game category.
+   * Example Request (JSON format): None
+   * HTTP Responses:
+   * - `200 OK`: Successfully retrieved the game category. Example:
+   *   {
+   *     "id_game_category": 1,
+   *     "description": "Action"
+   *   }
+   * - `400 Bad Request`: Invalid game category ID.
+   * - `401 Unauthorized`: Unauthorized.
+   * - `404 Not Found`: Game category not found.
+   */
   async getGameCategory(@Param('id') id: string) {
     const gameCategoryId = parseInt(id);
     if (isNaN(gameCategoryId)) {
@@ -271,21 +263,20 @@ export class GameCategoryController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Game category not found.' })
   @ApiParam({ name: 'id', description: 'ID of the game category', example: 1 })
-/**
- * Deletes a game category by its ID.
- * 
- * Method: DELETE /game-category/:id
- * 
- * Input Parameters:
- * - `id` (string, required): The ID of the game category to delete.
- * 
- * HTTP Responses:
- * - `200 OK`: Game category successfully deleted.
- * - `400 Bad Request`: Invalid game category ID or failed to delete.
- * - `404 Not Found`: Game category not found.
- * - `401 Unauthorized`: Unauthorized.
- */
-
+  /**
+   * Deletes a game category by its ID.
+   *
+   * Method: DELETE /game-category/:id
+   *
+   * Input Parameters:
+   * - `id` (string, required): The ID of the game category to delete.
+   *
+   * HTTP Responses:
+   * - `200 OK`: Game category successfully deleted.
+   * - `400 Bad Request`: Invalid game category ID or failed to delete.
+   * - `404 Not Found`: Game category not found.
+   * - `401 Unauthorized`: Unauthorized.
+   */
   async deleteGameCategory(@Param('id') id: string) {
     const gameCategoryId = parseInt(id);
     if (isNaN(gameCategoryId)) {

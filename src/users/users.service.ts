@@ -17,7 +17,7 @@ export class UsersService {
     private readonly utilsService: UtilsService,
     @InjectRepository(UserEntity)
     private readonly usersRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
   /**
    * Throws an HttpException for the given error, or a default BAD_REQUEST
    * error if the given error is not an HttpException.
@@ -65,10 +65,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -94,10 +91,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -135,10 +129,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -176,10 +167,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -219,10 +207,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -246,10 +231,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -289,10 +271,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -331,10 +310,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -373,10 +349,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -414,10 +387,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -457,10 +427,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -524,10 +491,7 @@ export class UsersService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-        'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 }

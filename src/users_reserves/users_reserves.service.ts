@@ -279,17 +279,17 @@ export class UsersReservesService {
     }
   }
 
-/**
- * Confirm a reservation for a user.
- * Method: PATCH /users/:userId/reserves/:reserveId/confirm
- * Description: Confirms the reservation for the user with the given ID and reserve ID.
- * Input Parameters:
- * - `userId` (string, required): The ID of the user.
- * - `reserveId` (string, required): The ID of the reserve.
- * HTTP Responses:
- * - `200 OK`: The reservation was successfully confirmed.
- * - `412 Precondition Failed`: The reserve with the given id is not associated with the user.
- */
+  /**
+   * Confirm a reservation for a user.
+   * Method: PATCH /users/:userId/reserves/:reserveId/confirm
+   * Description: Confirms the reservation for the user with the given ID and reserve ID.
+   * Input Parameters:
+   * - `userId` (string, required): The ID of the user.
+   * - `reserveId` (string, required): The ID of the reserve.
+   * HTTP Responses:
+   * - `200 OK`: The reservation was successfully confirmed.
+   * - `412 Precondition Failed`: The reserve with the given id is not associated with the user.
+   */
 
   async confirmReserveForUser(
     userId: string,

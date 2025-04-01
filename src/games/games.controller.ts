@@ -30,35 +30,34 @@ export class GamesController {
   @ApiResponse({ status: 201, description: 'Game created successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid input.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-/**
- * DOC: Create a new game
- * Method: POST /games
- * Description: Creates a new game with the provided details.
- * Input Parameters:
- * - `name` (string, required): The name of the game.
- * - `description` (string, required): A description of the game.
- * - `category_name` (string, optional): The category name of the game.
- * - `bgg_id` (number, required): The Board Game Geek ID.
- * Example Request (JSON format):
- * {
- *   "name": "Chess",
- *   "description": "A strategic board game",
- *   "category_name": "Strategy",
- *   "bgg_id": 123
- * }
- * HTTP Responses:
- * - `201 Created`: Game created successfully. Example:
- *   {
- *     "id_game": 1,
- *     "name": "Chess",
- *     "description": "A strategic board game",
- *     "category": "Strategy",
- *     "bgg_id": 123
- *   }
- * - `400 Bad Request`: Invalid input data.
- * - `401 Unauthorized`: Unauthorized access.
- */
-
+  /**
+   * DOC: Create a new game
+   * Method: POST /games
+   * Description: Creates a new game with the provided details.
+   * Input Parameters:
+   * - `name` (string, required): The name of the game.
+   * - `description` (string, required): A description of the game.
+   * - `category_name` (string, optional): The category name of the game.
+   * - `bgg_id` (number, required): The Board Game Geek ID.
+   * Example Request (JSON format):
+   * {
+   *   "name": "Chess",
+   *   "description": "A strategic board game",
+   *   "category_name": "Strategy",
+   *   "bgg_id": 123
+   * }
+   * HTTP Responses:
+   * - `201 Created`: Game created successfully. Example:
+   *   {
+   *     "id_game": 1,
+   *     "name": "Chess",
+   *     "description": "A strategic board game",
+   *     "category": "Strategy",
+   *     "bgg_id": 123
+   *   }
+   * - `400 Bad Request`: Invalid input data.
+   * - `401 Unauthorized`: Unauthorized access.
+   */
   createGame(@Body() createGameDto: CreateGameDto) {
     return this.gamesService.createGame(createGameDto);
   }
@@ -76,36 +75,36 @@ export class GamesController {
   @ApiResponse({ status: 400, description: 'Invalid game ID or input.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'Game not found.' })
-/**
- * DOC: Update a game by ID
- * Method: PUT /games/:id
- * Description: Update a game with the provided details.
- * Input Parameters:
- * - `id` (string, required): The ID of the game.
- * - `name` (string, optional): The new name of the game.
- * - `description` (string, optional): The new description of the game.
- * - `category_name` (string, optional): The new category name of the game.
- * - `bgg_id` (number, optional): The new Board Game Geek ID.
- * Example Request (JSON format):
- * {
- *   "name": "Chess",
- *   "description": "A strategic board game",
- *   "category_name": "Strategy",
- *   "bgg_id": 123
- * }
- * HTTP Responses:
- * - `200 OK`: Game updated successfully. Example:
- *   {
- *     "id_game": 1,
- *     "name": "Chess",
- *     "description": "A strategic board game",
- *     "category": "Strategy",
- *     "bgg_id": 123
- *   }
- * - `400 Bad Request`: Invalid game ID or input data.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: Game not found.
- */
+  /**
+   * DOC: Update a game by ID
+   * Method: PUT /games/:id
+   * Description: Update a game with the provided details.
+   * Input Parameters:
+   * - `id` (string, required): The ID of the game.
+   * - `name` (string, optional): The new name of the game.
+   * - `description` (string, optional): The new description of the game.
+   * - `category_name` (string, optional): The new category name of the game.
+   * - `bgg_id` (number, optional): The new Board Game Geek ID.
+   * Example Request (JSON format):
+   * {
+   *   "name": "Chess",
+   *   "description": "A strategic board game",
+   *   "category_name": "Strategy",
+   *   "bgg_id": 123
+   * }
+   * HTTP Responses:
+   * - `200 OK`: Game updated successfully. Example:
+   *   {
+   *     "id_game": 1,
+   *     "name": "Chess",
+   *     "description": "A strategic board game",
+   *     "category": "Strategy",
+   *     "bgg_id": 123
+   *   }
+   * - `400 Bad Request`: Invalid game ID or input data.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: Game not found.
+   */
   updateGame(@Param('id') id: string, @Body() updateGameDto: UpdateGameDto) {
     const gameId = parseInt(id);
     if (isNaN(gameId)) {

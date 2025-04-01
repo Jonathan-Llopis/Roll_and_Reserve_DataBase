@@ -72,10 +72,7 @@ export class ShopsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -116,10 +113,7 @@ export class ShopsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -164,10 +158,7 @@ export class ShopsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -213,43 +204,40 @@ export class ShopsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
-/**
- * DOC: Update Shop
- * Method: PUT /shops/:id
- * Description: Updates the details of an existing shop by its ID.
- * Input Parameters:
- * - `updateShopDto` (UpdateShopDto, required): The data to update the shop with.
- * - `id` (number, required): The ID of the shop to update.
- * Example Request (JSON format):
- * {
- *   "name": "Updated Shop",
- *   "address": "Updated Address",
- *   "logo": "updatedLogo.png",
- *   "latitud": 40.7128,
- *   "longitud": -74.006,
- *   "owner_id": "newOwner123"
- * }
- * HTTP Responses:
- * - `200 OK`: Shop updated successfully. Example response:
- *   {
- *     "id_shop": 1,
- *     "name": "Updated Shop",
- *     "address": "Updated Address",
- *     "logo": "updatedLogo.png",
- *     "latitud": 40.7128,
- *     "longitud": -74.006,
- *     "owner": { "id_google": "newOwner123" }
- *   }
- * - `404 Not Found`: Shop or owner not found.
- * - `400 Bad Request`: Invalid input or request error.
- */
+  /**
+   * DOC: Update Shop
+   * Method: PUT /shops/:id
+   * Description: Updates the details of an existing shop by its ID.
+   * Input Parameters:
+   * - `updateShopDto` (UpdateShopDto, required): The data to update the shop with.
+   * - `id` (number, required): The ID of the shop to update.
+   * Example Request (JSON format):
+   * {
+   *   "name": "Updated Shop",
+   *   "address": "Updated Address",
+   *   "logo": "updatedLogo.png",
+   *   "latitud": 40.7128,
+   *   "longitud": -74.006,
+   *   "owner_id": "newOwner123"
+   * }
+   * HTTP Responses:
+   * - `200 OK`: Shop updated successfully. Example response:
+   *   {
+   *     "id_shop": 1,
+   *     "name": "Updated Shop",
+   *     "address": "Updated Address",
+   *     "logo": "updatedLogo.png",
+   *     "latitud": 40.7128,
+   *     "longitud": -74.006,
+   *     "owner": { "id_google": "newOwner123" }
+   *   }
+   * - `404 Not Found`: Shop or owner not found.
+   * - `400 Bad Request`: Invalid input or request error.
+   */
 
   async updateShop(
     updateShopDto: UpdateShopDto,
@@ -280,10 +268,7 @@ export class ShopsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -308,25 +293,22 @@ export class ShopsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
 
-/**
- * Associates a file with a shop by updating the shop's logo.
- * Method: PATCH /shops/:id/logo/:fileId
- * Description: Updates the logo of a shop with a given file ID.
- * Input Parameters:
- * - `id_shop` (string, required): The ID of the shop.
- * - `id_archivo` (string, required): The ID of the file to be associated as the shop's logo.
- * HTTP Responses:
- * - `200 OK`: Logo updated successfully.
- * - `404 Not Found`: Shop not found.
- * - `400 Bad Request`: General request error.
- */
+  /**
+   * Associates a file with a shop by updating the shop's logo.
+   * Method: PATCH /shops/:id/logo/:fileId
+   * Description: Updates the logo of a shop with a given file ID.
+   * Input Parameters:
+   * - `id_shop` (string, required): The ID of the shop.
+   * - `id_archivo` (string, required): The ID of the file to be associated as the shop's logo.
+   * HTTP Responses:
+   * - `200 OK`: Logo updated successfully.
+   * - `404 Not Found`: Shop not found.
+   * - `400 Bad Request`: General request error.
+   */
 
   async vincularArchivo(id_shop: string, id_archivo: string) {
     try {
@@ -344,10 +326,7 @@ export class ShopsService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException(
-       'Bad Request',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
   /**
@@ -405,20 +384,19 @@ export class ShopsService {
     }
   }
 
-
-/**
- * Retrieves the total number of reservations for a specific shop within a given time range.
- * Method: POST /shops/:idShop/stats/total-reservations
- * Input Parameters:
- * - `idShop` (string, required): The ID of the shop.
- * - `startTime` (string, required): The start time of the range in ISO 8601.
- * - `endTime` (string, required): The end time of the range in ISO 8601.
- * HTTP Responses:
- * - `200 OK`: Total reservations retrieved successfully.
- * - `400 Bad Request`: Invalid shop ID, or invalid time range.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: The shop with the given ID was not found.
- */
+  /**
+   * Retrieves the total number of reservations for a specific shop within a given time range.
+   * Method: POST /shops/:idShop/stats/total-reservations
+   * Input Parameters:
+   * - `idShop` (string, required): The ID of the shop.
+   * - `startTime` (string, required): The start time of the range in ISO 8601.
+   * - `endTime` (string, required): The end time of the range in ISO 8601.
+   * HTTP Responses:
+   * - `200 OK`: Total reservations retrieved successfully.
+   * - `400 Bad Request`: Invalid shop ID, or invalid time range.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: The shop with the given ID was not found.
+   */
 
   async getTotalReservations(
     idShop: string,

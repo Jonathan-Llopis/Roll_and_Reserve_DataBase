@@ -69,7 +69,6 @@ export class UsersReservesController {
    * - `401 Unauthorized`: Unauthorized access.
    * - `404 Not Found`: User or reserve not found.
    */
-
   async addReserveToUser(
     @Param('userId') userId: string,
     @Param('reserveId') reserveId: string,
@@ -99,23 +98,22 @@ export class UsersReservesController {
   @ApiResponse({ status: 400, description: 'Invalid user or reserve ID.' })
   @ApiParam({ name: 'userId', example: '123' })
   @ApiParam({ name: 'reserveId', example: '456' })
-/**
- * Confirms a reserve for a specific user.
- * Method: PUT /users/:userId/reserves/:reserveId/confirm
- * Description: Marks a reserve as confirmed for a user, if the reserve is 
- * associated with the user and both the user and reserve exist.
- * Input Parameters:
- * - `userId` (string, required): The ID of the user.
- * - `reserveId` (string, required): The ID of the reserve.
- * HTTP Responses:
- * - `200 OK`: Reserve successfully confirmed.
- * - `400 Bad Request`: Invalid user or reserve ID.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: The reserve with the given ID was not found.
- * - `412 Precondition Failed`: The reserve with the given ID is not 
- *   associated with the user.
- */
-
+  /**
+   * Confirms a reserve for a specific user.
+   * Method: PUT /users/:userId/reserves/:reserveId/confirm
+   * Description: Marks a reserve as confirmed for a user, if the reserve is
+   * associated with the user and both the user and reserve exist.
+   * Input Parameters:
+   * - `userId` (string, required): The ID of the user.
+   * - `reserveId` (string, required): The ID of the reserve.
+   * HTTP Responses:
+   * - `200 OK`: Reserve successfully confirmed.
+   * - `400 Bad Request`: Invalid user or reserve ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: The reserve with the given ID was not found.
+   * - `412 Precondition Failed`: The reserve with the given ID is not
+   *   associated with the user.
+   */
   async confirmReserve(
     @Param('userId') userId: string,
     @Param('reserveId') reserveId: string,
@@ -158,7 +156,6 @@ export class UsersReservesController {
    * - `404 Not Found`: The reserve with the given id was not found.
    * - `401 Unauthorized`: Unauthorized access.
    */
-
   async findReserveById(@Param('reserveId') reserveId: string) {
     if (isEmpty(reserveId)) {
       throw new HttpException('Invalid reserve ID', HttpStatus.BAD_REQUEST);
@@ -267,26 +264,25 @@ export class UsersReservesController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiParam({ name: 'userId', example: '123' })
   @ApiParam({ name: 'reserveId', example: '456' })
-/**
- * DOC: Delete Reserve From User
- * Method: DELETE /users/:userId/reserves/:reserveId
- * Description: Deletes a specific reserve associated with a user.
- * Input Parameters:
- * - `userId` (string, required): The ID of the user.
- * - `reserveId` (string, required): The ID of the reserve to be deleted.
- * Example Request (JSON format):
- * {
- *   "userId": "123",
- *   "reserveId": "456"
- * }
- * HTTP Responses:
- * - `204 No Content`: Reserve successfully deleted from user.
- * - `400 Bad Request`: Invalid user or reserve ID.
- * - `401 Unauthorized`: Unauthorized access.
- * - `404 Not Found`: The user or reserve with the given id was not found.
- * - `412 Precondition Failed`: The reserve with the given id is not associated to the user.
- */
-
+  /**
+   * DOC: Delete Reserve From User
+   * Method: DELETE /users/:userId/reserves/:reserveId
+   * Description: Deletes a specific reserve associated with a user.
+   * Input Parameters:
+   * - `userId` (string, required): The ID of the user.
+   * - `reserveId` (string, required): The ID of the reserve to be deleted.
+   * Example Request (JSON format):
+   * {
+   *   "userId": "123",
+   *   "reserveId": "456"
+   * }
+   * HTTP Responses:
+   * - `204 No Content`: Reserve successfully deleted from user.
+   * - `400 Bad Request`: Invalid user or reserve ID.
+   * - `401 Unauthorized`: Unauthorized access.
+   * - `404 Not Found`: The user or reserve with the given id was not found.
+   * - `412 Precondition Failed`: The reserve with the given id is not associated to the user.
+   */
   async deleteReserveFromUser(
     @Param('userId') userId: string,
     @Param('reserveId') reserveId: string,
