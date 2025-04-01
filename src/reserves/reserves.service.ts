@@ -11,6 +11,7 @@ import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { GamesService } from '../games/games.service';
 import { HttpService } from '../http/http.service';
+import { UserReserveEntity } from 'src/users_reserves/users_reserves.entity';
 
 @Injectable()
 export class ReservesService {
@@ -584,10 +585,10 @@ export class ReservesService {
 
       const playersMap = new Map<string, any>();
 
-      reserves.forEach(reserve => {
-        reserve.userReserves.forEach(userReserve => {
+      reserves.forEach((reserve: ReservesEntity) => {
+        reserve.userReserves.forEach((userReserve: UserReserveEntity) => {
           const player = userReserve.user;
-          if (player.id_google !== userId && !playersMap.has(player.id_google)) {
+          if (player && player.id_google !== userId && !playersMap.has(player.id_google)) {
             playersMap.set(player.id_google, player);
           }
         });
