@@ -13,6 +13,6 @@ export class UserReserveEntity {
   @ManyToOne(() => UserEntity, (user) => user.userReserves)
   user: UserEntity;
 
-  @ManyToOne(() => ReservesEntity, (reserve) => reserve.userReserves)
+  @ManyToOne(() => ReservesEntity, (reserve) => reserve.userReserves, { onDelete: 'CASCADE',})
   reserve: ReservesEntity;
 }
