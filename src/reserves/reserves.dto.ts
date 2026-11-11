@@ -6,6 +6,7 @@ import {
   Length,
   IsBoolean,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateReserveDto {
@@ -27,6 +28,7 @@ export class CreateReserveDto {
     description: 'Start hour of the reserve',
     example: '2023-10-10T10:00:00Z',
   })
+  @Type(() => Date)
   @IsDate()
   hour_start: Date;
 
@@ -34,6 +36,7 @@ export class CreateReserveDto {
     description: 'End hour of the reserve',
     example: '2023-10-10T12:00:00Z',
   })
+  @Type(() => Date)
   @IsDate()
   hour_end: Date;
 
@@ -127,6 +130,7 @@ export class UpdateReserveDto {
     example: '2023-10-10T10:00:00Z',
   })
   @IsOptional()
+  @Type(() => Date)
   @IsDate()
   hour_start?: Date;
 
@@ -135,6 +139,7 @@ export class UpdateReserveDto {
     example: '2023-10-10T12:00:00Z',
   })
   @IsOptional()
+  @Type(() => Date)
   @IsDate()
   hour_end?: Date;
 

@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
@@ -7,6 +8,8 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
  * Initializes and starts the NestJS application.
  *
  * - Creates an instance of the application using AppModule.
+ * - Enables global exception filtering with standard JSON error response format.
+ * - Enables global validation pipe with whitelist and strict transformation.
  * - Enables CORS with specified settings.
  * - Configures Swagger for API documentation with bearer authentication.
  * - Sets up Swagger documentation at the 'api' endpoint.
@@ -16,6 +19,16 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

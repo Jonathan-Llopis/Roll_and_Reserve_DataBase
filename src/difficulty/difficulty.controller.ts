@@ -16,8 +16,10 @@ import {
   ApiResponse,
   ApiParam,
   ApiBearerAuth,
+  ApiTags,
 } from '@nestjs/swagger';
 
+@ApiTags('Difficulties')
 @Controller('difficulties')
 export class DifficultyController {
   constructor(private readonly difficultyService: DifficultyService) {}

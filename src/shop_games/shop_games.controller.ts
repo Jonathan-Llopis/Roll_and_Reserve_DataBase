@@ -22,9 +22,11 @@ import {
   ApiResponse,
   ApiParam,
   ApiBearerAuth,
+  ApiTags,
 } from '@nestjs/swagger';
 import { GameCategoryEntity } from '../game_category/game_category.entity';
 
+@ApiTags('Shop Games')
 @Controller('shops')
 export class ShopGamesController {
   /**

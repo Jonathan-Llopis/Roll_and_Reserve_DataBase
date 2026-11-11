@@ -14,11 +14,13 @@ import {
   ApiResponse,
   ApiParam,
   ApiBearerAuth,
+  ApiTags,
 } from '@nestjs/swagger';
 import { ReservesService } from './reserves.service';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { ReservesEntity } from './reserves.entity';
 
+@ApiTags('Reserves')
 @Controller('reserves')
 export class ReservesController {
   constructor(private readonly reservesService: ReservesService) {}
@@ -28,8 +30,9 @@ export class ReservesController {
   @ApiOperation({ summary: 'Create a new reserve' })
   @ApiParam({ name: 'idShop', description: 'Shop ID', example: '1' })
   @ApiResponse({ status: 201, description: 'Reserve successfully created.' })
-  @ApiResponse({ status: 400, description: 'Failed to create reserve.' })
+  @ApiResponse({ status: 400, description: 'Failed to create reserve or invalid table.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 409, description: 'Table already reserved for the requested timeframe.' })
   /**
    * Create a new reserve.
    * Method: POST /reserves/:idShop
