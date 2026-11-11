@@ -1,6 +1,23 @@
-import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Optional,
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, LessThan, Like, Repository } from 'typeorm';
+import {
+  Between,
+  LessThan,
+  MoreThan,
+  Not,
+  Like,
+  Repository,
+  DataSource,
+} from 'typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
@@ -43,6 +60,8 @@ export class ReservesService {
     private readonly gameService: GamesService,
     @Inject('Bgg-Api')
     private readonly httpService: HttpService,
+    @Optional()
+    private readonly dataSource?: DataSource,
   ) {}
 
   /**
@@ -257,19 +276,35 @@ export class ReservesService {
     idShop: number,
   ): Promise<ReservesEntity> {
     try {
+      const start = new Date(createReserveDto.hour_start);
+      const end = new Date(createReserveDto.hour_end);
+
+      if (isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
+        throw new BadRequestException(
+          'La hora de finalización debe ser posterior a la hora de inicio.',
+        );
+      }
+
       const reserve = this.reserveRepository.create(createReserveDto);
 
-      const difficulty = await this.difficultyRepository.findOne({
-        where: { id_difficulty: createReserveDto.difficulty_id },
-      });
-      if (createReserveDto.difficulty_id && !difficulty) {
-        throw new HttpException('Difficulty not found', HttpStatus.NOT_FOUND);
+      let difficulty: DifficultyEntity | null = null;
+      if (createReserveDto.difficulty_id) {
+        difficulty = await this.difficultyRepository.findOne({
+          where: { id_difficulty: createReserveDto.difficulty_id },
+        });
+        if (!difficulty) {
+          throw new HttpException('Difficulty not found', HttpStatus.NOT_FOUND);
+        }
       }
       reserve.difficulty = difficulty;
 
-      let reserveOfGame = await this.gameRepository.findOne({
-        where: { name: Like(`%${createReserveDto.game_name}%`) },
-      });
+      let reserveOfGame: GamesEntity | null = null;
+      if (createReserveDto.game_name) {
+        reserveOfGame = await this.gameRepository.findOne({
+          where: { name: Like(`%${createReserveDto.game_name}%`) },
+        });
+      }
+
       if (createReserveDto.reserve_of_game_id && !reserveOfGame) {
         const externalGames = await this.httpService.get(
           'http://bgg-api:80/bgg-api/api/v4/geekitems',
@@ -297,42 +332,80 @@ export class ReservesService {
       }
       reserve.reserve_of_game = reserveOfGame;
 
-      const reserveTable = await this.tableRepository.findOne({
-        where: { id_table: createReserveDto.reserve_table_id },
-      });
-      if (createReserveDto.reserve_table_id && !reserveTable) {
-        throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
+      let reserveTable: TablesEntity | null = null;
+      if (createReserveDto.reserve_table_id) {
+        reserveTable = await this.tableRepository.findOne({
+          where: { id_table: createReserveDto.reserve_table_id },
+          relations: ['tables_of_shop'],
+        });
+        if (!reserveTable) {
+          throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
+        }
+
+        if (
+          reserveTable.tables_of_shop &&
+          reserveTable.tables_of_shop.id_shop !== idShop
+        ) {
+          throw new BadRequestException(
+            'La mesa no pertenece a la tienda especificada.',
+          );
+        }
+
+        const overlapping = await this.reserveRepository.findOne({
+          where: {
+            reserve_table: { id_table: createReserveDto.reserve_table_id },
+            hour_start: LessThan(end),
+            hour_end: MoreThan(start),
+          },
+        });
+
+        if (overlapping) {
+          throw new ConflictException(
+            'La mesa seleccionada ya se encuentra reservada en el horario solicitado.',
+          );
+        }
       }
       reserve.reserve_table = reserveTable;
 
-      await this.reserveRepository.save(reserve);
       if (createReserveDto.shop_event == true) {
         const date = new Date(createReserveDto.hour_start);
         const day = date.getDate().toString().padStart(2, '0');
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear().toString().padStart(4, '0');
 
+        const gameId = reserveOfGame ? reserveOfGame.id_game : 'event';
+        const tableId = reserveTable ? reserveTable.id_table : 'all';
+        reserve.event_id = `${gameId}-${tableId}-${day}/${month}/${year}`;
+      }
+
+      if (this.dataSource && typeof this.dataSource.transaction === 'function') {
+        await this.dataSource.transaction(async (manager) => {
+          await manager.save(reserve);
+        });
+      } else {
+        await this.reserveRepository.save(reserve);
+      }
+
+      if (createReserveDto.shop_event == true) {
         const shop = await this.shopRepository.findOne({
           where: { id_shop: idShop },
         });
 
-        if (!shop) {
-          throw new HttpException('Shop not found', HttpStatus.NOT_FOUND);
-        }
-        reserve.event_id = `${reserveOfGame.id_game}-${reserveTable.id_table}-${day}/${month}/${year}`;
-        if (shop.logo) {
-          this.fcmNotificationService.sendTopicNotification(
-            idShop.toString(),
-            `Nuevo evento en ${shop.name}`,
-            `Juego: ${reserveOfGame.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-            `${process.env.BASE_URL}/files/${shop.logo}`,
+        if (shop) {
+          const gameName = reserveOfGame ? reserveOfGame.name : 'Evento especial';
+          const formattedDate = new Date(reserve.hour_start).toLocaleDateString(
+            'es-ES',
+            { year: 'numeric', month: 'long', day: 'numeric' },
           );
-        } else {
+          const logoUrl = shop.logo
+            ? `${process.env.BASE_URL}/files/${shop.logo}`
+            : '';
+
           this.fcmNotificationService.sendTopicNotification(
             idShop.toString(),
             `Nuevo evento en ${shop.name}`,
-            `Juego: ${reserveOfGame.name}. Fecha:${new Date(reserve.hour_start).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`,
-            `${process.env.BASE_URL}/files/${shop.logo}`,
+            `Juego: ${gameName}. Fecha:${formattedDate}`,
+            logoUrl,
           );
         }
       }
@@ -342,6 +415,7 @@ export class ReservesService {
       if (err instanceof HttpException) {
         throw err;
       }
+      console.error('Unexpected error in createReserve:', err);
       throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
     }
   }
@@ -381,6 +455,24 @@ export class ReservesService {
       });
       if (!reserve) {
         throw new HttpException('Reserve not found', HttpStatus.NOT_FOUND);
+      }
+
+      const newStart = updateReserveDto.hour_start
+        ? new Date(updateReserveDto.hour_start)
+        : reserve.hour_start;
+      const newEnd = updateReserveDto.hour_end
+        ? new Date(updateReserveDto.hour_end)
+        : reserve.hour_end;
+
+      if (
+        (updateReserveDto.hour_start || updateReserveDto.hour_end) &&
+        (isNaN(newStart.getTime()) ||
+          isNaN(newEnd.getTime()) ||
+          newEnd <= newStart)
+      ) {
+        throw new BadRequestException(
+          'La hora de finalización debe ser posterior a la hora de inicio.',
+        );
       }
 
       if (updateReserveDto.difficulty_id) {
@@ -430,11 +522,37 @@ export class ReservesService {
       if (updateReserveDto.reserve_table_id) {
         const reserveTable = await this.tableRepository.findOne({
           where: { id_table: updateReserveDto.reserve_table_id },
+          relations: ['tables_of_shop'],
         });
         if (!reserveTable) {
           throw new HttpException('Table not found', HttpStatus.NOT_FOUND);
         }
         reserve.reserve_table = reserveTable;
+      }
+
+      const tableToCheck =
+        updateReserveDto.reserve_table_id ||
+        (reserve.reserve_table ? reserve.reserve_table.id_table : null);
+
+      if (
+        tableToCheck &&
+        (updateReserveDto.hour_start ||
+          updateReserveDto.hour_end ||
+          updateReserveDto.reserve_table_id)
+      ) {
+        const overlapping = await this.reserveRepository.findOne({
+          where: {
+            id_reserve: Not(id),
+            reserve_table: { id_table: tableToCheck },
+            hour_start: LessThan(newEnd),
+            hour_end: MoreThan(newStart),
+          },
+        });
+        if (overlapping) {
+          throw new ConflictException(
+            'La mesa seleccionada ya se encuentra reservada en el horario solicitado.',
+          );
+        }
       }
 
       this.reserveRepository.merge(reserve, updateReserveDto);

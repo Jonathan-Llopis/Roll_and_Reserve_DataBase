@@ -9,7 +9,12 @@ import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';
 import { HttpService } from '../http/http.service';
-import { NotFoundException, HttpException } from '@nestjs/common';
+import {
+  NotFoundException,
+  HttpException,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
 import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { GamesService } from '../games/games.service';
 
@@ -32,7 +37,7 @@ describe('ReservesService', () => {
           useValue: {
             find: jest.fn(),
             findOne: jest.fn(),
-            create: jest.fn(),
+            create: jest.fn().mockImplementation((dto) => ({ ...dto })),
             save: jest.fn(),
             delete: jest.fn(),
             merge: jest.fn(),
@@ -196,11 +201,13 @@ describe('ReservesService', () => {
   });
 
   it('should create a new reserve', async () => {
+    const start = new Date('2026-11-12T10:00:00Z');
+    const end = new Date('2026-11-12T12:00:00Z');
     const createDto = {
       total_places: 10,
       reserver_id: '1',
-      hour_start: new Date(),
-      hour_end: new Date(),
+      hour_start: start,
+      hour_end: end,
       shop_event: false,
       description: 'Test description',
       required_material: 'Test material',
@@ -229,12 +236,80 @@ describe('ReservesService', () => {
     expect(result).toEqual(mockReserve);
   });
 
+  it('should throw BadRequestException when hour_end is before or equal to hour_start', async () => {
+    const createDto = {
+      total_places: 10,
+      reserver_id: '1',
+      hour_start: new Date('2026-11-12T12:00:00Z'),
+      hour_end: new Date('2026-11-12T10:00:00Z'),
+      shop_event: false,
+      description: 'Test description',
+      required_material: 'Test material',
+    };
+
+    await expect(service.createReserve(createDto, 1)).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('should throw ConflictException when table is already reserved in the overlapping time slot', async () => {
+    const createDto = {
+      total_places: 4,
+      reserver_id: '1',
+      hour_start: new Date('2026-11-12T17:00:00Z'),
+      hour_end: new Date('2026-11-12T19:00:00Z'),
+      reserve_table_id: 1,
+      shop_event: false,
+      description: 'Test description',
+      required_material: 'Test material',
+    };
+
+    jest.spyOn(tableRepository, 'findOne').mockResolvedValue({
+      id_table: 1,
+      number_table: 1,
+      tables_of_shop: { id_shop: 1 },
+    } as any);
+
+    jest.spyOn(reserveRepository, 'findOne').mockResolvedValue({
+      id_reserve: 99,
+      hour_start: new Date('2026-11-12T16:00:00Z'),
+      hour_end: new Date('2026-11-12T18:00:00Z'),
+    } as any);
+
+    await expect(service.createReserve(createDto, 1)).rejects.toThrow(
+      ConflictException,
+    );
+  });
+
+  it('should throw BadRequestException when table does not belong to the shop', async () => {
+    const createDto = {
+      total_places: 4,
+      reserver_id: '1',
+      hour_start: new Date('2026-11-12T17:00:00Z'),
+      hour_end: new Date('2026-11-12T19:00:00Z'),
+      reserve_table_id: 2,
+      shop_event: false,
+      description: 'Test description',
+      required_material: 'Test material',
+    };
+
+    jest.spyOn(tableRepository, 'findOne').mockResolvedValue({
+      id_table: 2,
+      number_table: 2,
+      tables_of_shop: { id_shop: 999 }, // Different shop
+    } as any);
+
+    await expect(service.createReserve(createDto, 1)).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
   it('should throw NotFoundException when creating a reserve with invalid difficulty', async () => {
     const createDto = {
       total_places: 10,
       reserver_id: '1',
-      hour_start: new Date(),
-      hour_end: new Date(),
+      hour_start: new Date('2026-11-12T10:00:00Z'),
+      hour_end: new Date('2026-11-12T12:00:00Z'),
       difficulty_id: 999,
       shop_event: false,
       description: 'Test description',
