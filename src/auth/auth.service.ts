@@ -24,62 +24,61 @@ export class AuthService {
    * @param id_user - The id of the user to generate a token for.
    * @returns The generated token.
    */
-  async generateToken(id_user: string): Promise<string> {
+  async generateToken(id_user: string | number): Promise<string> {
     const token = uuidv4();
     const expirationDate = new Date();
     expirationDate.setMonth(expirationDate.getMonth() + 1);
 
-    await this.userRepository.update(
-      { id_google: id_user },
-      {
+    const idNum = typeof id_user === 'number' ? id_user : parseInt(id_user);
+    if (!isNaN(idNum)) {
+      await this.userRepository.update(idNum, {
         token: token,
         tokenExpiration: expirationDate,
-      },
-    );
+      });
+    } else {
+      await this.userRepository.update(
+        { id_google: String(id_user) },
+        {
+          token: token,
+          tokenExpiration: expirationDate,
+        },
+      );
+    }
 
     return token;
   }
-
-  /**
-   * Validates the given token by checking if it exists and is still valid.
-   * If the token is expired, it clears the token and its expiration date
-   * from the user's record.
-   *
-   * @param token - The token to be validated.
-   * @returns A boolean indicating whether the token is valid.
-   */
 
   async validateToken(token: string): Promise<boolean> {
     const user = await this.userRepository.findOne({ where: { token: token } });
     if (!user) return false;
 
     const now = new Date();
-    if (user.tokenExpiration < now) {
-      await this.userRepository.update(
-        { id_google: user.id_google },
-        {
-          token: null,
-          tokenExpiration: null,
-        },
-      );
+    if (user.tokenExpiration && user.tokenExpiration < now) {
+      await this.userRepository.update(user.id_user, {
+        token: null,
+        tokenExpiration: null,
+      });
       return false;
     }
 
     return true;
   }
 
-  /**
-   * Clears the token and its expiration date from the user record.
-   *
-   * @param id_user - The id of the user whose token is to be cleared.
-   */
-  async clearToken(id_user: string): Promise<void> {
-    await this.userRepository.update(
-      { id_google: id_user },
-      {
+  async clearToken(id_user: string | number): Promise<void> {
+    const idNum = typeof id_user === 'number' ? id_user : parseInt(id_user);
+    if (!isNaN(idNum)) {
+      await this.userRepository.update(idNum, {
         token: null,
         tokenExpiration: null,
-      },
-    );
+      });
+    } else {
+      await this.userRepository.update(
+        { id_google: String(id_user) },
+        {
+          token: null,
+          tokenExpiration: null,
+        },
+      );
+    }
   }
 }

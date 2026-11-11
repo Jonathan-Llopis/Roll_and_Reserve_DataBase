@@ -128,7 +128,7 @@ export class UsersController {
 
     try {
       const user = await this.usersService.validateUser(email, password);
-      const token = await this.authService.generateToken(user.id_google);
+      const token = await this.authService.generateToken(user.id_user.toString());
       return { token };
     } catch (err) {
       throw new HttpException(
