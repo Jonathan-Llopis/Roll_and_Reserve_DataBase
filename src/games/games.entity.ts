@@ -8,6 +8,7 @@ import {
   ManyToOne,
   JoinColumn,
   ManyToMany,
+  OneToMany,
   JoinTable,
 } from 'typeorm';
 
@@ -36,7 +37,6 @@ export class GamesEntity {
   @JoinTable()
   shop: ShopsEntity[];
 
-  @ManyToMany(() => ReservesEntity, (reserve) => reserve.reserve_of_game)
-  @JoinTable()
-  game_reserve: GamesEntity[];
+  @OneToMany(() => ReservesEntity, (reserve) => reserve.reserve_of_game)
+  game_reserve: ReservesEntity[];
 }

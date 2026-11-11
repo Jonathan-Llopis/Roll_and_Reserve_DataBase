@@ -13,8 +13,10 @@ export class ReviewsEntity {
   @PrimaryGeneratedColumn()
   id_review: number;
 
-  @Column()
+  @Column({ name: 'raiting' })
   raiting: number;
+
+  rating?: number;
 
   @Column()
   review: string;
