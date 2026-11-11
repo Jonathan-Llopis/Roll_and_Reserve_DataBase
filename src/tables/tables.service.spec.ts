@@ -25,6 +25,7 @@ describe('TablesService', () => {
             save: jest.fn(),
             find: jest.fn(),
             findOne: jest.fn(),
+            findAndCount: jest.fn(),
             delete: jest.fn(),
             merge: jest.fn(),
           },
@@ -67,6 +68,21 @@ describe('TablesService', () => {
 
     const result = await service.getAllTables();
     expect(result).toEqual(mockTables);
+  });
+
+  it('should return paginated tables when pagination parameters are provided', async () => {
+    const mockTables = [{ id_table: 1, number_table: 1 } as any];
+    jest
+      .spyOn(tableRepository, 'findAndCount')
+      .mockResolvedValue([mockTables, 1]);
+
+    const result = (await service.getAllTables({ page: 1, limit: 10 })) as any;
+    expect(result).toEqual({
+      data: mockTables,
+      total: 1,
+      page: 1,
+      lastPage: 1,
+    });
   });
 
   it('should throw HttpException when no tables are found', async () => {

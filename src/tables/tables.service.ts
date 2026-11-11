@@ -5,6 +5,7 @@ import { CreateTableDto, UpdateTableDto } from './tables.dto';
 import { TablesEntity } from './tables.entity';
 import { LabelsService } from '../utils/labels/labels.service';
 import { ShopsEntity } from '../shops/shops.entity';
+import { PaginationDto, PaginatedResult } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class TablesService {
@@ -70,10 +71,39 @@ export class TablesService {
    * - `204 No Content`: No tables found.
    * - `400 Bad Request`: General request error.
    */
-  async getAllTables(): Promise<TablesEntity[]> {
+  async getAllTables(
+    pagination?: PaginationDto,
+  ): Promise<TablesEntity[] | PaginatedResult<TablesEntity>> {
     try {
+      const relations = ['reserves_of_table', 'tables_of_shop'];
+
+      if (
+        pagination &&
+        (pagination.page !== undefined || pagination.limit !== undefined)
+      ) {
+        const page =
+          pagination.page && pagination.page > 0
+            ? Number(pagination.page)
+            : 1;
+        const limit =
+          pagination.limit && pagination.limit > 0
+            ? Number(pagination.limit)
+            : 20;
+        const [data, total] = await this.tableRepository.findAndCount({
+          relations,
+          skip: (page - 1) * limit,
+          take: limit,
+        });
+        return {
+          data,
+          total,
+          page,
+          lastPage: Math.ceil(total / limit) || 1,
+        };
+      }
+
       const tables = await this.tableRepository.find({
-        relations: ['reserves_of_table', 'tables_of_shop'],
+        relations,
       });
       if (!tables.length) {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);

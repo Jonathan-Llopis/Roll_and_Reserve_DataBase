@@ -8,16 +8,19 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { ShopsService } from './shops.service';
 import { CreateShopDto, UpdateShopDto } from './shops.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @ApiTags('Shops')
 @Controller('shops')
@@ -140,8 +143,10 @@ export class ShopsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all shops' })
+  @ApiOperation({ summary: 'Get all shops with optional pagination' })
   @ApiBearerAuth()
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({ status: 200, description: 'Shops retrieved successfully.' })
   @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
@@ -175,9 +180,9 @@ export class ShopsController {
    * - `400 Bad Request`: Bad request.
    * - `401 Unauthorized`: Unauthorized access.
    */
-  getAllShops() {
+  getAllShops(@Query() pagination?: PaginationDto) {
     try {
-      return this.shopsService.getAllShops();
+      return this.shopsService.getAllShops(pagination);
     } catch (err) {
       if (err instanceof HttpException) {
         throw err;

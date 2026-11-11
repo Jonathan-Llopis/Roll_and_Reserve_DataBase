@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { ShopsEntity } from './shops.entity';
 import { CreateShopDto, UpdateShopDto } from './shops.dto';
 import { UserEntity } from '../users/users.entity';
+import { PaginationDto, PaginatedResult } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class ShopsService {
@@ -66,8 +67,35 @@ export class ShopsService {
    * - `204 No Content`: No shops found.
    * - `400 Bad Request`: General request error.
    */
-  async getAllShops(): Promise<ShopsEntity[]> {
+  async getAllShops(
+    pagination?: PaginationDto,
+  ): Promise<ShopsEntity[] | PaginatedResult<ShopsEntity>> {
     try {
+      if (
+        pagination &&
+        (pagination.page !== undefined || pagination.limit !== undefined)
+      ) {
+        const page =
+          pagination.page && pagination.page > 0
+            ? Number(pagination.page)
+            : 1;
+        const limit =
+          pagination.limit && pagination.limit > 0
+            ? Number(pagination.limit)
+            : 20;
+        const [data, total] = await this.shopRepository.findAndCount({
+          relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
+          skip: (page - 1) * limit,
+          take: limit,
+        });
+        return {
+          data,
+          total,
+          page,
+          lastPage: Math.ceil(total / limit) || 1,
+        };
+      }
+
       const shops = await this.shopRepository.find({
         relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
       });

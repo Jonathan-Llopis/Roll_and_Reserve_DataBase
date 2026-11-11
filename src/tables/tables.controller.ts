@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import {
@@ -15,11 +16,13 @@ import {
   ApiResponse,
   ApiParam,
   ApiBearerAuth,
+  ApiQuery,
   ApiTags,
   ApiBody,
 } from '@nestjs/swagger';
 import { TablesService } from './tables.service';
 import { CreateTableDto, UpdateTableDto } from './tables.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @ApiTags('Tables')
 @Controller('tables')
@@ -147,24 +150,16 @@ export class TablesController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all tables' })
+  @ApiOperation({ summary: 'Get all tables with optional pagination' })
   @ApiBearerAuth()
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({ status: 200, description: 'Tables retrieved successfully.' })
   @ApiResponse({ status: 204, description: 'No content.' })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  /**
-   * Get all tables
-   * Method: GET /tables
-   * Description: Get all tables
-   * HTTP Responses:
-   * - `200 OK`: Tables retrieved successfully.
-   * - `204 No Content`: No content.
-   * - `400 Bad Request`: Bad request.
-   * - `401 Unauthorized`: Unauthorized.
-   */
-  getAllTables() {
-    return this.tablesService.getAllTables();
+  getAllTables(@Query() pagination?: PaginationDto) {
+    return this.tablesService.getAllTables(pagination);
   }
 
   @Get(':id')

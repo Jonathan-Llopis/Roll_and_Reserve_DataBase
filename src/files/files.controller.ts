@@ -3,6 +3,7 @@ import {
   Get,
   Param,
   Res,
+  Req,
   Controller,
   UseInterceptors,
   UploadedFiles,
@@ -28,6 +29,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ShopsEntity } from '../shops/shops.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../users/users.entity';
+import { Public } from '../auth/decorators/public.decorator';
 
 @ApiTags('Files')
 @Controller('/files')
@@ -498,11 +500,11 @@ export class FilesController {
   }
 
   @Get(':id')
-  @ApiBearerAuth()
+  @Public()
   @ApiOperation({ summary: 'Get file by ID' })
   @ApiResponse({ status: 200, description: 'Successfully retrieved file.' })
+  @ApiResponse({ status: 304, description: 'File not modified (cached).' })
   @ApiResponse({ status: 400, description: 'Invalid file ID.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'File not found.' })
   @ApiParam({
     name: 'id',
@@ -513,17 +515,39 @@ export class FilesController {
   /**
    * DOC: Get File by ID
    * Method: GET /files/:id
-   * Description: Retrieves the file by its ID.
+   * Description: Retrieves the file by its ID with HTTP cache support.
    * Input Parameters:
    * - `id` (string, required): ID of the file.
    * HTTP Responses:
    * - `200 OK`: Successfully retrieved file. Returns the file as binary data.
+   * - `304 Not Modified`: Cached resource matches client ETag.
    * - `400 Bad Request`: Invalid file ID.
-   * - `401 Unauthorized`: Unauthorized.
    * - `404 Not Found`: File not found.
    */
-  async getFile(@Param('id') id: string, @Res() res) {
+  async getFile(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Res() res: any,
+  ) {
     const file = await this.filesService.findInfo(id);
+    if (!file) {
+      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+    }
+
+    const etag = `"${file.md5 || id}"`;
+    res.header('Cache-Control', 'public, max-age=604800, immutable');
+    res.header('ETag', etag);
+
+    const ifNoneMatch = req?.headers ? req.headers['if-none-match'] : undefined;
+    if (
+      ifNoneMatch &&
+      (ifNoneMatch === etag ||
+        ifNoneMatch === file.md5 ||
+        ifNoneMatch === id)
+    ) {
+      return res.status(HttpStatus.NOT_MODIFIED).send();
+    }
+
     const filestream = await this.filesService.readStream(id);
     if (!filestream) {
       throw new HttpException('File not found', HttpStatus.NOT_FOUND);
@@ -533,11 +557,11 @@ export class FilesController {
   }
 
   @Get('download/:id')
-  @ApiBearerAuth()
+  @Public()
   @ApiOperation({ summary: 'Download file by ID' })
   @ApiResponse({ status: 200, description: 'Successfully downloaded file.' })
+  @ApiResponse({ status: 304, description: 'File not modified (cached).' })
   @ApiResponse({ status: 400, description: 'Invalid file ID.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'File not found.' })
   @ApiParam({
     name: 'id',
@@ -548,17 +572,39 @@ export class FilesController {
   /**
    * DOC: Download file by ID
    * Method: GET /files/download/:id
-   * Description: Downloads a file by its ID.
+   * Description: Downloads a file by its ID with HTTP cache support.
    * Input Parameters:
    * - `id` (string, required): ID of the file.
    * HTTP Responses:
    * - `200 OK`: Successfully downloaded file. Returns the file as binary data.
+   * - `304 Not Modified`: Cached resource matches client ETag.
    * - `400 Bad Request`: Invalid file ID.
-   * - `401 Unauthorized`: Unauthorized.
    * - `404 Not Found`: File not found.
    */
-  async downloadFile(@Param('id') id: string, @Res() res) {
+  async downloadFile(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Res() res: any,
+  ) {
     const file = await this.filesService.findInfo(id);
+    if (!file) {
+      throw new HttpException('File not found', HttpStatus.NOT_FOUND);
+    }
+
+    const etag = `"${file.md5 || id}"`;
+    res.header('Cache-Control', 'public, max-age=604800, immutable');
+    res.header('ETag', etag);
+
+    const ifNoneMatch = req?.headers ? req.headers['if-none-match'] : undefined;
+    if (
+      ifNoneMatch &&
+      (ifNoneMatch === etag ||
+        ifNoneMatch === file.md5 ||
+        ifNoneMatch === id)
+    ) {
+      return res.status(HttpStatus.NOT_MODIFIED).send();
+    }
+
     const filestream = await this.filesService.readStream(id);
     if (!filestream) {
       throw new HttpException('File not found', HttpStatus.NOT_FOUND);

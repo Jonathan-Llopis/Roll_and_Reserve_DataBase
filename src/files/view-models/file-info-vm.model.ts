@@ -12,4 +12,10 @@ export class FileInfoVm {
 
   @Expose()
   contentType: string;
+
+  @Expose()
+  md5?: string;
+
+  @Expose()
+  uploadDate?: Date;
 }

@@ -23,6 +23,7 @@ describe('ShopsService', () => {
             save: jest.fn(),
             find: jest.fn(),
             findOne: jest.fn(),
+            findAndCount: jest.fn(),
             delete: jest.fn(),
             merge: jest.fn(),
           },
@@ -65,6 +66,21 @@ describe('ShopsService', () => {
 
     const result = await service.getAllShops();
     expect(result).toEqual(mockShops);
+  });
+
+  it('should return paginated shops when pagination parameters are provided', async () => {
+    const mockShops = [{ id_shop: 1, name: 'Shop 1' } as any];
+    jest
+      .spyOn(shopRepository, 'findAndCount')
+      .mockResolvedValue([mockShops, 1]);
+
+    const result = (await service.getAllShops({ page: 1, limit: 10 })) as any;
+    expect(result).toEqual({
+      data: mockShops,
+      total: 1,
+      page: 1,
+      lastPage: 1,
+    });
   });
 
   it('should throw HttpException when no shops are found', async () => {
