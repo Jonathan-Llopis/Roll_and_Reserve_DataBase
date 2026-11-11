@@ -8,17 +8,20 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import {
   ApiOperation,
   ApiResponse,
   ApiParam,
   ApiBearerAuth,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { ReservesService } from './reserves.service';
 import { CreateReserveDto, UpdateReserveDto } from './reserves.dto';
 import { ReservesEntity } from './reserves.entity';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @ApiTags('Reserves')
 @Controller('reserves')
@@ -113,7 +116,9 @@ export class ReservesController {
 
   @Get()
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get all reserves' })
+  @ApiOperation({ summary: 'Get all reserves with optional pagination' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 20 })
   @ApiResponse({
     status: 200,
     description: 'Successfully retrieved all reserves.',
@@ -131,8 +136,8 @@ export class ReservesController {
    * - `401 Unauthorized`: Unauthorized.
    * - `400 Bad Request`: Failed to retrieve reserves.
    */
-  async getAllReserves() {
-    return await this.reservesService.getAllReserves();
+  async getAllReserves(@Query() pagination?: PaginationDto) {
+    return await this.reservesService.getAllReserves(pagination);
   }
 
   @Get(':id')

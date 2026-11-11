@@ -28,6 +28,7 @@ import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { GamesService } from '../games/games.service';
 import { HttpService } from '../http/http.service';
+import { PaginationDto, PaginatedResult } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class ReservesService {
@@ -99,20 +100,51 @@ export class ReservesService {
    * - `500 Internal Server Error`: Failed to retrieve reserves due to server error.
    */
 
-  async getAllReserves(): Promise<ReservesEntity[]> {
+  async getAllReserves(
+    pagination?: PaginationDto,
+  ): Promise<ReservesEntity[] | PaginatedResult<ReservesEntity>> {
     try {
+      const relations = [
+        'reserve_of_game',
+        'difficulty',
+        'reserve_table',
+        'users_in_reserve',
+        'userReserves',
+        'userReserves.user',
+      ];
+      const order = {
+        hour_start: 'ASC' as const,
+      };
+
+      if (
+        pagination &&
+        (pagination.page !== undefined || pagination.limit !== undefined)
+      ) {
+        const page =
+          pagination.page && pagination.page > 0
+            ? Number(pagination.page)
+            : 1;
+        const limit =
+          pagination.limit && pagination.limit > 0
+            ? Number(pagination.limit)
+            : 20;
+        const [data, total] = await this.reserveRepository.findAndCount({
+          relations,
+          order,
+          skip: (page - 1) * limit,
+          take: limit,
+        });
+        return {
+          data,
+          total,
+          page,
+          lastPage: Math.ceil(total / limit) || 1,
+        };
+      }
+
       const reserves = await this.reserveRepository.find({
-        relations: [
-          'reserve_of_game',
-          'difficulty',
-          'reserve_table',
-          'users_in_reserve',
-          'userReserves',
-          'userReserves.user',
-        ],
-        order: {
-          hour_start: 'ASC',
-        },
+        relations,
+        order,
       });
       if (reserves.length === 0) {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);

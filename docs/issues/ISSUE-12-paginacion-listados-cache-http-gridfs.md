@@ -2,6 +2,7 @@
 
 - **Identificador**: `ISSUE-12`
 - **GitHub Issue**: [#14](https://github.com/Jonathan-Llopis/Roll_and_Reserve_DataBase/issues/14)
+- **Estado**: ✅ COMPLETADO
 - **Prioridad**: 🟡 Media (Rendimiento, Optimización de Red y Escalabilidad)
 - **Impacto**: Eliminación de cuellos de botella de memoria, reducción de consultas N+1 en clientes y soporte de caché HTTP eficiente para archivos multimedia.
 
@@ -45,6 +46,25 @@
 
 ## 4. Criterios de Aceptación
 
-- [ ] Endpoints de listados principales soportan paginación estándar.
-- [ ] Cabeceras de caché HTTP activas en la entrega de archivos de GridFS.
-- [ ] Reducción drástica del ancho de banda y lecturas en MongoDB para imágenes ya cacheadas.
+- [x] Endpoints de listados principales soportan paginación estándar.
+- [x] Cabeceras de caché HTTP activas en la entrega de archivos de GridFS.
+- [x] Reducción drástica del ancho de banda y lecturas en MongoDB para imágenes ya cacheadas.
+
+---
+
+## 5. Nota de la Solución
+
+1. **DTO Universal de Paginación**:
+   - Se creó `src/common/dto/pagination.dto.ts` exponiendo `PaginationDto` con campos opcionales `page` (default 1, min 1) y `limit` (default 20, min 1, max 100), transformados a enteros con `class-transformer`.
+   - Se tipó la interfaz de respuesta paginada `PaginatedResult<T>` con metadatos: `{ data: T[], total: number, page: number, lastPage: number }`.
+2. **Paginación en Tiendas, Reservas y Mesas**:
+   - `ShopsService.getAllShops`, `ReservesService.getAllReserves` y `TablesService.getAllTables` fueron adaptados para soportar `PaginationDto` usando `findAndCount` de TypeORM con `skip` y `take`.
+   - Se preservó compatibilidad hacia atrás con endpoints existentes cuando no se envían parámetros de paginación.
+   - En `ShopsController`, `ReservesController` y `TablesController` se documentaron los parámetros `@ApiQuery` de Swagger para `page` y `limit`.
+3. **Cabeceras HTTP Cache y 304 Not Modified en GridFS**:
+   - En `FilesController` (`getFile` y `downloadFile`) se habilitó `@Public()` y se configuraron las cabeceras `Cache-Control: public, max-age=604800, immutable` y `ETag: "<md5 || id>"`.
+   - Se añadió validación de la cabecera `If-None-Match`. En caso de coincidencia con el ETag, se responde inmediatamente con `304 Not Modified` sin abrir ni leer el stream de GridFS en MongoDB, optimizando drásticamente ancho de banda y latencia.
+4. **Verificación Automatizada**:
+   - Se crearon pruebas unitarias para `FilesController` en `src/files/files.controller.spec.ts` validando la emisión de cabeceras de caché y el retorno 304 ante ETag coincidente.
+   - Se añadieron pruebas unitarias de paginación en `shops.service.spec.ts`, `reserves.service.spec.ts` y `tables.service.spec.ts`.
+   - Suite total del repositorio: 23 suites y 203 pruebas unitarias pasando al 100%.

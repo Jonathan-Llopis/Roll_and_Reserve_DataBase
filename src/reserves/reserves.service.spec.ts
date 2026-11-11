@@ -37,6 +37,7 @@ describe('ReservesService', () => {
           useValue: {
             find: jest.fn(),
             findOne: jest.fn(),
+            findAndCount: jest.fn(),
             create: jest.fn().mockImplementation((dto) => ({ ...dto })),
             save: jest.fn(),
             delete: jest.fn(),
@@ -158,6 +159,25 @@ describe('ReservesService', () => {
 
     const result = await service.getAllReserves();
     expect(result).toEqual(mockReserves);
+  });
+
+  it('should return paginated reserves when pagination parameters are provided', async () => {
+    const mockReserves: any[] = [{ id_reserve: 1 }];
+    jest
+      .spyOn(reserveRepository, 'findAndCount')
+      .mockResolvedValue([mockReserves, 1]);
+
+    const result = (await service.getAllReserves({
+      page: 1,
+      limit: 10,
+    })) as any;
+
+    expect(result).toEqual({
+      data: mockReserves,
+      total: 1,
+      page: 1,
+      lastPage: 1,
+    });
   });
 
   it('should throw HttpException when no reserves are found', async () => {
