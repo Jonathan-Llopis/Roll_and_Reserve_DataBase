@@ -240,7 +240,7 @@ export class FilesController {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     const response = [];
-    files.forEach((file) => {
+    for (const file of files) {
       const fileReponse = {
         originalname: file.originalname,
         encoding: file.encoding,
@@ -255,9 +255,9 @@ export class FilesController {
         uploadDate: file.uploadDate,
         contentType: file.contentType,
       };
-      this.userService.vincularArchivo(idUser, file.id);
+      await this.userService.vincularArchivo(idUser, file.id);
       response.push(fileReponse);
-    });
+    }
     return response;
   }
 

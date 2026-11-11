@@ -90,9 +90,13 @@ export class UsersService {
    */
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     try {
-      const usuario = this.usersRepository.create(createUserDto);
+      const usuario = this.usersRepository.create({
+        ...createUserDto,
+        role: 0,
+      });
       const passwordHash = await bcrypt.hash(usuario.password, 10);
       usuario.password = passwordHash;
+      usuario.role = 0;
       return this.usersRepository.save(usuario);
     } catch (err) {
       if (err instanceof HttpException) {
