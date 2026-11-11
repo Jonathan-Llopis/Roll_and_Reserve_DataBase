@@ -40,20 +40,12 @@ import { Cron, ScheduleModule } from '@nestjs/schedule';
 import { FcmNotificationService } from './fcm-notification/fcm-notification.service';
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env', 'env'],
+    }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      /**
-       * This function is used by TypeORM to get the connection options for the
-       * MongoDB database. It is called automatically by Nest when the application
-       * starts.
-       *
-       * @param {ConfigService} configService - The configuration service that
-       * provides the MongoDB connection string.
-       *
-       * @return {Promise<MongoDbModuleOptions>} - A promise that resolves to the
-       * MongoDB connection options.
-       */
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGODB_URI'),
       }),
@@ -63,28 +55,15 @@ import { FcmNotificationService } from './fcm-notification/fcm-notification.serv
     AuthModule,
     UtilsModule,
     LabelsModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      /**
-       * A factory function that returns the configuration options for the
-       * TypeORM connection to the MySQL database.
-       *
-       * @param {ConfigService} configService - The configuration service that
-       * provides the database connection details.
-       *
-       * @return {Promise<TypeOrmModuleOptions>} - A promise that resolves to the
-       * database connection options.
-       */
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: 'database',
-        port: +configService.get('MYSQL_PORT') || 3306,
-        username: configService.get('MYSQL_USER'),
-        password: configService.get('MYSQL_PASSWORD'),
-        database: configService.get('MYSQL_DATABASE'),
+        host: configService.get<string>('MYSQL_HOST') || 'database',
+        port: +(configService.get<string>('MYSQL_PORT') || 3306),
+        username: configService.get<string>('MYSQL_USER'),
+        password: configService.get<string>('MYSQL_PASSWORD'),
+        database: configService.get<string>('MYSQL_DATABASE'),
         entities: [
           UserEntity,
           ReviewsEntity,
@@ -96,7 +75,7 @@ import { FcmNotificationService } from './fcm-notification/fcm-notification.serv
           DifficultyEntity,
           UserReserveEntity,
         ],
-        synchronize: true,
+        synchronize: configService.get<string>('DB_SYNCHRONIZE') === 'true',
       }),
       inject: [ConfigService],
     }),
