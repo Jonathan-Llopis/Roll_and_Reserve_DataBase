@@ -44,7 +44,10 @@ export class DifficultyService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -75,7 +78,10 @@ export class DifficultyService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -109,7 +115,10 @@ export class DifficultyService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -153,7 +162,10 @@ export class DifficultyService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -181,7 +193,10 @@ export class DifficultyService {
         throw err;
       }
       console.error('Unexpected error:', err);
-      throw new HttpException('Bad Request', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
