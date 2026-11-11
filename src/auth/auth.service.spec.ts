@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../users/users.entity';
 import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -136,6 +137,50 @@ describe('AuthService', () => {
           tokenExpiration: null,
         },
       );
+    });
+  });
+
+  describe('when JwtService is provided', () => {
+    let serviceWithJwt: AuthService;
+    const mockJwtService = {
+      sign: jest.fn().mockReturnValue('mocked.jwt.token'),
+      verify: jest.fn(),
+    };
+
+    beforeEach(async () => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          AuthService,
+          {
+            provide: getRepositoryToken(UserEntity),
+            useValue: mockUserRepository,
+          },
+          {
+            provide: JwtService,
+            useValue: mockJwtService,
+          },
+        ],
+      }).compile();
+
+      serviceWithJwt = module.get<AuthService>(AuthService);
+    });
+
+    it('should generate signed jwt with claims', async () => {
+      mockUserRepository.update.mockResolvedValue({ affected: 1 });
+      const token = await serviceWithJwt.generateToken(10, 'john@example.com', 1);
+
+      expect(token).toEqual('mocked.jwt.token');
+      expect(mockJwtService.sign).toHaveBeenCalledWith({
+        sub: 10,
+        email: 'john@example.com',
+        role: 1,
+      });
+    });
+
+    it('should validate token successfully with JwtService.verify', async () => {
+      mockJwtService.verify.mockReturnValue({ sub: 10 });
+      const isValid = await serviceWithJwt.validateToken('mocked.jwt.token');
+      expect(isValid).toBe(true);
     });
   });
 });

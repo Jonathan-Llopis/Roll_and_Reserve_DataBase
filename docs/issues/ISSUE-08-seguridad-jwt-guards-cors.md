@@ -2,6 +2,7 @@
 
 - **Identificador**: `ISSUE-08`
 - **GitHub Issue**: [#10](https://github.com/Jonathan-Llopis/Roll_and_Reserve_DataBase/issues/10)
+- **Estado**: ✅ COMPLETADO
 - **Prioridad**: 🔴 Crítica (Seguridad de Autenticación y Autorización)
 - **Impacto**: Autenticación estándar stateless mediante JWT firmado, protección de endpoints mediante Guards y resolución de bloqueo de CORS.
 
@@ -52,7 +53,32 @@
 
 ## 4. Criterios de Aceptación
 
-- [ ] Autenticación estándar JWT activa con clave secreta configurable.
-- [ ] Decoradores `@Public()` y `@CurrentUser()` operativos.
-- [ ] Configuración CORS corregida y compatible con estándares web.
-- [ ] Cero asignación insegura de roles en el registro público de usuarios.
+- [x] Autenticación estándar JWT activa con clave secreta configurable.
+- [x] Decoradores `@Public()` y `@CurrentUser()` operativos.
+- [x] Configuración CORS corregida y compatible con estándares web.
+- [x] Cero asignación insegura de roles en el registro público de usuarios.
+
+---
+
+## 5. Nota de la Solución
+
+1. **Ecosistema JWT & Passport**:
+   - Integradas dependencias `@nestjs/jwt@11.0.0`, `@nestjs/passport@11.0.5`, `passport-jwt` y `@types/passport-jwt`.
+   - `AuthModule`: Configurado `JwtModule.registerAsync` con clave configurable `JWT_SECRET` y expiración `JWT_EXPIRES_IN` (por defecto 30 días).
+   - `JwtStrategy`: Extrae token Bearer de cabeceras HTTP, valida firma y exp, y resuelve el `UserEntity` inyectándolo en `request.user`.
+   - `JwtAuthGuard`: Guardia global basada en Reflector que respeta `@Public()`.
+2. **Decoradores Idiomáticos**:
+   - `@Public()`: Marca handlers y controllers exentos de validación de token.
+   - `@CurrentUser()`: Extrae de forma tipada el usuario autenticado (o propiedad específica) de `request.user`.
+3. **Servicios y Controladores**:
+   - `AuthService`: `generateToken` firma tokens JWT con claims `{ sub: id_user, email, role }` mientras persiste compatibilidad retroactiva en `UserEntity.token`. `validateToken` verifica la firma criptográfica con fallback a base de datos.
+   - `UsersController`: En `login`, envía claims completos `{ id_user, email, role }` al generar token.
+   - `FilesController`: Añadido `await this.userService.vincularArchivo(...)` en bucle asíncrono para eliminar promesas flotantes.
+4. **Seguridad y CORS**:
+   - `main.ts`: Corregido CORS a `origin: true` con `credentials: true` para cumplir con los estándares W3C/Fetch y evitar bloqueos en navegadores y webviews.
+   - `CreateUserDto`: Eliminados campos vulnerables `token`, `tokenExpiration` y `average_raiting`. El campo `role` es opcional y en `UsersService.createUser` se fuerza `role = 0`.
+5. **Pruebas**:
+   - Creados tests unitarios exhaustivos para `JwtStrategy` y `JwtAuthGuard`.
+   - Añadida cobertura de firma y verificación JWT en `AuthService`.
+   - 17 suites y 169 tests pasando en verde.
+

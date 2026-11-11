@@ -111,7 +111,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     }),
   ],
   controllers: [],
-  providers: [AuthorizationMiddleware, AuthService],
+  providers: [AuthorizationMiddleware],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

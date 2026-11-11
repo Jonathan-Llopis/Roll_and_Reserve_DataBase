@@ -63,32 +63,18 @@ export class CreateUserDto {
   })
   email: string;
 
+  @IsOptional()
   @IsInt()
   @Min(0)
   @Max(2)
-  @ApiProperty({
-    description: 'Role of the user',
+  @ApiPropertyOptional({
+    description: 'Role of the user (defaults to 0)',
     minimum: 0,
     maximum: 2,
-    example: 1,
+    default: 0,
+    example: 0,
   })
-  role: number;
-
-  @IsOptional()
-  @IsDateString()
-  @ApiPropertyOptional({
-    description: 'Token expiration date',
-    example: '2023-12-31T23:59:59Z',
-  })
-  tokenExpiration?: Date;
-
-  @IsOptional()
-  @IsString()
-  @ApiPropertyOptional({
-    description: 'Token of the user',
-    example: 'abcdef123456',
-  })
-  token?: string;
+  role?: number;
 
   @IsOptional()
   @IsString()
@@ -97,14 +83,6 @@ export class CreateUserDto {
     example: 'http://example.com/avatar.jpg',
   })
   avatar?: string;
-
-  @IsOptional()
-  @IsInt()
-  @ApiPropertyOptional({
-    description: 'Average rating of the user',
-    example: 4,
-  })
-  average_raiting?: number;
 
   @IsOptional()
   @IsString()

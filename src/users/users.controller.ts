@@ -128,7 +128,11 @@ export class UsersController {
 
     try {
       const user = await this.usersService.validateUser(email, password);
-      const token = await this.authService.generateToken(user.id_user.toString());
+      const token = await this.authService.generateToken(
+        user.id_user,
+        user.email,
+        user.role,
+      );
       return { token };
     } catch (err) {
       throw new HttpException(
