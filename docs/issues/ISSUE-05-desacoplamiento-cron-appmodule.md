@@ -2,6 +2,7 @@
 
 - **Identificador**: `ISSUE-05`
 - **GitHub Issue**: [#7](https://github.com/Jonathan-Llopis/Roll_and_Reserve_DataBase/issues/7)
+- **Estado**: ✅ COMPLETADO
 - **Prioridad**: 🟡 Media (Separación de Responsabilidades y Arquitectura NestJS)
 - **Impacto**: Modularidad, testabilidad de tareas programadas y eliminación de malas prácticas de inyección.
 
@@ -41,6 +42,17 @@
 
 ## 4. Criterios de Aceptación
 
-- [ ] `AppModule` no contiene métodos `@Cron` ni inyecciones de repositorios.
-- [ ] No existen módulos declarados en el array de `providers`.
-- [ ] La tarea programada de recordatorio de reservas está completamente aislada y testeada.
+- [x] `AppModule` no contiene métodos `@Cron` ni inyecciones de repositorios.
+- [x] No existen módulos declarados en el array de `providers` de `AppModule`.
+- [x] La tarea programada de recordatorio de reservas está completamente aislada en `ReservesSchedulerService` y testeada.
+
+---
+
+## 5. Nota de la Solución Aplicada
+
+1. Se implementó `ReservesSchedulerService` en `src/reserves/reserves-scheduler.service.ts` encapsulando la lógica del cron `@Cron('0 */15 8-23 * * *')`.
+2. Se corrigió la consulta del cron para comprobar `confirmation_notification: false`, evitando el envío reiterado de notificaciones para reservas ya notificadas.
+3. Se parametrizó la URL base para logos de tiendas mediante `ConfigService`.
+4. Se registraron los proveedores limpios en `src/reserves/reserves.module.ts`.
+5. Se eliminó la inyección de repositorios, cron y módulos erróneos de `AppModule`.
+6. Se añadieron pruebas unitarias en `src/reserves/reserves-scheduler.service.spec.ts` (14 suites, 147 pruebas pasando al 100%).
