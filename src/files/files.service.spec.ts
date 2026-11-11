@@ -32,7 +32,7 @@ describe('FilesService', () => {
 
     service = module.get<FilesService>(FilesService);
     connection = module.get<Connection>(getConnectionToken());
-    bucket = new GridFSBucket(connection.db, { bucketName: 'fs' });
+    bucket = new GridFSBucket(connection.db as any, { bucketName: 'fs' });
     service['bucket'] = bucket;
   });
 
@@ -86,7 +86,7 @@ describe('FilesService', () => {
   });
 
   it('should delete a file', async () => {
-    jest.spyOn(bucket, 'delete').mockResolvedValue(undefined);
+    jest.spyOn(bucket, 'delete').mockImplementation(() => Promise.resolve() as any);
 
     const result = await service.deleteFile(new ObjectId().toString());
     expect(result).toBe(true);

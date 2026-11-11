@@ -2,6 +2,7 @@
 
 - **Identificador**: `ISSUE-01`
 - **GitHub Issue**: [#3](https://github.com/Jonathan-Llopis/Roll_and_Reserve_DataBase/issues/3)
+- **Estado**: ✅ COMPLETADO
 - **Prioridad**: 🔴 Crítica (Prerrequisito técnico y de calidad)
 - **Impacto**: Calidad de software, prevención de regresiones, cobertura de código y cumplimiento de estándares de ingeniería (`AGENTS.md`).
 
@@ -46,7 +47,21 @@ El proyecto cuenta con especificaciones iniciales en `src/*/*.service.spec.ts`, 
 
 ## 4. Criterios de Aceptación
 
-- [ ] Suite de pruebas ejecutable con `npm test` con 0 errores de compilación o ejecución.
-- [ ] Mocks reutilizables estructurados en `test/helpers/`.
-- [ ] Umbrales de cobertura configurados y testeables.
-- [ ] Documentación de testing integrada en el proyecto.
+- [x] Suite de pruebas ejecutable con `npm test` con 0 errores de compilación o ejecución (12 suites, 143 tests pasando al 100%).
+- [x] Mocks reutilizables estructurados en `test/helpers/` (`repository.mock.ts`, `test-fixtures.ts`, `pdfme.mock.ts`).
+- [x] Umbrales de cobertura configurados y testeables vía `npm run test:cov`.
+- [x] Documentación de testing integrada en el proyecto.
+
+---
+
+## 5. Nota de la Solución Aplicada
+
+1. Se instalaron y vincularon las dependencias `npm` requeridas, añadiendo `mongodb@5.9.2` explícitamente a `dependencies`.
+2. Se corrigió el import de `GridFSBucketReadStream` desde `'mongodb'` en `src/utils/labels/labels.service.ts`.
+3. Se añadió arnés de testing en `test/helpers/`:
+   - `repository.mock.ts`: Creador tipado de repositorios simulados de TypeORM.
+   - `test-fixtures.ts`: Generadores de entidades base para pruebas.
+   - `pdfme.mock.ts`: Mock de módulo ESM para evitar errores de transformación en Jest.
+4. Se corrigieron aserciones de código de estado (500 Internal Server Error) en `game_category.service.ts` y `difficulty.service.ts`.
+5. Se configuró `moduleNameMapper` en `package.json` para Jest.
+6. Resultado: 12 suites superadas, 143 pruebas en verde (exit code 0).

@@ -48,6 +48,7 @@
     "firebase-admin": "^13.0.2",
     "handlebars": "^4.7.8",
     "mongo-gridfs": "^1.1.0",
+    "mongodb": "5.9.2",
     "mongoose": "^7.4.3",
     "multer-gridfs-storage": "^5.0.2",
     "typeorm-extension": "^3.6.3",
@@ -87,7 +88,10 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@pdfme/(.*)$": "<rootDir>/../test/helpers/pdfme.mock.ts"
+    }
   },
   "overrides": {
     "mongodb": "5.9.2",

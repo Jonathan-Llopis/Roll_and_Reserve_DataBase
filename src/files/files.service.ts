@@ -14,7 +14,9 @@ export class FilesService {
    * @param {Connection} connection - The MongoDB connection.
    */
   constructor(@InjectConnection() private readonly connection: Connection) {
-    this.bucket = new GridFSBucket(this.connection.db, { bucketName: 'fs' });
+    this.bucket = new GridFSBucket(this.connection.db as any, {
+      bucketName: 'fs',
+    });
   }
 
   /**
