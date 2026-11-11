@@ -17,6 +17,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ShopsModule } from './shops/shops.module';
 import { TablesModule } from './tables/tables.module';
 import { GamesModule } from './games/games.module';
+import { RulesAssistantModule } from './rules_assistant/rules_assistant.module';
 import { DifficultyModule } from './difficulty/difficulty.module';
 import { GameCategoryModule } from './game_category/game_category.module';
 import { ReviewsModule } from './reviews/reviews.module';
@@ -90,6 +91,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     ShopsModule,
     TablesModule,
     GamesModule,
+    RulesAssistantModule,
     DifficultyModule,
     GameCategoryModule,
     ReviewsModule,
