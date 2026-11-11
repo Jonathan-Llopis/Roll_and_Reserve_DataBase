@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ReservesController } from './reserves.controller';
 import { ReservesService } from './reserves.service';
+import { ReservesSchedulerService } from './reserves-scheduler.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
@@ -34,6 +35,6 @@ import { GamesModule } from '../games/games.module';
     GamesModule,
   ],
   controllers: [ReservesController],
-  providers: [ReservesService],
+  providers: [ReservesService, ReservesSchedulerService],
 })
 export class ReservesModule {}
