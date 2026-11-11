@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { GamesService } from './games.service';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { GamesEntity } from './games.entitiy';
+import { GamesEntity } from './games.entity';
 import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { HttpService } from '../http/http.service';
 import { GameCategoryService } from '../game_category/game_category.service';

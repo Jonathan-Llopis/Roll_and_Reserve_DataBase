@@ -12,7 +12,7 @@ import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { UserEntity } from '../users/users.entity';
-import { GamesEntity } from '../games/games.entitiy';
+import { GamesEntity } from '../games/games.entity';
 
 @Entity()
 export class ReservesEntity {

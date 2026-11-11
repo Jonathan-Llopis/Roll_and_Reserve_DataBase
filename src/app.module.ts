@@ -11,7 +11,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Between, Repository } from 'typeorm';
 import { UserEntity } from './users/users.entity';
 import { AuthorizationMiddleware } from './authorization.middleware';
-import { AuthService } from './Autentication/auth.service';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
 import { LabelsModule } from './utils/labels/labels.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ShopsModule } from './shops/shops.module';
@@ -28,7 +29,7 @@ import { ReviewsEntity } from './reviews/reviews.entity';
 import { ShopsEntity } from './shops/shops.entity';
 import { TablesEntity } from './tables/tables.entity';
 import { ReservesEntity } from './reserves/reserves.entity';
-import { GamesEntity } from './games/games.entitiy';
+import { GamesEntity } from './games/games.entity';
 import { DifficultyEntity } from './difficulty/difficulty.entity';
 import { GameCategoryEntity } from './game_category/game_category.entity';
 import { FilesModule } from './files/files.module';
@@ -59,6 +60,7 @@ import { FcmNotificationService } from './fcm-notification/fcm-notification.serv
       inject: [ConfigService],
     }),
     UsersModule,
+    AuthModule,
     UtilsModule,
     LabelsModule,
     ConfigModule.forRoot({
