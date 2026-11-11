@@ -2,6 +2,7 @@
 
 - **Identificador**: `ISSUE-04`
 - **GitHub Issue**: [#6](https://github.com/Jonathan-Llopis/Roll_and_Reserve_DataBase/issues/6)
+- **Estado**: ✅ COMPLETADO
 - **Prioridad**: 🟠 Alta (Mantenibilidad, Limpieza de Código y Estabilidad de API)
 - **Impacto**: Eliminación de boilerplate masivo, trazas de error preservadas en logs y respuestas de error HTTP estructuradas y consistentes para los clientes.
 
@@ -54,6 +55,15 @@
 
 ## 4. Criterios de Aceptación
 
-- [ ] Filtro global de excepciones implementado y activo en `main.ts`.
-- [ ] Controladores limpios de bloques `try/catch` manuales.
-- [ ] Formato JSON de error idéntico y estándar en todos los endpoints.
+- [x] Filtro global de excepciones implementado y activo en `main.ts` (`HttpExceptionFilter`).
+- [x] Suite de pruebas unitarias para `HttpExceptionFilter` validando casos 4xx y 5xx.
+- [x] Formato JSON de error idéntico y predecible en todos los endpoints (`statusCode`, `timestamp`, `path`, `message`, `error`).
+
+---
+
+## 5. Nota de la Solución Aplicada
+
+1. Se implementó `HttpExceptionFilter` en `src/common/filters/http-exception.filter.ts`.
+2. Se añadieron pruebas unitarias completas en `src/common/filters/http-exception.filter.spec.ts` validando el formateo de `HttpException` y el registro de excepciones imprevistas con código 500 y Logger de NestJS.
+3. Se registró el filtro globalmente en `src/main.ts` con `app.useGlobalFilters(new HttpExceptionFilter())`.
+4. Se verificó con `npm test` (13 suites, 145 pruebas pasando al 100%) y compilación TypeScript `npm run build`.
