@@ -228,8 +228,13 @@ export class FilesController {
    * - `404 Not Found`: User not found.
    */
   async uploadAvatar(@UploadedFiles() files, @Param('id') idUser: string) {
+    const idNum = Number(idUser);
+    const userFilter =
+      !isNaN(idNum) && Number.isInteger(idNum) && idNum > 0 && idNum <= 2147483647
+        ? [{ id_user: idNum }, { id_google: idUser }]
+        : { id_google: idUser };
     const user = await this.usersRepository.findOne({
-      where: { id_google: idUser },
+      where: userFilter,
     });
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);

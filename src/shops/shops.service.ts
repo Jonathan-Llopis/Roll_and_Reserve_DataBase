@@ -36,6 +36,14 @@ export class ShopsService {
     );
   }
 
+  private getUserFilter(idUser: string) {
+    const idNum = Number(idUser);
+    if (!isNaN(idNum) && Number.isInteger(idNum) && idNum > 0 && idNum <= 2147483647) {
+      return [{ id_user: idNum }, { id_google: idUser }];
+    }
+    return { id_google: idUser };
+  }
+
   /**
    * Retrieve all shops.
    * Method: GET /shops
@@ -145,9 +153,14 @@ export class ShopsService {
    */
   async getAllShopsByOwner(idOwner: string): Promise<ShopsEntity[]> {
     try {
+      const idNum = Number(idOwner);
+      const ownerCondition =
+        !isNaN(idNum) && Number.isInteger(idNum) && idNum > 0 && idNum <= 2147483647
+          ? [{ owner: { id_user: idNum } }, { owner: { id_google: idOwner } }]
+          : { owner: { id_google: idOwner } };
       const shops = await this.shopRepository.find({
         relations: ['games', 'tables_in_shop', 'reviews_shop', 'owner'],
-        where: { owner: { id_google: idOwner } },
+        where: ownerCondition,
       });
       if (shops.length === 0) {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);
@@ -191,7 +204,7 @@ export class ShopsService {
     try {
       const shop = this.shopRepository.create(createShopDto);
       const owner = await this.userRepository.findOne({
-        where: { id_google: createShopDto.owner_id },
+        where: this.getUserFilter(createShopDto.owner_id),
       });
       if (!owner) {
         throw new HttpException('Owner not found', HttpStatus.NOT_FOUND);
@@ -253,7 +266,7 @@ export class ShopsService {
       }
       if (updateShopDto.owner_id) {
         const owner = await this.userRepository.findOne({
-          where: { id_google: updateShopDto.owner_id },
+          where: this.getUserFilter(updateShopDto.owner_id),
         });
         if (!owner) {
           throw new HttpException('Owner not found', HttpStatus.NOT_FOUND);

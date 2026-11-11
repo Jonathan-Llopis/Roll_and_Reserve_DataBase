@@ -45,6 +45,14 @@ export class ReviewsService {
     throw new BadRequestException('An unexpected error occurred');
   }
 
+  private getUserFilter(userId: string) {
+    const idNum = Number(userId);
+    if (!isNaN(idNum) && Number.isInteger(idNum) && idNum > 0 && idNum <= 2147483647) {
+      return [{ id_user: idNum }, { id_google: userId }];
+    }
+    return { id_google: userId };
+  }
+
   /**
    * DOC: Get all reviews
    * Method: GET /reviews
@@ -155,9 +163,14 @@ export class ReviewsService {
 
   async getAllReviewsByWritter(id_google: string): Promise<ReviewsEntity[]> {
     try {
+      const idNum = Number(id_google);
+      const writerCondition =
+        !isNaN(idNum) && Number.isInteger(idNum) && idNum > 0 && idNum <= 2147483647
+          ? [{ writer: { id_user: idNum } }, { writer: { id_google: id_google } }]
+          : { writer: { id_google: id_google } };
       const reviews = await this.reviewsRepository.find({
         relations: ['writer', 'reviewed', 'shop_reviews'],
-        where: { writer: { id_google: id_google } },
+        where: writerCondition,
       });
       if (reviews.length === 0) {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);
@@ -189,9 +202,14 @@ export class ReviewsService {
 
   async getAllReviewsByUser(id_google: string): Promise<ReviewsEntity[]> {
     try {
+      const idNum = Number(id_google);
+      const reviewedCondition =
+        !isNaN(idNum) && Number.isInteger(idNum) && idNum > 0 && idNum <= 2147483647
+          ? [{ reviewed: { id_user: idNum } }, { reviewed: { id_google: id_google } }]
+          : { reviewed: { id_google: id_google } };
       const reviews = await this.reviewsRepository.find({
         relations: ['writer', 'reviewed', 'shop_reviews'],
-        where: { reviewed: { id_google: id_google } },
+        where: reviewedCondition,
       });
       if (reviews.length === 0) {
         throw new HttpException('No Content', HttpStatus.NO_CONTENT);
@@ -238,7 +256,7 @@ export class ReviewsService {
       const review = this.reviewsRepository.create(createReviewsDto);
       console.log('review', createReviewsDto);
       const writer = await this.userRepository.findOne({
-        where: { id_google: createReviewsDto.writter_id },
+        where: this.getUserFilter(createReviewsDto.writter_id),
       });
       if (!writer) {
         throw new HttpException('Writer not found', HttpStatus.NOT_FOUND);
@@ -248,7 +266,7 @@ export class ReviewsService {
 
       if (createReviewsDto.reviewed_id) {
         const reviewed = await this.userRepository.findOne({
-          where: { id_google: createReviewsDto.reviewed_id },
+          where: this.getUserFilter(createReviewsDto.reviewed_id),
         });
         if (!reviewed) {
           throw new HttpException(
@@ -272,7 +290,11 @@ export class ReviewsService {
 
       await this.reviewsRepository.save(review);
       if (review.reviewed) {
-        await this.usersService.updateAverageRating(review.reviewed.id_google);
+        const targetId =
+          review.reviewed.id_google || review.reviewed.id_user?.toString();
+        if (targetId) {
+          await this.usersService.updateAverageRating(targetId);
+        }
       }
       return review;
     } catch (err) {
@@ -325,7 +347,7 @@ export class ReviewsService {
 
       if (updateReviewsDto.writter_id) {
         const writer = await this.userRepository.findOne({
-          where: { id_google: updateReviewsDto.writter_id },
+          where: this.getUserFilter(updateReviewsDto.writter_id),
         });
         if (!writer) {
           throw new NotFoundException('Writer not found');
@@ -335,7 +357,7 @@ export class ReviewsService {
 
       if (updateReviewsDto.reviewed_id) {
         const reviewed = await this.userRepository.findOne({
-          where: { id_google: updateReviewsDto.reviewed_id },
+          where: this.getUserFilter(updateReviewsDto.reviewed_id),
         });
         if (!reviewed) {
           throw new NotFoundException('Reviewed user not found');

@@ -31,6 +31,25 @@ export class UsersReservesService {
     private readonly fcmNotificationService: FcmNotificationService,
   ) {}
 
+  private getUserFilter(userId: string) {
+    const idNum = Number(userId);
+    if (!isNaN(idNum) && Number.isInteger(idNum) && idNum > 0 && idNum <= 2147483647) {
+      return [{ id_user: idNum }, { id_google: userId }];
+    }
+    return { id_google: userId };
+  }
+
+  private getUserReserveRelationFilter(userId: string, reserveId: number) {
+    const idNum = Number(userId);
+    if (!isNaN(idNum) && Number.isInteger(idNum) && idNum > 0 && idNum <= 2147483647) {
+      return [
+        { user: { id_user: idNum }, reserve: { id_reserve: reserveId } },
+        { user: { id_google: userId }, reserve: { id_reserve: reserveId } },
+      ];
+    }
+    return { user: { id_google: userId }, reserve: { id_reserve: reserveId } };
+  }
+
   /**
    * Method: POST /users/:userId/reserves/:reserveId
    * Description: Adds a user to a reserve.
@@ -55,7 +74,7 @@ export class UsersReservesService {
     reservaConfirmada: boolean,
   ): Promise<UserReserveEntity> {
     const user = await this.usersRepository.findOne({
-      where: { id_google: userId },
+      where: this.getUserFilter(userId),
       relations: ['userReserves', 'userReserves.user'],
     });
     if (!user) {
@@ -147,10 +166,7 @@ export class UsersReservesService {
     reserveId: string,
   ): Promise<UserReserveEntity> {
     const userReserve = await this.userReserveRepository.findOne({
-      where: {
-        user: { id_google: userId },
-        reserve: { id_reserve: parseInt(reserveId) },
-      },
+      where: this.getUserReserveRelationFilter(userId, parseInt(reserveId)),
       relations: ['user', 'reserve'],
     });
     if (!userReserve) {
@@ -177,7 +193,7 @@ export class UsersReservesService {
    */
   async findReservesFromUser(userId: string): Promise<UserReserveEntity[]> {
     const user = await this.usersRepository.findOne({
-      where: { id_google: userId },
+      where: this.getUserFilter(userId),
       relations: [
         'userReserves',
         'userReserves.reserve',
@@ -224,10 +240,7 @@ export class UsersReservesService {
    */
   async deleteReserveFromUser(userId: string, reserveId: string) {
     const userReserve = await this.userReserveRepository.findOne({
-      where: {
-        user: { id_google: userId },
-        reserve: { id_reserve: parseInt(reserveId) },
-      },
+      where: this.getUserReserveRelationFilter(userId, parseInt(reserveId)),
       relations: ['user', 'reserve'],
     });
 
@@ -263,7 +276,8 @@ export class UsersReservesService {
             (userReserve) =>
               userReserve.user &&
               userReserve.user.token_notification &&
-              userReserve.user.id_google !== userId,
+              userReserve.user.id_google !== userId &&
+              userReserve.user.id_user?.toString() !== userId,
           )
           .map((userReserve) => userReserve.user.token_notification),
       ),
@@ -296,10 +310,7 @@ export class UsersReservesService {
     reserveId: string,
   ): Promise<UserReserveEntity> {
     const userReserve = await this.userReserveRepository.findOne({
-      where: {
-        user: { id_google: userId },
-        reserve: { id_reserve: parseInt(reserveId) },
-      },
+      where: this.getUserReserveRelationFilter(userId, parseInt(reserveId)),
       relations: ['user', 'reserve'],
     });
 

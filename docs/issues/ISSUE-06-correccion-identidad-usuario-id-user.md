@@ -2,6 +2,7 @@
 
 - **Identificador**: `ISSUE-06`
 - **GitHub Issue**: [#8](https://github.com/Jonathan-Llopis/Roll_and_Reserve_DataBase/issues/8)
+- **Estado**: ✅ COMPLETADO
 - **Prioridad**: 🔴 Crítica (Bug de Integridad de Datos y Fallo Funcional General)
 - **Impacto**: Corrección de fallos generalizados para todos los usuarios registrados mediante email/contraseña.
 
@@ -52,6 +53,26 @@ Existe un fallo de diseño crítico en cómo se identifica al usuario a lo largo
 
 ## 4. Criterios de Aceptación
 
-- [ ] Usuarios nativos pueden iniciar sesión, actualizar datos y subir avatares sin errores.
-- [ ] Usuarios nativos pueden crear tiendas y unirse a reservas.
-- [ ] Compatibilidad preservada para usuarios autenticados mediante Google Sign-In.
+- [x] Usuarios nativos pueden iniciar sesión, actualizar datos y subir avatares sin errores.
+- [x] Usuarios nativos pueden crear tiendas y unirse a reservas.
+- [x] Compatibilidad preservada para usuarios autenticados mediante Google Sign-In.
+
+---
+
+## 5. Nota de la Solución
+
+1. **Resolución Dual Universal (`getUserFilter`)**:
+   - Implementado filtro resiliente que evalúa si el identificador recibido corresponde a un entero de 32 bits (clave primaria `id_user`). Si es válido, ejecuta condición OR `[{ id_user: idNum }, { id_google: idUser }]`; si no, consulta exclusivamente `{ id_google: idUser }`, evitando fallos de "integer out of range" en PostgreSQL con Google IDs numéricos largos.
+2. **Servicios y Controladores Actualizados**:
+   - `AuthService`: `generateToken`, `validateToken`, y `clearToken` actualizan y validan por `id_user` numérico o fallback `id_google`.
+   - `UsersController`: Generación de sesión con `user.id_user.toString()`.
+   - `UsersService`: Búsquedas, actualización de perfil, vinculación de avatar, actualización de tokens FCM, validación y cambio de contraseñas, y cálculo de reputación actualizados para resolver `id_user` nativo.
+   - `UsersReservesService`: Agregación a reservas, consulta de reservas por usuario, cancelación y confirmación soportando identificadores numéricos y Google IDs.
+   - `ShopsService`: Búsqueda de tiendas por propietario, creación y actualización de propietarios resolviendo `id_user` nativo.
+   - `FilesController`: Carga de avatar (`uploadAvatar`) y vinculación automática soportando `id_user`.
+   - `ReviewsService`: Reseñas por escritor o destinatario resolviendo usuarios nativos.
+3. **Pruebas Unitarias**:
+   - Añadida suite `src/auth/auth.service.spec.ts` verificando generación, expiración y limpieza de tokens con identificadores numéricos y de Google.
+   - Actualizados tests en `src/users/users.service.spec.ts` con cobertura para avatares, tokens y reputación con `id_user`.
+   - Total 15/15 suites y 158/158 pruebas pasando en verde.
+

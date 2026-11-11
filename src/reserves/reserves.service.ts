@@ -583,8 +583,15 @@ export class ReservesService {
       reserves.forEach(reserve => {
         reserve.userReserves?.forEach(userReserve => {
           const player = userReserve?.user;
-          if (player && player.id_google !== userId && !playersMap.has(player.id_google)) {
-            playersMap.set(player.id_google, player);
+          const playerKey = player?.id_google || player?.id_user?.toString();
+          if (
+            player &&
+            player.id_google !== userId &&
+            player.id_user?.toString() !== userId &&
+            playerKey &&
+            !playersMap.has(playerKey)
+          ) {
+            playersMap.set(playerKey, player);
           }
         });
       });

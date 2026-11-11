@@ -262,4 +262,47 @@ describe('UsersService', () => {
       service.validateUser('john@example.com', 'WrongPassword'),
     ).rejects.toThrow(new HttpException('Invalid credentials', 401));
   });
+
+  it('should link an avatar to a user with numeric id_user', async () => {
+    const mockUser = {
+      id_user: 1,
+      id_google: null,
+      avatar: null,
+    };
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
+    jest.spyOn(userRepository, 'save').mockImplementation(async (u) => u as any);
+
+    const result = await service.vincularArchivo('1', 'avatar-file-123');
+    expect(result.avatar).toEqual('avatar-file-123');
+    expect(userRepository.findOne).toHaveBeenCalledWith({
+      where: [{ id_user: 1 }, { id_google: '1' }],
+    });
+  });
+
+  it('should update notification token using numeric id_user or google id', async () => {
+    const mockUser = {
+      id_user: 1,
+      id_google: null,
+      token_notification: null,
+    };
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
+    jest.spyOn(userRepository, 'save').mockImplementation(async (u) => u as any);
+
+    const result = await service.updateNotificationToken('1', 'fcm-token-xyz');
+    expect(result.token_notification).toEqual('fcm-token-xyz');
+  });
+
+  it('should update average rating using id_user filter and received reviews', async () => {
+    const mockUser = {
+      id_user: 1,
+      id_google: null,
+      average_raiting: null,
+      receivedReviews: [{ raiting: 4 }, { raiting: 5 }],
+    };
+    jest.spyOn(userRepository, 'findOne').mockResolvedValue(mockUser as any);
+    jest.spyOn(userRepository, 'save').mockImplementation(async (u) => u as any);
+
+    const result = await service.updateAverageRating('1');
+    expect(result.average_raiting).toEqual(4.5);
+  });
 });

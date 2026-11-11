@@ -32,6 +32,14 @@ export class UsersService {
     throw new HttpException('Request failed', HttpStatus.BAD_REQUEST);
   }
 
+  private getUserFilter(id_user: string) {
+    const idNum = Number(id_user);
+    if (!isNaN(idNum) && Number.isInteger(idNum) && idNum > 0 && idNum <= 2147483647) {
+      return [{ id_user: idNum }, { id_google: id_user }];
+    }
+    return { id_google: id_user };
+  }
+
   /**
    * Get all users.
    *
@@ -110,7 +118,7 @@ export class UsersService {
   async getUser(id_user: string): Promise<UserEntity | string> {
     try {
       const userEntity = await this.usersRepository.findOne({
-        where: { id_user: parseInt(id_user) },
+        where: this.getUserFilter(id_user),
         relations: [
           'users_reserve',
           'receivedReviews',
@@ -189,7 +197,7 @@ export class UsersService {
   ): Promise<UserEntity> {
     try {
       const userEntity = await this.usersRepository.findOne({
-        where: { id_google: id_user },
+        where: this.getUserFilter(id_user),
       });
 
       if (!userEntity) {
@@ -223,7 +231,11 @@ export class UsersService {
   async deleteUser(id_google: string): Promise<void> {
     try {
       const id = parseInt(id_google);
-      const result = await this.usersRepository.delete({ id_user: id });
+      const deleteCondition =
+        !isNaN(id) && id > 0 && id <= 2147483647
+          ? [{ id_user: id }, { id_google }]
+          : { id_google };
+      const result = await this.usersRepository.delete(deleteCondition as any);
       if (result.affected === 0) {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
@@ -297,7 +309,7 @@ export class UsersService {
   ): Promise<UserEntity> {
     try {
       const user = await this.usersRepository.findOne({
-        where: { id_google: id_user },
+        where: this.getUserFilter(id_user),
       });
 
       if (!user) {
@@ -336,7 +348,7 @@ export class UsersService {
   ): Promise<UserEntity> {
     try {
       const userEntity = await this.usersRepository.findOne({
-        where: { id_google: id_user },
+        where: this.getUserFilter(id_user),
       });
 
       if (!userEntity) {
@@ -375,7 +387,7 @@ export class UsersService {
   ): Promise<boolean> {
     try {
       const user = await this.usersRepository.findOne({
-        where: { id_google: id_user },
+        where: this.getUserFilter(id_user),
       });
 
       if (!user) {
@@ -413,7 +425,7 @@ export class UsersService {
   ): Promise<UserEntity> {
     try {
       const user = await this.usersRepository.findOne({
-        where: { id_google: id_user },
+        where: this.getUserFilter(id_user),
       });
 
       if (!user) {
@@ -449,21 +461,21 @@ export class UsersService {
    */
   async updateAverageRating(id_user: string): Promise<UserEntity> {
     try {
-      console.log(`Fetching user with id_google: ${id_user}`);
+      console.log(`Fetching user with id: ${id_user}`);
       const user = await this.usersRepository.findOne({
-        where: { id_google: id_user },
+        where: this.getUserFilter(id_user),
         relations: ['receivedReviews'],
       });
 
       if (!user) {
-        console.error(`User with id_google: ${id_user} not found`);
+        console.error(`User with id: ${id_user} not found`);
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
 
-      console.log(`User with id_google: ${id_user} found`);
+      console.log(`User with id: ${id_user} found`);
       const reviews = user.receivedReviews;
       if (reviews.length === 0) {
-        console.warn(`No reviews found for user with id_google: ${id_user}`);
+        console.warn(`No reviews found for user with id: ${id_user}`);
         throw new HttpException(
           'No reviews found for user',
           HttpStatus.NO_CONTENT,
@@ -471,7 +483,7 @@ export class UsersService {
       }
 
       console.log(
-        `Calculating average rating for user with id_google: ${id_user}`,
+        `Calculating average rating for user with id: ${id_user}`,
       );
       const totalRating = reviews.reduce(
         (sum, review) => sum + review.raiting,
