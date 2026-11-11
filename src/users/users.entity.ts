@@ -43,8 +43,10 @@ export class UserEntity {
   @Column({ nullable: true })
   avatar: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'average_raiting', nullable: true })
   average_raiting: number;
+
+  average_rating?: number;
 
   @Column({ nullable: true })
   token_notification: string;

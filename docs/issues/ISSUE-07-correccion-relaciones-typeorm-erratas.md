@@ -2,6 +2,7 @@
 
 - **Identificador**: `ISSUE-07`
 - **GitHub Issue**: [#9](https://github.com/Jonathan-Llopis/Roll_and_Reserve_DataBase/issues/9)
+- **Estado**: ✅ COMPLETADO
 - **Prioridad**: 🔴 Crítica (Consistencia de Base de Datos y Compilación)
 - **Impacto**: Corrección de consultas relacionales corruptas, esquemas inconsistentes y fallos de compilación en librerías externas.
 
@@ -54,6 +55,22 @@
 
 ## 4. Criterios de Aceptación
 
-- [ ] Relación entre `GamesEntity` y `ReservesEntity` simétrica (`@ManyToOne` $\leftrightarrow$ `@OneToMany`).
-- [ ] Import de `GridFSBucketReadStream` corregido.
-- [ ] `npm run build` sin errores de compilación de TypeORM.
+- [x] Relación entre `GamesEntity` y `ReservesEntity` simétrica (`@ManyToOne` $\leftrightarrow$ `@OneToMany`).
+- [x] Import de `GridFSBucketReadStream` corregido.
+- [x] `npm run build` sin errores de compilación de TypeORM.
+
+---
+
+## 5. Nota de la Solución
+
+1. **Simetría Relacional Corregida**:
+   - `GamesEntity`: Cambiada la relación de `@ManyToMany` a `@OneToMany(() => ReservesEntity, (reserve) => reserve.reserve_of_game)` con tipado correcto `game_reserve: ReservesEntity[]`, eliminando `@JoinTable()` espuria que generaba esquemas corruptos e impedía la carga correcta de `reserve_of_game`.
+2. **Import de GridFSBucketReadStream**:
+   - Resuelto mediante `import { GridFSBucketReadStream } from 'mongodb'` en `src/utils/labels/labels.service.ts` y dependencia explícita en `package.json`.
+3. **Mapeo Explícito de Columnas**:
+   - `ReviewsEntity`: Configurado `@Column({ name: 'raiting' }) raiting: number` junto a propiedad opcional retrocompatible `rating?: number`. Claves foráneas mapeadas con `@JoinColumn({ name: 'writter_id' }) writer: UserEntity` y `@JoinColumn({ name: 'reviwed_id' }) reviewed: UserEntity`.
+   - `UserEntity`: Configurado `@Column({ name: 'average_raiting', nullable: true }) average_raiting: number` junto a `average_rating?: number`.
+4. **Verificación**:
+   - Compilación exitosa (`nest build`).
+   - 158/158 pruebas pasando en verde (`npm test`).
+
