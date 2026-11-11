@@ -15,11 +15,13 @@ import {
   ApiResponse,
   ApiParam,
   ApiBearerAuth,
+  ApiTags,
+  ApiBody,
 } from '@nestjs/swagger';
 import { TablesService } from './tables.service';
 import { CreateTableDto, UpdateTableDto } from './tables.dto';
-import { ApiBody } from '@nestjs/swagger';
 
+@ApiTags('Tables')
 @Controller('tables')
 export class TablesController {
   constructor(private readonly tablesService: TablesService) {}

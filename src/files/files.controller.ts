@@ -22,12 +22,14 @@ import {
   ApiOperation,
   ApiParam,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopsEntity } from '../shops/shops.entity';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../users/users.entity';
 
+@ApiTags('Files')
 @Controller('/files')
 export class FilesController {
   /**
