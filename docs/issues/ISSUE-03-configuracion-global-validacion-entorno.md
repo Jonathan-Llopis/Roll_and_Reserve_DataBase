@@ -2,6 +2,7 @@
 
 - **Identificador**: `ISSUE-03`
 - **GitHub Issue**: [#5](https://github.com/Jonathan-Llopis/Roll_and_Reserve_DataBase/issues/5)
+- **Estado**: ✅ COMPLETADO
 - **Prioridad**: 🔴 Crítica (Seguridad de Credenciales y Estabilidad en Despliegue)
 - **Impacto**: Prevención de fugas de credenciales en Git, arranque seguro con validación estricta de variables de entorno y soporte multiplataforma (local y Docker).
 
@@ -36,7 +37,18 @@
 
 ## 4. Criterios de Aceptación
 
-- [ ] `.env.example` creado con todas las variables documentadas.
-- [ ] Variables sensibles excluidas de Git.
-- [ ] `ConfigModule` único e inyectable globalmente.
-- [ ] Parámetros de conexión a bases de datos configurables dinámicamente sin valores fijos forzados en código.
+- [x] `.env.example` creado con todas las variables documentadas.
+- [x] Variables sensibles y archivo `env` excluidos del rastreo de Git.
+- [x] `ConfigModule` único e inyectable globalmente (`isGlobal: true, envFilePath: ['.env', 'env']`).
+- [x] Parámetros de conexión a bases de datos configurables dinámicamente (`MYSQL_HOST`, `MYSQL_PORT`, `DB_SYNCHRONIZE`).
+
+---
+
+## 5. Nota de la Solución Aplicada
+
+1. Se creó `.env.example` completo con variables documentadas para MySQL, MongoDB GridFS, JWT, Firebase y puertos.
+2. Se añadió `env` a `.gitignore` y se eliminó del rastreo de git (`git rm --cached env`).
+3. Se eliminó la importación duplicada de `ConfigModule.forRoot()` en `src/app.module.ts`, consolidando una única instancia global con soporte para `.env` y fallback `env`.
+4. Se parametrizó `MYSQL_HOST`, `MYSQL_PORT` y `DB_SYNCHRONIZE` dinámicamente mediante `ConfigService`.
+5. Se actualizó `src/main.ts` para escuchar en `PORT` o `WEB_SERVER_PORT`.
+6. Se verificó con `npm run build` y `npm test` (143/143 tests en verde).
