@@ -2,6 +2,7 @@
 
 - **Identificador**: `ISSUE-09`
 - **GitHub Issue**: [#11](https://github.com/Jonathan-Llopis/Roll_and_Reserve_DataBase/issues/11)
+- **Estado**: ✅ COMPLETADO
 - **Prioridad**: 🟠 Alta (Resiliencia Operativa y Entorno de Desarrollo)
 - **Impacto**: Prevención de caídas fatales de la aplicación en ausencia de variables de Firebase y desacoplamiento de servicios externos en tests.
 
@@ -47,6 +48,20 @@
 
 ## 4. Criterios de Aceptación
 
-- [ ] Cero fallos al arrancar el backend sin variables de Firebase.
-- [ ] Múltiples instancias en tests no lanzan el error de aplicación duplicada.
-- [ ] Mensaje informativo claro en el logger sobre el estado del servicio FCM.
+- [x] Cero fallos al arrancar el backend sin variables de Firebase.
+- [x] Múltiples instancias en tests no lanzan el error de aplicación duplicada.
+- [x] Mensaje informativo claro en el logger sobre el estado del servicio FCM.
+
+---
+
+## 5. Nota de la Solución
+
+1. **Inicialización Condicional y Resiliente**:
+   - `FcmNotificationService`: Valida la presencia de `PROJECT_ID_FIREBASE`, `CLIENT_EMAIL_FIREBASE` y `PRIVATE_KEY_FIREBASE`. Si falta cualquiera de ellos, activa el modo no-op (`isInitialized = false`) y emite una advertencia estructurada mediante NestJS `Logger`.
+   - Verifica `admin.apps.length === 0` antes de invocar `admin.initializeApp`, previniendo errores de colisión por apps duplicadas durante la ejecución concurrente o repetida de tests.
+2. **Envío Protector y No-Op**:
+   - `sendMulticastNotification` y `sendTopicNotification` verifican el estado `initialized` antes de invocar el cliente de mensajería, omitiendo silenciosamente llamadas en entornos sin credenciales y capturando errores inesperados sin propagar caídas a los controladores de negocio.
+3. **Pruebas Unitarias**:
+   - Creada suite `src/fcm-notification/fcm-notification.service.spec.ts` verificando el comportamiento en modo no-op, inicialización con credenciales válidas y envío seguro de notificaciones multicast y por tópico.
+   - 21/21 suites y 191/191 pruebas pasando en verde.
+

@@ -1,49 +1,72 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 
 @Injectable()
 export class FcmNotificationService {
+  private readonly logger = new Logger(FcmNotificationService.name);
+  private isInitialized = false;
+
   /**
    * Initialize the Firebase Admin SDK with the credentials stored
-   * in environment variables.
+   * in environment variables if present.
    */
   constructor() {
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: process.env.PROJECT_ID_FIREBASE,
-        clientEmail: process.env.CLIENT_EMAIL_FIREBASE,
-        privateKey: process.env.PRIVATE_KEY_FIREBASE.replace(/\\n/g, '\n'),
-      }),
-    });
+    this.initializeFirebase();
+  }
+
+  private initializeFirebase() {
+    const projectId = process.env.PROJECT_ID_FIREBASE;
+    const clientEmail = process.env.CLIENT_EMAIL_FIREBASE;
+    const privateKey = process.env.PRIVATE_KEY_FIREBASE;
+
+    if (!projectId || !clientEmail || !privateKey) {
+      this.logger.warn(
+        'Firebase credentials missing; push notifications will operate in mock/noop mode.',
+      );
+      this.isInitialized = false;
+      return;
+    }
+
+    try {
+      if (admin.apps.length === 0) {
+        admin.initializeApp({
+          credential: admin.credential.cert({
+            projectId,
+            clientEmail,
+            privateKey: privateKey.replace(/\\n/g, '\n'),
+          }),
+        });
+      }
+      this.isInitialized = true;
+      this.logger.log('Firebase Admin SDK initialized successfully.');
+    } catch (error) {
+      this.logger.error('Failed to initialize Firebase Admin SDK:', error);
+      this.isInitialized = false;
+    }
+  }
+
+  get initialized(): boolean {
+    return this.isInitialized;
   }
 
   /**
    * DOC: Send Multicast Notification
    * Method: POST /send-multicast-notification
    * Description: Sends a notification to multiple devices identified by their FCM tokens.
-   * Input Parameters:
-   * - `notificationTokens` (string[], required): An array of FCM tokens to which the notification will be sent.
-   * - `title` (string, required): The title of the notification.
-   * - `body` (string, required): The body content of the notification.
-   * - `imageUrl` (string, optional): URL of the image to be included in the notification.
-   * Example Request (JSON format):
-   * {
-   *   "notificationTokens": ["token1", "token2"],
-   *   "title": "New Offer!",
-   *   "body": "Check out our new deals.",
-   *   "imageUrl": "http://example.com/image.png"
-   * }
-   * HTTP Responses:
-   * - `200 OK`: Notification sent successfully. { "successCount": 2, "failureCount": 0 }
-   * - `4XX/5XX`: Error sending notification due to invalid tokens or server issues.
    */
-
   async sendMulticastNotification(
     notificationTokens: string[],
     title: string,
     body: string,
     imageUrl?: string,
   ): Promise<void> {
+    if (!this.isInitialized) {
+      this.logger.debug(
+        `Firebase not initialized. Skipped sending multicast notification "${title}" to ${notificationTokens.length} tokens.`,
+      );
+      return;
+    }
+
     const message: admin.messaging.MulticastMessage = {
       notification: {
         title: title,
@@ -53,38 +76,20 @@ export class FcmNotificationService {
       tokens: notificationTokens,
     };
 
-    console.log('Sending notification to', message);
-
-    await admin
-      .messaging()
-      .sendEachForMulticast(message)
-      .then((response) => {
-        console.log('Successfully sent notification:', response);
-      })
-      .catch((error) => {
-        console.log('Error sending notification:', error);
-      });
+    try {
+      const response = await admin.messaging().sendEachForMulticast(message);
+      this.logger.log(
+        `Successfully sent notification: ${response.successCount} succeeded, ${response.failureCount} failed`,
+      );
+    } catch (error) {
+      this.logger.error('Error sending notification:', error);
+    }
   }
 
   /**
    * Send Topic Notification
    * Method: POST /send-topic-notification
    * Description: Sends a notification to all devices subscribed to a topic identified by the shop's ID.
-   * Input Parameters:
-   * - `idShop` (string, required): The ID of the shop.
-   * - `title` (string, required): The title of the notification.
-   * - `body` (string, required): The body content of the notification.
-   * - `imageUrl` (string, optional): URL of the image to be included in the notification.
-   * Example Request (JSON format):
-   * {
-   *   "idShop": "12345",
-   *   "title": "New Offer!",
-   *   "body": "Check out our new deals.",
-   *   "imageUrl": "http://example.com/image.png"
-   * }
-   * HTTP Responses:
-   * - `200 OK`: Notification sent successfully. { "successCount": 1, "failureCount": 0 }
-   * - `4XX/5XX`: Error sending notification due to invalid tokens or server issues.
    */
   async sendTopicNotification(
     idShop: string,
@@ -92,6 +97,13 @@ export class FcmNotificationService {
     body: string,
     imageUrl?: string,
   ): Promise<void> {
+    if (!this.isInitialized) {
+      this.logger.debug(
+        `Firebase not initialized. Skipped sending topic notification "${title}" for shop ${idShop}.`,
+      );
+      return;
+    }
+
     const topic = `${idShop}`;
 
     const message: admin.messaging.Message = {
@@ -103,14 +115,11 @@ export class FcmNotificationService {
       topic: topic,
     };
 
-    await admin
-      .messaging()
-      .send(message)
-      .then((response) => {
-        console.log('Successfully sent notification:', response);
-      })
-      .catch((error) => {
-        console.log('Error sending notification:', error);
-      });
+    try {
+      const response = await admin.messaging().send(message);
+      this.logger.log(`Successfully sent notification to topic ${topic}: ${response}`);
+    } catch (error) {
+      this.logger.error('Error sending notification:', error);
+    }
   }
 }
