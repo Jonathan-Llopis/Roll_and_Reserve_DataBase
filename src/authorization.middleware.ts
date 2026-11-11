@@ -1,7 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { AuthService } from './Autentication/auth.service';
+import { AuthService } from './auth/auth.service';
 
 @Injectable()
 export class AuthorizationMiddleware implements NestMiddleware {

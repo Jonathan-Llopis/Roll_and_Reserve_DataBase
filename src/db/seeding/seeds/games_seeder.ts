@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 import gamesData from '../../../data/games';
-import { GamesEntity } from '../../../games/games.entitiy';
+import { GamesEntity } from '../../../games/games.entity';
 import { GameCategoryEntity } from '../../../game_category/game_category.entity';
 
 export class GamesSeeder implements Seeder {

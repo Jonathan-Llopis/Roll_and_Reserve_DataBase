@@ -4,7 +4,7 @@ import reservesData from '../../../data/reserves';
 import { ReservesEntity } from '../../../reserves/reserves.entity';
 import { DifficultyEntity } from '../../../difficulty/difficulty.entity';
 import { TablesEntity } from '../../../tables/tables.entity';
-import { GamesEntity } from '../../../games/games.entitiy';
+import { GamesEntity } from '../../../games/games.entity';
 
 export class ReservesSeeder implements Seeder {
   /**

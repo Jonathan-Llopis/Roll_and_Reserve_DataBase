@@ -3,7 +3,7 @@ import { ShopGamesService } from './shop_games.service';
 import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ShopsEntity } from '../shops/shops.entity';
-import { GamesEntity } from '../games/games.entitiy';
+import { GamesEntity } from '../games/games.entity';
 import { HttpException, NotFoundException } from '@nestjs/common';
 
 describe('ShopGamesService', () => {

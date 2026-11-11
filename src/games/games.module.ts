@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { GamesController } from './games.controller';
 import { GamesService } from './games.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GamesEntity } from './games.entitiy';
+import { GamesEntity } from './games.entity';
 import { HttpModule } from '../http/http.module';
 import { GameCategoryModule } from '../game_category/game_category.module';
 import { GameCategoryEntity } from '../game_category/game_category.entity';

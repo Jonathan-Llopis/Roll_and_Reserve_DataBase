@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { ShopsEntity } from '../shops/shops.entity';
-import { GamesEntity } from '../games/games.entitiy';
+import { GamesEntity } from '../games/games.entity';
 
 @Injectable()
 export class ShopGamesService {

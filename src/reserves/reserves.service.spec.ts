@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ReservesEntity } from './reserves.entity';
 import { ShopsEntity } from '../shops/shops.entity';
-import { GamesEntity } from '../games/games.entitiy';
+import { GamesEntity } from '../games/games.entity';
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { FcmNotificationService } from '../fcm-notification/fcm-notification.service';

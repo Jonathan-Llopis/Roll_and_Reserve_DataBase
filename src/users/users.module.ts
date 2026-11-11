@@ -4,7 +4,7 @@ import { UsersService } from './users.service';
 import { UtilsModule } from '../utils/utils.module';
 import { UserEntity } from './users.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthService } from '../Autentication/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { ReservesEntity } from '../reserves/reserves.entity';
 import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
 

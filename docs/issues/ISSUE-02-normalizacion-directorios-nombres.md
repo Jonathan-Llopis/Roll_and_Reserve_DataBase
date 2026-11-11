@@ -2,6 +2,7 @@
 
 - **Identificador**: `ISSUE-02`
 - **GitHub Issue**: [#4](https://github.com/Jonathan-Llopis/Roll_and_Reserve_DataBase/issues/4)
+- **Estado**: ✅ COMPLETADO
 - **Prioridad**: 🟠 Alta (Mantenibilidad y Convenciones de Código)
 - **Impacto**: Claridad arquitectónica, consistencia tipográfica, eliminación de rutas frágiles e imports rotos.
 
@@ -47,7 +48,17 @@ El repositorio presenta inconsistencias organizativas y erratas tipográficas en
 
 ## 4. Criterios de Aceptación
 
-- [ ] Carpeta de autenticación renombrada limpiamente a `src/auth/`.
-- [ ] Errata `games.entitiy.ts` corregida a `games.entity.ts`.
-- [ ] Archivos de configuración agrupados bajo `src/config/`.
-- [ ] `npm run build` compila con 0 errores de resolución de módulos.
+- [x] Carpeta de autenticación renombrada limpiamente a `src/auth/` con `AuthModule` creado y exportado.
+- [x] Errata `games.entitiy.ts` corregida a `games.entity.ts` en todos los archivos del proyecto.
+- [x] Archivos de configuración agrupados bajo `src/config/` (`src/config/typeorm.config.ts`).
+- [x] `npm run build` compila con 0 errores de resolución de módulos.
+
+---
+
+## 5. Nota de la Solución Aplicada
+
+1. Se renombró `src/Autentication` a `src/auth/` mediante `git mv`.
+2. Se implementó `AuthModule` (`src/auth/auth.module.ts`) registrando `UserEntity`, `AuthService` y `AuthGuard`.
+3. Se corrigió la errata en `src/games/games.entitiy.ts` $\rightarrow$ `src/games/games.entity.ts` actualizando todas las referencias de importación en `src/` y `test/`.
+4. Se creó `src/config/typeorm.config.ts` y se actualizó `src/typeorm.config.ts` para reexportar la configuración garantizando compatibilidad con migraciones CLI.
+5. Se verificó la compilación con `npm run build` y los tests unitarios con `npm test` (143/143 tests pasando al 100%).

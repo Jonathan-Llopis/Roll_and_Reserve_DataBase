@@ -6,7 +6,7 @@ import { ReservesEntity } from './reserves.entity';
 import { UserReserveEntity } from '../users_reserves/users_reserves.entity';
 import { FcmNotificationModule } from '../fcm-notification/fcm-notification.module';
 import { ShopsEntity } from '../shops/shops.entity';
-import { GamesEntity } from '../games/games.entitiy';
+import { GamesEntity } from '../games/games.entity';
 import { TablesEntity } from '../tables/tables.entity';
 import { DifficultyEntity } from '../difficulty/difficulty.entity';
 import { GameCategoryEntity } from '../game_category/game_category.entity';

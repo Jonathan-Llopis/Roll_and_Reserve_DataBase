@@ -9,7 +9,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { CreateGameDto, UpdateGameDto } from './games.dto';
-import { GamesEntity } from './games.entitiy';
+import { GamesEntity } from './games.entity';
 import { HttpService } from '../http/http.service';
 import { GameCategoryEntity } from '../game_category/game_category.entity';
 import { GameCategoryService } from '../game_category/game_category.service';
